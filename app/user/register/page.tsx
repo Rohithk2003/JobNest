@@ -1,21 +1,48 @@
+"use client";
+import { getIconLocation, getLoginRoute } from "@/configs/constants";
 import Image from "next/image";
-
+import { useState } from "react";
+import Popup from "../../components/Popup";
 export default function Register() {
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [showPopup, setShowPopup] = useState(false);
+
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		console.log(email, password, confirmPassword);
+		if (password !== confirmPassword) {
+			setShowPopup(true);
+		}
+	};
+
 	return (
 		<section className="bg-gray-50 dark:bg-gray-900">
-			<div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+			{showPopup && (
+				<Popup
+					title="Password mismatch"
+					description="The passwords you entered do not match. Please try again."
+					firstButtonText="Try again"
+					secondButtonText="Cancel"
+					onConfirm={() => setShowPopup(false)}
+					showButtonOne={true}
+					showButtonTwo={false}
+				/>
+			)}
+			<div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 ">
 				<a
 					href="#"
 					className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
 				>
 					<Image
-						className="w-8 h-8 mr-2"
-						src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
+						className=" mr-2"
+						src={getIconLocation()}
 						alt="logo"
-						width={16}
-						height={16}
+						width={64}
+						height={64}
 					/>
-					Flowbite
+					JobNest
 				</a>
 				<div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
 					<div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -23,8 +50,8 @@ export default function Register() {
 							Create an account
 						</h1>
 						<form
+							onSubmit={handleSubmit}
 							className="space-y-4 md:space-y-6"
-							action="#"
 						>
 							<div>
 								<label
@@ -36,6 +63,8 @@ export default function Register() {
 								<input
 									type="email"
 									name="email"
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
 									id="email"
 									className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 									placeholder="name@company.com"
@@ -53,6 +82,8 @@ export default function Register() {
 									type="password"
 									name="password"
 									id="password"
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
 									placeholder="••••••••"
 									className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 									required
@@ -69,6 +100,8 @@ export default function Register() {
 									type="confirm-password"
 									name="confirm-password"
 									id="confirm-password"
+									value={confirmPassword}
+									onChange={(e) => setConfirmPassword(e.target.value)}
 									placeholder="••••••••"
 									className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 									required
@@ -89,9 +122,9 @@ export default function Register() {
 										htmlFor="terms"
 										className="font-light text-gray-500 dark:text-gray-300"
 									>
-										I accept the{" "}
+										I accept the
 										<a
-											className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+											className="pl-1 font-medium text-primary-600 hover:underline dark:text-primary-500"
 											href="#"
 										>
 											Terms and Conditions
@@ -100,16 +133,17 @@ export default function Register() {
 								</div>
 							</div>
 							<button
+								onSubmit={handleSubmit}
 								type="submit"
 								className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
 							>
 								Create an account
 							</button>
 							<p className="text-sm font-light text-gray-500 dark:text-gray-400">
-								Already have an account?{" "}
+								Already have an account?
 								<a
-									href="#"
-									className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+									href={getLoginRoute()}
+									className="font-medium pl-1 text-primary-600 hover:underline dark:text-primary-500"
 								>
 									Login here
 								</a>

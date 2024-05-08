@@ -1,21 +1,22 @@
+import { getIconLocation, getRegisterRoute } from "@/configs/constants";
 import Image from "next/image";
 
 export default function Login() {
 	return (
 		<section className="bg-gray-50 dark:bg-gray-900">
-			<div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+			<div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mt-[-40px]">
 				<a
 					href="#"
 					className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
 				>
 					<Image
-						className="w-8 h-8 mr-2"
-						src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
+						className=" mr-2"
+						src={getIconLocation()}
 						alt="logo"
-						width={16}
-						height={16}
+						width={64}
+						height={64}
 					/>
-					Flowbite
+					Login
 				</a>
 				<div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
 					<div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -66,9 +67,9 @@ export default function Login() {
 								Sign in
 							</button>
 							<p className="text-sm font-light text-gray-500 dark:text-gray-400">
-								Don&apos;t have an account yet?{" "}
+								Don&apos;t have an account yet?
 								<a
-									href="#"
+									href={getRegisterRoute()}
 									className="font-medium text-primary-600 hover:underline dark:text-primary-500"
 								>
 									Sign up

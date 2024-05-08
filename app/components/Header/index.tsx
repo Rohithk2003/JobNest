@@ -1,3 +1,8 @@
+import {
+	getIconLocation,
+	getLoginRoute,
+	getRegisterRoute,
+} from "@/configs/constants";
 import Image from "next/image";
 export default function Header() {
 	return (
@@ -9,7 +14,7 @@ export default function Header() {
 				>
 					<span className="sr-only">Home</span>
 					<Image
-						src=""
+						src={getIconLocation()}
 						alt="Icon"
 						width={64}
 						height={64}
@@ -82,14 +87,14 @@ export default function Header() {
 						<div className="sm:flex sm:gap-4">
 							<a
 								className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 dark:hover:bg-teal-500"
-								href="/login"
+								href={getLoginRoute()}
 							>
 								Login
 							</a>
 
 							<a
 								className="hidden rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600 transition hover:text-teal-600/75 sm:block dark:bg-gray-800 dark:text-white dark:hover:text-white/75"
-								href="/register"
+								href={getRegisterRoute()}
 							>
 								Register
 							</a>
