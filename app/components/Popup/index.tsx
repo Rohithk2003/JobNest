@@ -1,7 +1,7 @@
 interface PopupProps {
 	title: string;
 	description: string;
-	onConfirm: () => void;
+	onConfirm: () => any;
 	firstButtonText: string;
 	secondButtonText: string;
 	showButtonOne: boolean;

@@ -8,3 +8,6 @@ export function getRegisterRoute(): string {
 export function getIconLocation(): string {
 	return "/icons/icon.png";
 }
+export function getTermsRoute(): string {
+	return "/terms";
+}

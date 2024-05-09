@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Header from "./components/Header";
 import Head from "next/head";
-
-export default function Home() {
+import { getServerSession } from "next-auth";
+export default async function Home() {
 	return (
 		<>
 			<Head>
