@@ -21,6 +21,7 @@ export default function Register() {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [showPopup, setShowPopup] = useState(false);
+	const [username, setUsername] = useState("");
 
 	const [signUpClicked, setSignUpClicked] = useState(false);
 	const [providerClicked, setProviderClicked] = useState(false);
@@ -54,24 +55,28 @@ export default function Register() {
 		if (password !== confirmPassword) {
 			setShowPopup(true);
 		} else {
-			const signUpResponse = await signIn("custom-signup", {
-				redirect: false,
-				email: data.get("email") as string,
-				password: data.get("password") as string,
-			});
-			if (signUpResponse == null) {
+			try {
+				const signUpResponse = await signIn("custom-signup", {
+					redirect: false,
+					email: data.get("email") as string,
+					password: data.get("password") as string,
+					username: username as string,
+				});
 				setSignUpClicked(false);
+				setShowPopup(true);
 				setPopupTitle("Account created");
 				setPopuptext("Your account has been created successfully.");
 				setPopupButton1("Login");
 				setPopupButton2("Cancel");
-				setPopupButton1Function(() => router.push(getLoginRoute()));
+				setPopupButton1Function(() => {
+					router.push(getLoginRoute());
+				});
 				setShowPopupButton1(true);
 				setShowPopupButton2(true);
-			} else {
+			} catch (error) {
 				setPopupTitle("Error occurred");
 				setPopuptext(
-					`An error occurred while creating your account. Please try again. - ${signUpResponse?.error}`
+					`An error occurred while creating your account. Please try again. - ${error}`
 				);
 				setPopupButton1("Try again");
 				setPopupButton2("Cancel");
@@ -135,6 +140,24 @@ export default function Register() {
 									id="email"
 									className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 									placeholder="name@company.com"
+									required
+								/>
+							</div>
+							<div>
+								<label
+									htmlFor="Username"
+									className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+								>
+									Your Username
+								</label>
+								<input
+									type="Username"
+									name="Username"
+									value={username}
+									onChange={(e) => setUsername(e.target.value)}
+									id="Username"
+									className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									placeholder="Username"
 									required
 								/>
 							</div>

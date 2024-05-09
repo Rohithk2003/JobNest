@@ -4,6 +4,8 @@ import GoogleProvider from "next-auth/providers/google";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { createClient } from "@/utils/supabase/client";
+import type { Adapter } from "next-auth/adapters";
+
 const bcrypt = require("bcrypt");
 
 interface Credentials {
@@ -16,11 +18,11 @@ const supabase = createClient();
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!;
 export const authOptions: NextAuthOptions = {
-    pages:{
-        signIn: '/user/login',
-        signOut: '/user/register',
-        error: '/user/login',
-    },
+	pages: {
+		signIn: '/user/login',
+		signOut: '/user/register',
+		error: '/user/login',
+	},
 	session: {
 		strategy: "jwt",
 	},
@@ -32,7 +34,7 @@ export const authOptions: NextAuthOptions = {
 			type: "credentials",
 			credentials: {
 				email: { label: "Email", type: "email" },
-				password: { label: "Password", type: "password" },
+				password: { label: "Password", type: "password" }
 			},
 			async authorize(credentials) {
 				try {
@@ -50,17 +52,13 @@ export const authOptions: NextAuthOptions = {
 					if (error) {
 						throw "No user exists";
 					}
-					if (user && user.password == credentials.password) {
+					console.log(credentials.password)
+					const passwordsMatch = await bcrypt.compareSync(credentials.password, user.password);
+					if (user && passwordsMatch) {
 						const { password, createdAt, id, ...userWithoutSensitiveInfo } =
 							user;
+						console.log(userWithoutSensitiveInfo)
 						return userWithoutSensitiveInfo;
-					} else {
-						supabase
-							.schema("next_auth")
-							.from("credentials")
-							.insert([
-								{ email: credentials.email, password: credentials.password },
-							]);
 					}
 					return user;
 				} catch (error: any) {
@@ -77,22 +75,27 @@ export const authOptions: NextAuthOptions = {
 			credentials: {
 				email: { label: "Email", type: "email" },
 				password: { label: "Password", type: "password" },
+				username: { label: "Username", type: "text" }
+
 			},
 			async authorize(credentials) {
 				try {
 					if (!credentials || !credentials.email || !credentials.password) {
 						throw new Error("Email and password are required.");
 					}
-                    const hashedPassword = await bcrypt.hash(credentials.password, 10);
+					console.log(credentials.password)
+					const hashedPassword = await bcrypt.hash(credentials.password, 10);
+					console.log(hashedPassword)
 					const { data: user, error } = await supabase
 						.schema("next_auth")
 						.from("credentials")
 						.insert([
-							{ email: credentials.email, password: hashedPassword},
+							{ email: credentials.email, password: hashedPassword, username: credentials.username },
 						]);
-					if (error == null){
-                        return null
-                    }
+
+					if (error == null) {
+						return null
+					}
 					if (error) {
 						console.log(error);
 						throw new Error(error.details, {
@@ -116,5 +119,17 @@ export const authOptions: NextAuthOptions = {
 	adapter: SupabaseAdapter({
 		url: process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL!,
 		secret: process.env.NEXT_PUBLIC_SUPABASE_PROJECT_SERVICE_KEY!,
-	}),
+	}) as Adapter,
+	callbacks: {
+		jwt: async ({ token, user }) => {
+			console.log(token.user);
+			user && (token.user = user)
+			return token
+		},
+		session: async ({ session, token }) => {
+			session.user = token.user
+			return session
+		}
+
+	},
 };

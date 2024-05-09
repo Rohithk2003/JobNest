@@ -125,6 +125,7 @@ export default function Header() {
 										/>
 									)}
 									<p>{session.user?.email}</p>
+									<p>{session.user?.username}</p>
 								</div>
 								<button
 									className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
