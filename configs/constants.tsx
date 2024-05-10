@@ -11,3 +11,7 @@ export function getIconLocation(): string {
 export function getTermsRoute(): string {
 	return "/terms";
 }
+
+export function getUsernameCreationRoute(): string {
+	return "/user/createUsername";
+}

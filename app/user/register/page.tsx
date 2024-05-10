@@ -6,14 +6,15 @@ import {
 } from "@/configs/constants";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Popup from "../../components/Popup";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Grid } from "react-loader-spinner";
 import { set } from "firebase/database";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
-
+import { useSession } from "next-auth/react";
+import ReactLoadingSpinner from "@/app/components/reactLoadingSpinner";
 export default function Register() {
 	type PopupButtonFunctionType = () => any;
 
@@ -35,8 +36,15 @@ export default function Register() {
 	const [showPopupButton2, setShowPopupButton2] = useState(false);
 	const [showPopupButton1, setShowPopupButton1] = useState(false);
 
+	const { status } = useSession({
+		required: true,
+	});
 	const router = useRouter();
-
+	useEffect(() => {
+		if (status === "authenticated") {
+			router.push("/");
+		}
+	});
 	const handleGoogleSignIn = async () => {
 		setProviderClicked(true);
 		const googleSignInResponse = await signIn("google", {
@@ -223,17 +231,7 @@ export default function Register() {
 								</div>
 							</div>
 							{signUpClicked ? (
-								<div className="bg-primary-600 flex justify-center items-center hover:bg-primary-700 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5">
-									<Grid
-										visible={true}
-										height="20"
-										width="20"
-										color="#ffffff"
-										ariaLabel="dna-loading"
-										wrapperStyle={{}}
-										wrapperClass="dna-wrapper"
-									/>
-								</div>
+								<ReactLoadingSpinner />
 							) : (
 								<button
 									onSubmit={handleSubmit}

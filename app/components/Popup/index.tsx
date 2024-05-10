@@ -6,6 +6,7 @@ interface PopupProps {
 	secondButtonText: string;
 	showButtonOne: boolean;
 	showButtonTwo: boolean;
+	showPopup: (val: boolean) => any | null;
 }
 export default function Popup({
 	title,
@@ -15,6 +16,7 @@ export default function Popup({
 	secondButtonText,
 	showButtonOne,
 	showButtonTwo,
+	showPopup,
 }: PopupProps) {
 	return (
 		<div className=" absolute top-0 left-0 z-[900] w-full h-full flex justify-center items-center ">
@@ -39,6 +41,9 @@ export default function Popup({
 					{showButtonTwo && (
 						<button
 							type="button"
+							onClick={() => {
+								showPopup(false);
+							}}
 							className="rounded bg-gray-50 px-4 py-2 text-sm font-medium text-gray-600"
 						>
 							{secondButtonText}

@@ -48,16 +48,13 @@ export const authOptions: NextAuthOptions = {
 						.select("*")
 						.eq("email", email)
 						.single();
-					console.log(user);
 					if (error) {
 						throw "No user exists";
 					}
-					console.log(credentials.password)
 					const passwordsMatch = await bcrypt.compareSync(credentials.password, user.password);
 					if (user && passwordsMatch) {
 						const { password, createdAt, id, ...userWithoutSensitiveInfo } =
 							user;
-						console.log(userWithoutSensitiveInfo)
 						return userWithoutSensitiveInfo;
 					}
 					return user;
@@ -83,9 +80,7 @@ export const authOptions: NextAuthOptions = {
 					if (!credentials || !credentials.email || !credentials.password) {
 						throw new Error("Email and password are required.");
 					}
-					console.log(credentials.password)
 					const hashedPassword = await bcrypt.hash(credentials.password, 10);
-					console.log(hashedPassword)
 					const { data: user, error } = await supabase
 						.schema("next_auth")
 						.from("credentials")
@@ -97,7 +92,6 @@ export const authOptions: NextAuthOptions = {
 						return null
 					}
 					if (error) {
-						console.log(error);
 						throw new Error(error.details, {
 							cause: "No user exists",
 						});
@@ -121,8 +115,10 @@ export const authOptions: NextAuthOptions = {
 		secret: process.env.NEXT_PUBLIC_SUPABASE_PROJECT_SERVICE_KEY!,
 	}) as Adapter,
 	callbacks: {
-		jwt: async ({ token, user }) => {
-			console.log(token.user);
+		jwt: async ({ token, trigger, session, user }) => {
+			if (trigger === "update" && session.user) {
+				token.user = session.user
+			}
 			user && (token.user = user)
 			return token
 		},

@@ -14,7 +14,6 @@ export default function Header() {
 	});
 	useEffect(() => {
 		if (session) {
-			console.log(session);
 		}
 	});
 	return (

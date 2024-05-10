@@ -7,3 +7,11 @@
 	--background-start-rgb: 214, 219, 220;
 	--background-end-rgb: 255, 255, 255;
 }
+body {
+	background-color: #111827;
+}
+.createUsernameForm input:focus + .usernameLabel {
+	top: -10px !important;
+	background-color: #1f2937;
+	color: white;
+}
