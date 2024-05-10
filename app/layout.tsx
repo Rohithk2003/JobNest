@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import "react-loading-skeleton/dist/skeleton.css";
 import { getServerSession } from "next-auth/next";
 import AuthProvider from "./context/AuthProvider";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authoptions";

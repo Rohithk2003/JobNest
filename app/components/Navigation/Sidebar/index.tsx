@@ -1,6 +1,7 @@
+"use client";
 import { DefaultSession } from "next-auth";
 import Image from "next/image";
-import { Dispatch, SetStateAction, useState } from "react";
+import {  useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { signOut, useSession } from "next-auth/react";
 
@@ -10,11 +11,8 @@ interface Session {
 	} & DefaultSession["user"];
 }
 
-interface Props {
-	sidebarController: boolean;
-	sidebarControllerFunction: Dispatch<SetStateAction<boolean>>;
-}
-const Sidebar = ({ sidebarController, sidebarControllerFunction }: Props) => {
+interface Props {}
+const Sidebar = ({}: Props) => {
 	const { data: session } = useSession();
 	const [expanded, setExpanded] = useState(false);
 	const logOut = () => {

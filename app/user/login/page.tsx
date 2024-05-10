@@ -32,7 +32,7 @@ export default function Login(props: CredentialFormsProps) {
 	useEffect(() => {
 		if (session) {
 			if ("username" in session.user && session.user.username != null)
-				router.push("/");
+				window.location.replace("/");
 			else {
 				router.push(getUsernameCreationRoute());
 			}

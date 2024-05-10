@@ -1,27 +1,21 @@
-"use client";
+"use server";
 import {
 	getIconLocation,
 	getLoginRoute,
 	getRegisterRoute,
 } from "@/configs/constants";
 import Image from "next/image";
-import { DefaultSession } from "next-auth";
+import { DefaultSession, getServerSession } from "next-auth";
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import Skeleton from "react-loading-skeleton";
 interface Session {
 	user: {
 		username: string | null;
 	} & DefaultSession["user"];
 }
-interface Props {
-	sidebarController: boolean;
-	sidebarControllerFunction: Dispatch<SetStateAction<boolean>>;
-}
-export default function Header({
-	sidebarController,
-	sidebarControllerFunction,
-}: Props) {
-	const { data: session } = useSession();
+interface Props {}
+export default async function Header({}: Props) {
+	const session = await getServerSession();
 	return (
 		<header className="bg-transparent pt-2  z-[500] relative">
 			<div className="mx-auto flex h-16 max-w-full-xl items-center gap-8  sm:px-6 ">
@@ -33,7 +27,7 @@ export default function Header({
 									className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
 									href={getLoginRoute()}
 								>
-									Login
+									{"Login"}
 								</a>
 
 								<a
