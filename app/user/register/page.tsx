@@ -3,6 +3,7 @@ import {
 	getIconLocation,
 	getLoginRoute,
 	getTermsRoute,
+	getUsernameCreationRoute,
 } from "@/configs/constants";
 
 import Image from "next/image";
@@ -47,11 +48,9 @@ export default function Register() {
 	});
 	const handleGoogleSignIn = async () => {
 		setProviderClicked(true);
-		const googleSignInResponse = await signIn("google", {
-			callbackUrl: "/",
-		});
+		const googleSignInResponse = await signIn("google");
 		if (googleSignInResponse && !googleSignInResponse.error) {
-			router.push("/");
+			router.push(getUsernameCreationRoute());
 		}
 	};
 
@@ -107,6 +106,7 @@ export default function Register() {
 					secondButtonText={PopupButton2}
 					onConfirm={PopupButton1Function}
 					showButtonOne={showPopupButton1}
+					showPopup={() => {}}
 					showButtonTwo={showPopupButton2}
 				/>
 			)}

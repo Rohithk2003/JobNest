@@ -17,7 +17,7 @@ export default function Header() {
 		}
 	});
 	return (
-		<header className="bg-white dark:bg-gray-900">
+		<header className="bg-white pt-2 dark:bg-gray-900">
 			<div className="mx-auto flex h-16 max-w-full-xl items-center gap-8  sm:px-6 ">
 				<a
 					className="block text-teal-600 dark:text-teal-300"
