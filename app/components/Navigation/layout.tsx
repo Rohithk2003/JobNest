@@ -1,22 +1,34 @@
-import { DefaultSession, getServerSession } from "next-auth";
+"use client";
+import { DefaultSession } from "next-auth";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import router from "next/navigation";
+import { useState } from "react";
+import { redirect } from "next/navigation";
 interface Session {
 	user: {
 		username: string | null;
 	} & DefaultSession["user"];
 }
+interface props {
+	session: Session | null;
+}
+export default function Navigation({ session }: props) {
+	const [sideBarOpen, setSideBarOpen] = useState(false);
 
-export default async function Navigation() {
-	const session = await getServerSession();
-	if (!session) router?.useRouter().push("/");
-
-	console.log(session);
 	return (
 		<>
-			<Header />
-			{session?.user ? <Sidebar /> : null}
+			<Header
+				session={session}
+				sideBarOpen={sideBarOpen}
+				setSideBarOpen={setSideBarOpen}
+			/>
+			{session?.user ? (
+				<Sidebar
+					session={session}
+					sideBarOpen={sideBarOpen}
+					setSideBarOpen={setSideBarOpen}
+				/>
+			) : null}
 		</>
 	);
 }

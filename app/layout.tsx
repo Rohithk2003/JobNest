@@ -19,11 +19,12 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const session = await getServerSession(authOptions);
 	return (
 		<html lang="en">
 			<body className={inter.className}>
 				<AuthProvider>
-					<Navigation></Navigation>
+					<Navigation session={session}></Navigation>
 					{children}
 				</AuthProvider>
 			</body>

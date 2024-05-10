@@ -15,3 +15,7 @@ export function getTermsRoute(): string {
 export function getUsernameCreationRoute(): string {
 	return "/user/createUsername";
 }
+
+export function getProfileRoute(): string {
+	return "/user/profile";
+}

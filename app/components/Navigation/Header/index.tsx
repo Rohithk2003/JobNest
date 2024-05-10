@@ -1,4 +1,4 @@
-"use server";
+"use client";
 import {
 	getIconLocation,
 	getLoginRoute,
@@ -13,14 +13,22 @@ interface Session {
 		username: string | null;
 	} & DefaultSession["user"];
 }
-interface Props {}
-export default async function Header({}: Props) {
-	const session = await getServerSession();
+interface Props {
+	session: Session | null;
+	sideBarOpen: boolean;
+	setSideBarOpen: Dispatch<SetStateAction<boolean>>;
+}
+export default function Header({
+	session,
+	sideBarOpen,
+	setSideBarOpen,
+}: Props) {
+	console.log(session);
 	return (
 		<header className="bg-transparent pt-2  z-[500] relative">
 			<div className="mx-auto flex h-16 max-w-full-xl items-center gap-8  sm:px-6 ">
 				<div className="flex flex-1 items-center justify-end md:justify-center">
-					<div className="flex items-center gap-4 absolute right-10">
+					<div className="flex items-center gap-4 absolute right-4">
 						{!session ? (
 							<div className="sm:flex sm:gap-4">
 								<a
@@ -38,7 +46,47 @@ export default async function Header({}: Props) {
 								</a>
 							</div>
 						) : (
-							<div className="text-white flex flex-row items-center justify-center gap-10 mr-5"></div>
+							<div className="bg-transparent flex flex-row items-center justify-center gap-10 mr-5">
+								<button
+									onClick={() => {
+										setSideBarOpen(!sideBarOpen);
+									}}
+									className="block rounded bg-transparent p-2.5 text-white transition "
+								>
+									<span className="sr-only">Toggle menu</span>
+									{sideBarOpen ? (
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											className="h-5 w-5"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											strokeWidth="2"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												d="M6 18L18 6M6 6l12 12"
+											/>
+										</svg>
+									) : (
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											className="h-5 w-5"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											strokeWidth="2"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												d="M4 6h16M4 12h16M4 18h16"
+											/>
+										</svg>
+									)}
+								</button>
+							</div>
 						)}
 					</div>
 					<nav

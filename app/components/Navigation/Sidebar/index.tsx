@@ -1,9 +1,10 @@
 "use client";
 import { DefaultSession } from "next-auth";
 import Image from "next/image";
-import {  useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { signOut, useSession } from "next-auth/react";
+import { getProfileRoute } from "@/configs/constants";
 
 interface Session {
 	user: {
@@ -11,9 +12,12 @@ interface Session {
 	} & DefaultSession["user"];
 }
 
-interface Props {}
-const Sidebar = ({}: Props) => {
-	const { data: session } = useSession();
+interface Props {
+	session: Session | null;
+	sideBarOpen: boolean;
+	setSideBarOpen: Dispatch<SetStateAction<boolean>>;
+}
+const Sidebar = ({ session, sideBarOpen, setSideBarOpen }: Props) => {
 	const [expanded, setExpanded] = useState(false);
 	const logOut = () => {
 		signOut();
@@ -170,12 +174,11 @@ const Sidebar = ({}: Props) => {
 	];
 
 	return (
-		<div className={`z-[900] ${session ? "block" : "hidden"}`}>
+		<div className={`z-[900]  transition-all duration-300 ease-in-out`}>
 			<nav
-				onClick={() => setExpanded(!expanded)}
 				className={` fixed top-0  left-0 z-[600] ${
-					expanded ? "w-[200px]" : "w-[50px]"
-				} h-full border-r border-r-gray-500 backdrop-blur-lg  overflow transition-all duration-300 shadow-lg`}
+					sideBarOpen ? "translate-x-0" : "translate-x-[-100%]"
+				}  ease-in-out h-full border-r border-r-gray-500 w-[250px] backdrop-blur-lg  overflow transition-all duration-300 shadow-lg`}
 			>
 				<div className="flex flex-col h-full ">
 					<div className={`h-20  flex items-center pl-1 `}>
@@ -188,9 +191,7 @@ const Sidebar = ({}: Props) => {
 								className="mx-auto"
 							/>
 							<div
-								className={`${
-									expanded ? "opacity-1 " : "opacity-0"
-								} font-bold text-2xl text-white  duration-500 transition-all overflow-hidden `}
+								className={` font-bold text-2xl text-white  duration-500 transition-all overflow-hidden `}
 							>
 								JobNest
 							</div>
@@ -209,11 +210,7 @@ const Sidebar = ({}: Props) => {
 										className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-500 active:bg-gray-100 duration-150"
 									>
 										<div className={` text-white`}>{item.icon}</div>
-										<p
-											className={`duration-500 transition-all text-white ${
-												expanded ? "opacity-1 w-[200px]" : "opacity-0 w-0"
-											}`}
-										>
+										<p className={`duration-500 transition-all text-white`}>
 											{item.name}
 										</p>
 									</div>
@@ -221,11 +218,7 @@ const Sidebar = ({}: Props) => {
 							))}
 						</ul>
 						<>
-							<ul
-								className={`${
-									expanded ? "px-2" : "px-2"
-								} pb-4 text-sm font-medium`}
-							>
+							<ul className={` pb-4  px-2 text-sm font-medium`}>
 								{navsFooter.map((item, idx) => (
 									<li key={idx}>
 										<div
@@ -233,11 +226,7 @@ const Sidebar = ({}: Props) => {
 											className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg  hover:bg-gray-500 active:bg-gray-100 duration-150"
 										>
 											<div className={` text-white`}>{item.icon}</div>
-											<p
-												className={`duration-500 transition-all text-white ${
-													expanded ? "opacity-1 w-[200px]" : "opacity-0 w-0"
-												}`}
-											>
+											<p className={`duration-500 transition-all text-white `}>
 												{item.name}
 											</p>
 										</div>
@@ -245,9 +234,7 @@ const Sidebar = ({}: Props) => {
 								))}
 							</ul>
 							<div
-								className={`flex items-center  ${
-									expanded ? "px-4 pt-0" : "px-0 pl-[18px] pb-1"
-								} border-t-[1px] h-[50px] overflow-hidden gap-3`}
+								className={`flex items-center border-t-[1px] h-[50px] px-4 pt-0 overflow-hidden gap-3`}
 							>
 								{session?.user.image ? (
 									<Image
@@ -266,18 +253,13 @@ const Sidebar = ({}: Props) => {
 								)}
 
 								<div
-									className={`${
-										expanded ? "opacity-1 w-max" : "opacity-0 w-0 pt-1"
-									} overflow-hidden transition-all ease-in-out duration-500`}
+									className={` overflow-hidden transition-all ease-in-out duration-500`}
 								>
-									<span className="block text-white text-sm font-semibold">
-										{session?.user.username}
-									</span>
 									<a
-										href="javascript:void(0)"
-										className="block text-white hover:text-indigo-600 text-xs"
+										href={getProfileRoute()}
+										className="block hover:cursor-pointer font-semibold text-white hover:text-indigo-600 text-sm"
 									>
-										View profile
+										{session?.user.username}
 									</a>
 								</div>
 							</div>

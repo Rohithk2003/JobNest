@@ -5,6 +5,9 @@ import { useEffect } from "react";
 export default function BackgroundGlow() {
 	useEffect(() => {
 		document.addEventListener("mousemove", function (event) {
+			if ("ontouchstart" in window || navigator.maxTouchPoints) {
+				return;
+			}
 			var followDiv = document.getElementsByClassName(
 				"bg-glow"
 			)[0] as HTMLDivElement;
@@ -15,6 +18,7 @@ export default function BackgroundGlow() {
 
 			const maxLeft = viewportWidth - followDiv.offsetWidth;
 			const maxTop = viewportHeight - followDiv.offsetHeight;
+
 			followDiv.style.left = Math.min(mouseX, maxLeft) + "px";
 			followDiv.style.top = Math.min(mouseY, maxTop) + "px";
 		});

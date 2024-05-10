@@ -77,7 +77,7 @@ export default function Register() {
 					(data) => {
 						setSignUpClicked(false);
 						setShowPopup(true);
-						setPopupTitle("userUsername created");
+						setPopupTitle("Username created");
 						setPopuptext("Success");
 						setPopupButton1("Okay");
 						setPopupButton2("Cancel");
