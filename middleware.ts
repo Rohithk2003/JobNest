@@ -19,7 +19,6 @@ export default withAuth(async function middleware(req) {
 		req.nextUrl.pathname.startsWith(getRegisterRoute()) ||
 		req.nextUrl.pathname.startsWith(getUsernameCreationRoute()) ||
 		req.nextUrl.pathname.startsWith(getCheckUsernameRoute()) ||
-		req.nextUrl.pathname.startsWith(getProfileRoute()) ||
 		req.nextUrl.pathname.startsWith(getSignOutRoute())
 	) {
 		if (isAuthenticated) {

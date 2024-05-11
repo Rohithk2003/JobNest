@@ -6,8 +6,8 @@ export default function GridLines() {
 	useEffect(() => {
 		const rowcol = document.getElementById("container");
 
-		const colres = Math.round(window.innerWidth / 50);
-		const rowres = Math.round(window.innerHeight / 50);
+		const colres = Math.round(window.innerWidth / 30);
+		const rowres = Math.round(window.innerHeight / 30);
 
 		rowcol?.style.setProperty("--rescol", colres.toString());
 

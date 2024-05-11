@@ -23,8 +23,21 @@ export default function Header({
 	sideBarOpen,
 	setSideBarOpen,
 }: Props) {
+	useEffect(() => {
+		// Select the header element
+		const header = document.querySelector("header");
+
+		window.addEventListener("scroll", () => {
+			const scrolledY = window.scrollY;
+			if (scrolledY > 0) {
+				header?.classList.add("backdrop-blur-lg");
+			} else {
+				header?.classList.remove("backdrop-blur-lg");
+			}
+		});
+	});
 	return (
-		<header className="bg-transparent pt-2 backdrop-blur-md z-[500] relative">
+		<header className="bg-transparent pt-2 fixed z-[1000] w-full ">
 			<div className="mx-auto flex h-16 max-w-full-xl items-center gap-8  sm:px-6 ">
 				<div className="flex flex-1 items-center justify-end md:justify-center">
 					<div className="flex items-center gap-4 absolute right-4">
@@ -110,7 +123,7 @@ export default function Header({
 							<li>
 								<a
 									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
-									href="#"
+									href="#about"
 								>
 									About
 								</a>
@@ -119,45 +132,45 @@ export default function Header({
 							<li>
 								<a
 									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
-									href="#"
+									href="#features"
 								>
-									Careers
+									Features
 								</a>
 							</li>
 
 							<li>
 								<a
 									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
-									href="#"
+									href="#pricing"
 								>
-									History
+									Pricing
 								</a>
 							</li>
 
 							<li>
 								<a
 									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
-									href="#"
+									href="#stats"
 								>
-									Services
+									Stats
 								</a>
 							</li>
 
 							<li>
 								<a
 									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
-									href="#"
+									href="#testimonials"
 								>
-									Projects
+									Testimonials
 								</a>
 							</li>
 
 							<li>
 								<a
 									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
-									href="#"
+									href="/contact"
 								>
-									Blog
+									Contact
 								</a>
 							</li>
 						</ul>

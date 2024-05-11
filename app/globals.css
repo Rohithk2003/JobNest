@@ -110,8 +110,8 @@ body {
 }
 #container {
 	display: grid;
-	grid-template-columns: repeat(var(--rescol), 50px);
-	grid-gap: 2px;
+	grid-template-columns: repeat(var(--rescol), 30px);
+	grid-gap: 1px;
 	z-index: 10;
 	position: fixed;
 	top: 0;
@@ -121,16 +121,16 @@ body {
 
 #container span {
 	position: relative;
-	width: 50px;
-	height: 50px;
+	width: 30px;
+	height: 30px;
 	background: #111;
 	z-index: 10;
 }
 
 #cursor {
 	position: fixed;
-	width: 250px;
-	height: 250px;
+	width: 150px;
+	height: 150px;
 	background: #0f0;
 	transform: translate(-50%, -50%);
 	z-index: 1;
