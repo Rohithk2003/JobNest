@@ -25,7 +25,7 @@ export function getSignOutRoute(): string {
 }
 
 export function getHomeRoute(): string {
-	return "/";
+	return "/welcome";
 }
 export function getJobsRoute(): string {
 	return "/jobs";
@@ -35,4 +35,7 @@ export function getCheckUsernameRoute(): string {
 }
 export function getContactRoute(): string {
 	return "/contact";
+}
+export function getDashboardRoute(): string {
+	return "/dashboard";
 }

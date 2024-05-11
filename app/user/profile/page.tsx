@@ -9,7 +9,6 @@ import { set } from "firebase/database";
 
 export default function Profile() {
 	const { data: session, update } = useSession();
-	console.log(session);
 	const [file, setFile]: [File | null, Dispatch<SetStateAction<File | null>>] =
 		useState<File | null>(null);
 	const supabase = createClient();

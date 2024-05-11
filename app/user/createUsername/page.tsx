@@ -1,5 +1,6 @@
 "use client";
 import {
+	getDashboardRoute,
 	getIconLocation,
 	getLoginRoute,
 	getTermsRoute,
@@ -47,15 +48,6 @@ export default function Register() {
 	});
 	const router = useRouter();
 
-	useEffect(() => {
-		console.log(session);
-		if (session) {
-			setLoggedInUserEmail(session.user.email ? session.user.email : "");
-		}
-		if (session && session.user.username) {
-			router.push("/");
-		}
-	});
 	const test = () => {
 		setShowPopup(true);
 	};
@@ -78,7 +70,7 @@ export default function Register() {
 					.update({
 						username: userUsername,
 					})
-					.eq("email", loggedInUserEmail);
+					.eq("email", session?.user.email ? session.user.email : "");
 				if (result.error) {
 					throw new Error(result.error.message);
 				}
@@ -91,7 +83,7 @@ export default function Register() {
 						setPopupButton1("Okay");
 						setPopupButton2("Cancel");
 						setPopupButton1Function(() => {
-							window.location.replace("/");
+							window.location.replace(getDashboardRoute());
 						});
 						setShowPopupButton1(true);
 						setShowPopupButton2(true);

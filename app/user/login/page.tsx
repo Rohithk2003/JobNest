@@ -1,6 +1,7 @@
 "use client";
 import {
 	getCheckUsernameRoute,
+	getDashboardRoute,
 	getHomeRoute,
 	getIconLocation,
 	getRegisterRoute,
@@ -22,7 +23,6 @@ interface CredentialFormsProps {
 }
 
 export default function Login(props: CredentialFormsProps) {
-	const [errorOccurred, setErrorOccurred] = useState(false);
 	const [signInClicked, setSignInClicked] = useState(false);
 	const [showPopup, setShowPopup] = useState(false);
 	const [providerClicked, setProviderClicked] = useState(false);
@@ -34,7 +34,7 @@ export default function Login(props: CredentialFormsProps) {
 	useEffect(() => {
 		if (session) {
 			if ("username" in session.user && session.user.username != null)
-				window.location.replace(getHomeRoute());
+				window.location.replace(getDashboardRoute());
 			else {
 				router.push(getCheckUsernameRoute());
 			}

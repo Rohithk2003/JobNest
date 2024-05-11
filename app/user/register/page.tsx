@@ -1,6 +1,7 @@
 "use client";
 import {
 	getCheckUsernameRoute,
+	getDashboardRoute,
 	getIconLocation,
 	getLoginRoute,
 	getTermsRoute,
@@ -39,15 +40,19 @@ export default function Register() {
 	const [showPopupButton2, setShowPopupButton2] = useState(false);
 	const [showPopupButton1, setShowPopupButton1] = useState(false);
 
-	const { status } = useSession({
+	const { data: session, status } = useSession({
 		required: false,
 	});
 	const router = useRouter();
 	useEffect(() => {
-		if (status === "authenticated") {
-			router.push("/");
+		if (session) {
+			if ("username" in session.user && session.user.username != null)
+				window.location.replace(getDashboardRoute());
+			else {
+				router.push(getCheckUsernameRoute());
+			}
 		}
-	});
+	}, [session]);
 	const handleGoogleSignIn = async () => {
 		setProviderClicked(true);
 		const googleSignInResponse = await signIn("google", {

@@ -23,9 +23,8 @@ export default function Header({
 	sideBarOpen,
 	setSideBarOpen,
 }: Props) {
-	console.log(session);
 	return (
-		<header className="bg-transparent pt-2  z-[500] relative">
+		<header className="bg-transparent pt-2 backdrop-blur-md z-[500] relative">
 			<div className="mx-auto flex h-16 max-w-full-xl items-center gap-8  sm:px-6 ">
 				<div className="flex flex-1 items-center justify-end md:justify-center">
 					<div className="flex items-center gap-4 absolute right-4">
