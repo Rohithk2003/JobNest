@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 import { createClient } from "@/utils/supabase/client";
 import ReactLoadingSpinner from "@/app/components/reactLoadingSpinner";
 import { set } from "firebase/database";
+import BackgroundGlow from "@/app/components/BackgroundGlow";
 
 export default function Register() {
 	type PopupButtonFunctionType = () => any;
@@ -47,8 +48,12 @@ export default function Register() {
 	const router = useRouter();
 
 	useEffect(() => {
+		console.log(session);
 		if (session) {
 			setLoggedInUserEmail(session.user.email ? session.user.email : "");
+		}
+		if (session && session.user.username) {
+			router.push("/");
 		}
 	});
 	const test = () => {
@@ -63,9 +68,13 @@ export default function Register() {
 			setShowPopup(true);
 		} else {
 			try {
+				let table = "credentials";
+				if (session?.user.provider === "google") {
+					table = "users";
+				}
 				const result = await supabase
 					.schema("next_auth")
-					.from("credentials")
+					.from(table)
 					.update({
 						username: userUsername,
 					})
@@ -82,7 +91,7 @@ export default function Register() {
 						setPopupButton1("Okay");
 						setPopupButton2("Cancel");
 						setPopupButton1Function(() => {
-							router.push("/");
+							window.location.replace("/");
 						});
 						setShowPopupButton1(true);
 						setShowPopupButton2(true);
@@ -103,84 +112,87 @@ export default function Register() {
 	};
 
 	return (
-		<section className="bg-gray-50 dark:bg-gray-900">
-			{showPopup && (
-				<Popup
-					title={PopupTitle}
-					description={Popuptext}
-					firstButtonText={PopupButton1}
-					secondButtonText={PopupButton2}
-					onConfirm={PopupButton1Function}
-					showButtonOne={showPopupButton1}
-					showPopup={setShowPopup}
-					showButtonTwo={showPopupButton2}
-				/>
-			)}
-			<div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 ">
-				<a
-					href="/"
-					className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-				>
-					<Image
-						className=" mr-2"
-						src={getIconLocation()}
-						alt="logo"
-						width={64}
-						height={64}
+		<>
+			<section className="bg-transparent relative z-[400]">
+				{showPopup && (
+					<Popup
+						title={PopupTitle}
+						description={Popuptext}
+						firstButtonText={PopupButton1}
+						secondButtonText={PopupButton2}
+						onConfirm={PopupButton1Function}
+						showButtonOne={showPopupButton1}
+						showPopup={setShowPopup}
+						showButtonTwo={showPopupButton2}
 					/>
-					JobNest
-				</a>
-				<div className="w-full bg-white rounded-lg shadow dark:border h-[400px]  md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-					<div className="p-6 space-y-4 md:space-y-6 sm:p-8 gap-5 flex flex-col">
-						<h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-							Create a username for your account
-						</h1>
-						<form
-							onSubmit={handleSubmit}
-							className="flex flex-col gap-8"
+				)}
+				<div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 ">
+					<div className="w-full bg-transparent rounded-lg shadow-2xl  h-[400px]  md:mt-0 sm:max-w-md xl:p-0 ">
+						<a
+							href="/"
+							className="flex justify-center items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
 						>
-							<div className="relative createUsernameForm">
-								<input
-									type="username"
-									name="username"
-									value={userUsername}
-									onChange={(e) => setuserUsername(e.target.value)}
-									onBlur={(e) => {
-										setRemoveCustomInputTransition(true);
-										if (userUsername === "") {
-											setRemoveCustomInputTransition(false);
-										}
-									}}
-									id="username"
-									className={`bg-gray-50 border border-gray-300  text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-[#1f2937] dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-									required
-								/>
-								<p
-									className={` block mb-5  usernameLabel text-center absolute ${
-										!removeCustomInputTransition
-											? "top-2.5"
-											: "top-[-10px] text-white bg-[#1f2937]"
-									} left-4 w-[80px] transition-all duration-300 ease-in-out text-sm font-medium z-[51] text-gray-500 `}
-								>
-									Username
-								</p>
-							</div>
+							<Image
+								className=" mr-2"
+								src={getIconLocation()}
+								alt="logo"
+								width={64}
+								height={64}
+							/>
+							JobNest
+						</a>
+						<div className="p-6 space-y-4 md:space-y-6 sm:p-8 gap-5 flex flex-col">
+							<h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+								Create a username for your account
+							</h1>
+							<form
+								onSubmit={handleSubmit}
+								className="flex flex-col gap-8"
+							>
+								<div className="relative createUsernameForm">
+									<input
+										type="username"
+										name="username"
+										value={userUsername}
+										onChange={(e) => setuserUsername(e.target.value)}
+										onBlur={(e) => {
+											setRemoveCustomInputTransition(true);
+											if (userUsername === "") {
+												setRemoveCustomInputTransition(false);
+											}
+										}}
+										id="username"
+										className={`bg-gray-50 border border-gray-300  text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-[#1f2937] dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+										required
+									/>
+									<p
+										className={` block mb-5  usernameLabel text-center absolute ${
+											!removeCustomInputTransition
+												? "top-2.5"
+												: "top-[-10px] text-white bg-[#1f2937]"
+										} left-4 w-[80px] transition-all duration-300 ease-in-out text-sm font-medium z-[51] text-gray-500 `}
+									>
+										Username
+									</p>
+								</div>
 
-							{signUpClicked ? (
-								<ReactLoadingSpinner />
-							) : (
-								<button
-									onSubmit={handleSubmit}
-									type="submit"
-									className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-								>
-									Create username
-								</button>
-							)}
-						</form>
+								{signUpClicked ? (
+									<ReactLoadingSpinner />
+								) : (
+									<button
+										onSubmit={handleSubmit}
+										type="submit"
+										className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+									>
+										Create username
+									</button>
+								)}
+							</form>
+						</div>
 					</div>
 				</div>
-			</div>
-		</section>
+			</section>
+			<BackgroundGlow />
+		</>
 	);
 }

@@ -7,19 +7,24 @@ declare module "next-auth" {
         user: {
             username: string | null;
             avatar: string | null;
+            provider: string | undefined;
+
         } & DefaultSession["user"]
     }
     interface User {
         name: string
         username: string
         avatar: string | null;
+        provider: string | undefined;
 
     }
 }
+
 declare module "@auth/core/adapters" {
     interface AdapterUser {
         username: string | null;
         avatar: string | null;
+        provider: string | undefined;
 
     };
 }
@@ -29,7 +34,7 @@ declare module "next-auth/jwt" {
         user: {
             username: string | null;
             avatar: string | null;
-
+            provider: string | undefined;
         } & DefaultSession["user"]
     }
 }

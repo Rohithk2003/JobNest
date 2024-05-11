@@ -16,8 +16,8 @@ export default function BackgroundGlow() {
 			const mouseX = event.clientX - 150;
 			const mouseY = event.clientY - 150;
 
-			const maxLeft = viewportWidth - followDiv.offsetWidth;
-			const maxTop = viewportHeight - followDiv.offsetHeight;
+			const maxLeft = viewportWidth - followDiv?.offsetWidth;
+			const maxTop = viewportHeight - followDiv?.offsetHeight;
 
 			followDiv.style.left = Math.min(mouseX, maxLeft) + "px";
 			followDiv.style.top = Math.min(mouseY, maxTop) + "px";

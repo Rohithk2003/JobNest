@@ -19,3 +19,20 @@ export function getUsernameCreationRoute(): string {
 export function getProfileRoute(): string {
 	return "/user/profile";
 }
+
+export function getSignOutRoute(): string {
+	return "/user/logout";
+}
+
+export function getHomeRoute(): string {
+	return "/";
+}
+export function getJobsRoute(): string {
+	return "/jobs";
+}
+export function getCheckUsernameRoute(): string {
+	return "/user/checkUsername";
+}
+export function getContactRoute(): string {
+	return "/contact";
+}

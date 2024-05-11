@@ -21,7 +21,7 @@ export default function Home() {
 				/>
 			</Head>
 
-			<div className="bg-gray-900">
+			<div className="bg-transparent h-[90vh] flex justify-center items-center">
 				<section className="relative">
 					<div className="relative z-[10] max-w-screen-xl mx-auto px-4 py-28 md:px-8">
 						<div className="space-y-5 max-w-4xl mx-auto text-center">
@@ -33,10 +33,10 @@ export default function Home() {
 								Your personalized job matchmaker. Upload your resume, discover
 								tailored job suggestions. Find your perfect career fit today!
 							</p>
-							<div className="justify-center items-center gap-x-3 sm:flex">
+							<div className="justify-center animate-bounce hover:animate-none items-center gap-x-3 sm:flex">
 								<a
 									href={getLoginRoute()}
-									className="flex items-center justify-center gap-x-2 py-2.5 px-4 mt-3 w-full text-sm text-white font-medium bg-primary-500 duration-150 rounded-lg sm:mt-0 sm:w-auto"
+									className="flex items-center  justify-center gap-x-2 py-2.5 px-4 mt-3 w-full text-sm text-white font-medium bg-primary-500 duration-150 rounded-lg sm:mt-0 sm:w-auto"
 								>
 									Get started
 									<svg
@@ -102,9 +102,9 @@ export default function Home() {
 							</div>
 						</div>
 					</div>
-					<BackgroundGlow />
 				</section>
 			</div>
+			<BackgroundGlow />
 		</>
 	);
 }

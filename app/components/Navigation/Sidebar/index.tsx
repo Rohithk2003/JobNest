@@ -4,7 +4,8 @@ import Image from "next/image";
 import { Dispatch, SetStateAction, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { signOut, useSession } from "next-auth/react";
-import { getProfileRoute } from "@/configs/constants";
+import { getContactRoute, getProfileRoute, getSignOutRoute } from "@/configs/constants";
+import { useRouter } from "next/navigation";
 
 interface Session {
 	user: {
@@ -19,8 +20,9 @@ interface Props {
 }
 const Sidebar = ({ session, sideBarOpen, setSideBarOpen }: Props) => {
 	const [expanded, setExpanded] = useState(false);
+	const router = useRouter();
 	const logOut = () => {
-		signOut();
+		router.push(getSignOutRoute());
 	};
 	const navigation = [
 		{
@@ -107,7 +109,9 @@ const Sidebar = ({ session, sideBarOpen, setSideBarOpen }: Props) => {
 
 	const navsFooter = [
 		{
-			onClickFunction: () => {},
+			onClickFunction: () => {
+				router.push(getContactRoute());
+			},
 			name: "Help",
 			icon: (
 				<svg
@@ -127,7 +131,9 @@ const Sidebar = ({ session, sideBarOpen, setSideBarOpen }: Props) => {
 			),
 		},
 		{
-			onClickFunction: () => {},
+			onClickFunction: () => {
+				router.push(getProfileRoute());
+			},
 			name: "Settings",
 			icon: (
 				<svg
@@ -207,7 +213,7 @@ const Sidebar = ({ session, sideBarOpen, setSideBarOpen }: Props) => {
 								<li key={idx}>
 									<div
 										onClick={item.onClickFunction}
-										className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-500 active:bg-gray-100 duration-150"
+										className="hover:cursor-pointer flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-500 active:bg-gray-100 duration-150"
 									>
 										<div className={` text-white`}>{item.icon}</div>
 										<p className={`duration-500 transition-all text-white`}>
@@ -223,7 +229,7 @@ const Sidebar = ({ session, sideBarOpen, setSideBarOpen }: Props) => {
 									<li key={idx}>
 										<div
 											onClick={item.onClickFunction}
-											className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg  hover:bg-gray-500 active:bg-gray-100 duration-150"
+											className="hover:cursor-pointer flex items-center gap-x-2 text-gray-600 p-2 rounded-lg  hover:bg-gray-500 active:bg-gray-100 duration-150"
 										>
 											<div className={` text-white`}>{item.icon}</div>
 											<p className={`duration-500 transition-all text-white `}>

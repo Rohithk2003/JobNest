@@ -143,6 +143,7 @@ export default function Profile() {
 												id="first_name"
 												className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
 												placeholder="Your first name"
+												value={`${session?.user?.name?.split(" ")[0]}`}
 												required
 											/>
 										</div>
@@ -159,6 +160,7 @@ export default function Profile() {
 												id="last_name"
 												className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
 												placeholder="Your last name"
+												value={`${session?.user?.name?.split(" ")[1]}`}
 												required
 											/>
 										</div>

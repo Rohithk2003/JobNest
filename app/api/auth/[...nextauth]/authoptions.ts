@@ -20,7 +20,6 @@ const GOOGLE_CLIENT_SECRET = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!;
 export const authOptions: NextAuthOptions = {
 	pages: {
 		signIn: '/user/login',
-		signOut: '/user/register',
 		error: '/user/login',
 	},
 	session: {
@@ -115,15 +114,27 @@ export const authOptions: NextAuthOptions = {
 		secret: process.env.NEXT_PUBLIC_SUPABASE_PROJECT_SERVICE_KEY!,
 	}) as Adapter,
 	callbacks: {
-		jwt: async ({ token, trigger, session, user }) => {
+		jwt: async ({ token, trigger, account, profile, session, user }) => {
+			// user && (token.user = user)
+			if (user) {
+				token.user = {
+					...user,
+					username: user.username,
+					avatar: user.avatar,
+					provider: account?.provider
+				}
+			}
 			if (trigger === "update" && session.user) {
 				token.user = session.user
 			}
-			user && (token.user = user)
+
+
 			return token
 		},
 		session: async ({ session, token }) => {
+			console.log(token)
 			session.user = token.user
+
 			return session
 		}
 
