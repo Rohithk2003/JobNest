@@ -1,5 +1,6 @@
 "use client";
 import {
+	getCheckUsernameRoute,
 	getIconLocation,
 	getLoginRoute,
 	getTermsRoute,
@@ -49,7 +50,9 @@ export default function Register() {
 	});
 	const handleGoogleSignIn = async () => {
 		setProviderClicked(true);
-		const googleSignInResponse = await signIn("google");
+		const googleSignInResponse = await signIn("google", {
+			callbackUrl: getCheckUsernameRoute(),
+		});
 		if (googleSignInResponse && !googleSignInResponse.error) {
 			router.push(getUsernameCreationRoute());
 		}
@@ -251,17 +254,7 @@ export default function Register() {
 							</div>
 							<div className="flex justify-center items-center ">
 								{providerClicked ? (
-									<div className="bg-primary-600 flex justify-center items-center hover:bg-primary-700 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5">
-										<Grid
-											visible={true}
-											height="20"
-											width="20"
-											color="#ffffff"
-											ariaLabel="dna-loading"
-											wrapperStyle={{}}
-											wrapperClass="dna-wrapper"
-										/>
-									</div>
+									<ReactLoadingSpinner />
 								) : (
 									<ul className="flex w-64  flex-row justify-center items-center gap-10">
 										<li className="bg-white p-2 w-10 h-9 flex justify-center items-center rounded-lg">
