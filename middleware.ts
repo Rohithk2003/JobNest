@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import {
 	getCheckUsernameRoute,
 	getDashboardRoute,
+	getHomeRoute,
 	getLoginRoute,
 	getProfileRoute,
 	getRegisterRoute,
@@ -15,6 +16,7 @@ export default withAuth(async function middleware(req) {
 	const token = await getToken({ req });
 	const isAuthenticated = !!token;
 	if (
+		req.nextUrl.pathname.startsWith(getHomeRoute()) ||
 		req.nextUrl.pathname.startsWith(getLoginRoute()) ||
 		req.nextUrl.pathname.startsWith(getRegisterRoute()) ||
 		req.nextUrl.pathname.startsWith(getUsernameCreationRoute()) ||
@@ -25,13 +27,12 @@ export default withAuth(async function middleware(req) {
 			return NextResponse.redirect(new URL(getDashboardRoute(), req.url));
 		}
 	}
+
 	if (
 		req.nextUrl.pathname.startsWith(getDashboardRoute()) ||
 		req.nextUrl.pathname.startsWith(getProfileRoute()) ||
 		req.nextUrl.pathname.startsWith(getCheckUsernameRoute()) ||
-		req.nextUrl.pathname.startsWith(getUsernameCreationRoute()) ||
-		req.nextUrl.pathname.startsWith(getSignOutRoute()) ||
-		req.nextUrl.pathname.startsWith(getLoginRoute())
+		req.nextUrl.pathname.startsWith(getUsernameCreationRoute())
 	) {
 		if (!isAuthenticated) {
 			return NextResponse.redirect(new URL(getLoginRoute(), req.url));

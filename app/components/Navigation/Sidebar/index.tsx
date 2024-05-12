@@ -4,7 +4,11 @@ import Image from "next/image";
 import { Dispatch, SetStateAction, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { signOut, useSession } from "next-auth/react";
-import { getContactRoute, getProfileRoute, getSignOutRoute } from "@/configs/constants";
+import {
+	getContactRoute,
+	getProfileRoute,
+	getSignOutRoute,
+} from "@/configs/constants";
 import { useRouter } from "next/navigation";
 
 interface Session {
@@ -184,7 +188,7 @@ const Sidebar = ({ session, sideBarOpen, setSideBarOpen }: Props) => {
 			<nav
 				className={` fixed top-0  left-0 z-[600] ${
 					sideBarOpen ? "translate-x-0" : "translate-x-[-100%]"
-				}  ease-in-out h-full border-r border-r-gray-500 w-[250px] backdrop-blur-lg  overflow transition-all duration-300 shadow-lg`}
+				}  ease-in-out h-full border-r  border-r-gray-500 w-[250px] backdrop-blur-lg  overflow transition-all duration-300 shadow-lg`}
 			>
 				<div className="flex flex-col h-full ">
 					<div className={`h-20  flex items-center pl-1 `}>

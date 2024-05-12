@@ -27,8 +27,11 @@ export function getSignOutRoute(): string {
 export function getHomeRoute(): string {
 	return "/welcome";
 }
+export function getaBackendRoute(): string {
+	return "http://127.0.0.1:8000";
+}
 export function getJobsRoute(): string {
-	return "/jobs";
+	return "/api/getJobs";
 }
 export function getCheckUsernameRoute(): string {
 	return "/user/checkUsername";
@@ -38,4 +41,11 @@ export function getContactRoute(): string {
 }
 export function getDashboardRoute(): string {
 	return "/dashboard";
+}
+
+export function getHelpRoute(): string {
+	return "/customer-support";
+}
+export function getFAQRoute(): string {
+	return "/faq";
 }
