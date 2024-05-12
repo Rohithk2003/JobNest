@@ -1,11 +1,11 @@
 interface SkeletonCardProps {
 	title: String;
-	description: String[];
+	description: String;
 	location: String;
 	company: String;
 	link: string;
 	days: string;
-	metadata: string[];
+	metadata: string;
 }
 
 export default function Card({
@@ -18,12 +18,12 @@ export default function Card({
 	metadata,
 }: SkeletonCardProps) {
 	return (
-		<div className="relative block overflow-hidden w-[800px] bg-transparent rounded-lg border border-gray-100 p-4 sm:p-6 lg:p-8">
+		<div className="relative block overflow-hidden w-[800px] bg-transparent rounded-lg border-[1px] border-gray-700 p-4 sm:p-6 lg:p-8">
 			<div className="sm:flex sm:justify-between sm:gap-4">
 				<div>
 					<a
 						href={link}
-						className="text-lg font-bold text-gray-300 sm:text-xl"
+						className="text-lg hover:underline font-bold text-gray-300 sm:text-xl"
 					>
 						{title}
 					</a>
@@ -36,7 +36,7 @@ export default function Card({
 			</div>
 			<div className="mt-2">
 				{metadata &&
-					metadata.map((meta, index) => {
+					metadata.split(".").map((meta, index) => {
 						return (
 							<span
 								key={index}
@@ -49,7 +49,7 @@ export default function Card({
 			</div>
 			<div className="mt-4">
 				{description &&
-					description.map((desc, index) => (
+					description.split(".").map((desc, index) => (
 						<p
 							key={index}
 							className="text-pretty text-sm text-gray-400"
