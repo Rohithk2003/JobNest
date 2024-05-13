@@ -10,7 +10,7 @@ export default function SignoutPage() {
 	});
 	return (
 		<>
-			<div className="w-full h-[90vh] grid place-content-center relative z-[400]">
+			<div className="w-full h-[100vh] grid place-content-center relative z-[400]">
 				<div className="flex flex-row justify-center pl-10 items-center text-white text-3xl">
 					<h1>Signing out... Please wait</h1>
 					<InfinitySpin

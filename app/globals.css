@@ -166,3 +166,9 @@ body {
 .smoothtransform {
 	transition: all 250ms ease-in-out;
 }
+.avatar:hover + .avatar-overlay {
+	display: block;
+}
+.avatar-overlay:hover {
+	display: block;
+}

@@ -12,6 +12,8 @@ import { set } from "firebase/database";
 import { createClient } from "@/utils/supabase/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
+import ProfileImageSkeleton from "../../Loader/ProfileImageSkeleton";
+import { getSignOutRoute } from "@/configs/constants";
 
 export default function Header({
 	sideBarOpen,
@@ -177,19 +179,28 @@ export default function Header({
 						data-dropdown-toggle="dropdown"
 					>
 						<span className="sr-only">Open user menu</span>
-						<Image
-							className="w-8 h-8 rounded-full"
-							src={
-								session?.user.provider === "custom-signin"
-									? session.user.avatar?.startsWith("http")
-										? session.user.avatar
-										: link
-									: session?.user.avatar || session?.user.image || ""
-							}
-							alt="user photo"
-							width={32}
-							height={32}
-						/>
+						{session ? (
+							<Image
+								className="w-8 h-8 rounded-full"
+								src={
+									session?.user.provider === "custom-signin"
+										? session.user.avatar?.startsWith("http")
+											? session.user.avatar
+											: link
+										: session?.user.avatar || session?.user.image || ""
+								}
+								alt="user photo"
+								width={32}
+								height={32}
+							/>
+						) : (
+							<div>
+								<ProfileImageSkeleton
+									width={40}
+									height={40}
+								/>
+							</div>
+						)}
 					</button>
 					<div
 						className={`${
@@ -265,7 +276,7 @@ export default function Header({
 						>
 							<li>
 								<a
-									href="#"
+									href={getSignOutRoute()}
 									className="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
 								>
 									Sign out
