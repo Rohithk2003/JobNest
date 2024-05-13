@@ -68,7 +68,7 @@ export default function Login(props: CredentialFormsProps) {
 	};
 	return (
 		<>
-			<section className=" dark:bg-transparent h-screen relative z-[400]">
+			<section className=" dark:bg-transparent h-[110vh] relative z-[400] p-5">
 				{showPopup && (
 					<Popup
 						title="User does not exist"
