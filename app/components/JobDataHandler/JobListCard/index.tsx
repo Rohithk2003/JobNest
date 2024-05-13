@@ -28,13 +28,13 @@ export default function Card({
 						{title}
 					</a>
 
-					<div className="flex flex-row gap-8 justify-start items-center">
+					<div className="flex mt-3 flex-row gap-8 justify-start items-center">
 						<p className="mt-1 text-xs font-medium text-gray-400">{company}</p>
 						<p className="mt-1 text-xs font-medium text-gray-400">{location}</p>
 					</div>
 				</div>
 			</div>
-			<div className="mt-2">
+			<div className="mt-4 flex flex-row gap-3">
 				{metadata &&
 					metadata.split(".").map((meta, index) => {
 						return (

@@ -1,6 +1,6 @@
 import Skeleton from "react-loading-skeleton";
 
-export default function SkeletonCard() {
+export function SkeletonCard() {
 	return (
 		<div className="relative  overflow-hidden w-[800px] bg-transparent flex flex-col gap-5 rounded-lg border-[1px] border-gray-700  p-4 sm:p-6 lg:p-8">
 			<div className="absolute right-0 top-0">
@@ -43,6 +43,16 @@ export default function SkeletonCard() {
 					width={100}
 				/>
 			</div>
+		</div>
+	);
+}
+export default function SkeletonDiv() {
+	return (
+		<div className="flex flex-col justify-center items-center pt-10">
+			<SkeletonCard />
+			<SkeletonCard />
+			<SkeletonCard />
+			<SkeletonCard />
 		</div>
 	);
 }

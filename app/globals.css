@@ -12,7 +12,6 @@ body {
 }
 .createUsernameForm input:focus + .usernameLabel {
 	top: -10px !important;
-	background-color: #1f2937;
 	color: white;
 }
 .animate-1,

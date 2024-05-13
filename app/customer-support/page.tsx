@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
-import BackgroundGlow from "../components/BackgroundGlow";
+import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
 import DashboardNavigation from "../components/DashboardNavigation/layout";
-import Navigation from "../components/Navigation/layout";
+import Navigation from "../components/MainPage/Navigation/layout";
 import { getContactRoute } from "@/configs/constants";
 export default async function Help() {
 	const session = await getServerSession();

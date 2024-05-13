@@ -1,18 +1,22 @@
 "use client";
 import Head from "next/head";
-import BackgroundGlow from "../components/BackgroundGlow";
-import Herosection from "../components/Hero";
-import FeatureSection from "../components/Features";
-import PricingSection from "../components/Pricing";
-import Testimonials from "../components/Testimonials";
-import StatsSection from "../components/Stats";
-import FooterSection from "../components/Footer";
-import GridLines from "../components/GridLines";
-import Navigation from "../components/Navigation/layout";
+import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
+import Herosection from "../components/MainPage/Hero";
+import FeatureSection from "../components/MainPage/Features";
+import PricingSection from "../components/MainPage/Pricing";
+import Testimonials from "../components/MainPage/Testimonials";
+import StatsSection from "../components/MainPage/Stats";
+import FooterSection from "../components/JobDataHandler/Footer";
+import GridLines from "../components/VisualComponents/GridLines";
+import Navigation from "../components/MainPage/Navigation/layout";
 import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export default function Home() {
 	const { data: session } = useSession();
+	if (session) {
+		redirect("/dashboard");
+	}
 	return (
 		<>
 			<Head>

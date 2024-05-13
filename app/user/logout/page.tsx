@@ -1,5 +1,5 @@
 "use client";
-import BackgroundGlow from "@/app/components/BackgroundGlow";
+import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
 import { signOut } from "next-auth/react";
 import { useEffect } from "react";
 import { InfinitySpin } from "react-loader-spinner";

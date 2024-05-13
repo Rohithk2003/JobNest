@@ -15,7 +15,7 @@ import { useSession } from "next-auth/react";
 import { createClient } from "@/utils/supabase/client";
 import ReactLoadingSpinner from "@/app/components/reactLoadingSpinner";
 import { set } from "firebase/database";
-import BackgroundGlow from "@/app/components/BackgroundGlow";
+import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
 
 export default function Register() {
 	type PopupButtonFunctionType = () => any;
@@ -26,9 +26,7 @@ export default function Register() {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [showPopup, setShowPopup] = useState(false);
-	const [loggedInUserEmail, setLoggedInUserEmail] = useState("");
 	const [signUpClicked, setSignUpClicked] = useState(false);
-	const [providerClicked, setProviderClicked] = useState(false);
 
 	const [Popuptext, setPopuptext] = useState("");
 	const [PopupTitle, setPopupTitle] = useState("");

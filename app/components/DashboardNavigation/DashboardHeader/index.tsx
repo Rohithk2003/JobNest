@@ -10,17 +10,34 @@ import {
 import Image from "next/image";
 import { set } from "firebase/database";
 import { createClient } from "@/utils/supabase/client";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function Header({
 	sideBarOpen,
 	setSideBarOpen,
+	fromMainPage,
 }: {
 	sideBarOpen: boolean;
 	setSideBarOpen: Dispatch<SetStateAction<boolean>>;
+	fromMainPage: boolean | undefined;
 }) {
 	const { data: session, update } = useSession();
 	const supabase = createClient();
 	const [link, setLink] = useState("");
+	const pathname = usePathname();
+	const { replace } = useRouter();
+	const searchParams = useSearchParams();
+
+	const handleSearch = useDebouncedCallback((term: string) => {
+		const params = new URLSearchParams(searchParams);
+		if (term) {
+			params.set("search", term);
+		} else {
+			params.delete("search");
+		}
+		replace(`${pathname}?${params.toString()}`);
+	}, 500);
 	useEffect(() => {
 		const fetchData = async () => {
 			if (
@@ -56,83 +73,77 @@ export default function Header({
 			<div className="flex flex-wrap justify-between items-center">
 				<div className="flex justify-start items-center">
 					<div className="bg-transparent flex flex-row items-center justify-center gap-10 mr-5">
-						<button
-							onClick={() => {
-								setSideBarOpen(!sideBarOpen);
-							}}
-							className="block rounded bg-transparent p-2.5 text-white transition "
-						>
-							<span className="sr-only">Toggle menu</span>
-							{sideBarOpen ? (
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									className="h-5 w-5"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									strokeWidth="2"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M6 18L18 6M6 6l12 12"
-									/>
-								</svg>
-							) : (
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									className="h-5 w-5"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									strokeWidth="2"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M4 6h16M4 12h16M4 18h16"
-									/>
-								</svg>
-							)}
-						</button>
+						{fromMainPage === undefined && (
+							<button
+								onClick={() => {
+									setSideBarOpen(!sideBarOpen);
+								}}
+								className="block rounded bg-transparent p-2.5 text-white transition "
+							>
+								<span className="sr-only">Toggle menu</span>
+								{sideBarOpen ? (
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										className="h-5 w-5"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										strokeWidth="2"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M6 18L18 6M6 6l12 12"
+										/>
+									</svg>
+								) : (
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										className="h-5 w-5"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										strokeWidth="2"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M4 6h16M4 12h16M4 18h16"
+										/>
+									</svg>
+								)}
+							</button>
+						)}
 					</div>
 				</div>
 				<div className="flex justify-center items-center">
-					<form
-						action="#"
-						method="GET"
-						className="hidden md:block md:pl-2"
-					>
-						<label
-							htmlFor="topbar-search"
-							className="sr-only"
-						>
-							Search
-						</label>
-						<div className="relative  md:w-96">
-							<div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-								<svg
-									className="w-5 h-5 text-gray-500 dark:text-gray-400"
-									fill="currentColor"
-									viewBox="0 0 20 20"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										fill-rule="evenodd"
-										clip-rule="evenodd"
-										d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-									></path>
-								</svg>
-							</div>
-							<input
-								type="text"
-								name="text"
-								id="topbar-search"
-								className="bg-gray-50  transition-all ease-in-out border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-								placeholder="Search"
-							/>
+					<div className="relative  md:w-96">
+						<div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+							<svg
+								className="w-5 h-5 text-gray-500 dark:text-gray-400"
+								fill="currentColor"
+								viewBox="0 0 20 20"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									fill-rule="evenodd"
+									clip-rule="evenodd"
+									d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+								></path>
+							</svg>
 						</div>
-					</form>
+						<input
+							type="text"
+							name="text"
+							id="topbar-search"
+							className="bg-gray-50  transition-all ease-in-out border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+							placeholder="Search for jobs, companies, and more"
+							onChange={(e) => {
+								handleSearch(e.target.value);
+							}}
+							defaultValue={searchParams.get("search")?.toString()}
+						/>
+					</div>
 				</div>
 				<div className="flex items-center lg:order-2">
 					<button

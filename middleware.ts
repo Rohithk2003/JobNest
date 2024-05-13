@@ -16,7 +16,7 @@ export default withAuth(async function middleware(req) {
 	const token = await getToken({ req });
 	const isAuthenticated = !!token;
 	if (
-		req.nextUrl.pathname.startsWith(getHomeRoute()) ||
+		req.nextUrl.pathname.startsWith("/welcome") ||
 		req.nextUrl.pathname.startsWith(getLoginRoute()) ||
 		req.nextUrl.pathname.startsWith(getRegisterRoute()) ||
 		req.nextUrl.pathname.startsWith(getUsernameCreationRoute()) ||
@@ -25,6 +25,8 @@ export default withAuth(async function middleware(req) {
 	) {
 		if (isAuthenticated) {
 			return NextResponse.redirect(new URL(getDashboardRoute(), req.url));
+		} else {
+			return fetch(req.url);
 		}
 	}
 

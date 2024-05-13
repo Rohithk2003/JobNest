@@ -1,4 +1,4 @@
-import BackgroundGlow from "./components/BackgroundGlow";
+import BackgroundGlow from "./components/VisualComponents/BackgroundGlow";
 
 export default function NotFound() {
 	return (

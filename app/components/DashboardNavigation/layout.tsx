@@ -9,18 +9,20 @@ interface Session {
 	} & DefaultSession["user"];
 }
 interface props {
-	session: Session | null;
+	fromMainPage: boolean | undefined;
 }
-export default function DashboardNavigation() {
+export default function DashboardNavigation({ fromMainPage }: props) {
 	const [sideBarOpen, setSideBarOpen] = useState(false);
 
 	return (
 		<>
 			<Header
+				fromMainPage={fromMainPage}
 				sideBarOpen={sideBarOpen}
 				setSideBarOpen={setSideBarOpen}
 			/>
 			<Sidebar
+				fromMainPage={fromMainPage}
 				sideBarOpen={sideBarOpen}
 				setSideBarOpen={setSideBarOpen}
 			/>

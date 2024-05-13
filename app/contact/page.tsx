@@ -2,7 +2,7 @@
 import { ReactEventHandler, useState } from "react";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
-import BackgroundGlow from "../components/BackgroundGlow";
+import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
 
 export default function Contact() {
 	const [emailid, setemailid] = useState("");

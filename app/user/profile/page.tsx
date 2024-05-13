@@ -6,7 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Dispatch, SetStateAction, use, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { set } from "firebase/database";
-import BackgroundGlow from "@/app/components/BackgroundGlow";
+import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
 import DashboardNavigation from "../../components/DashboardNavigation/layout";
 
 export default function Profile() {
