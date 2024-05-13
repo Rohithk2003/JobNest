@@ -8,6 +8,8 @@ import { useSession } from "next-auth/react";
 import { set } from "firebase/database";
 import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
 import DashboardNavigation from "../../components/DashboardNavigation/layout";
+import { SkeletonCard } from "@/app/components/Loader/JobListCardSkeleton";
+import ProfileImageSkeleton from "@/app/components/Loader/ProfileImageSkeleton";
 
 export default function Profile() {
 	const { data: session, update } = useSession();
@@ -56,7 +58,7 @@ export default function Profile() {
 	};
 	return (
 		<>
-			<DashboardNavigation session={session} />
+			<DashboardNavigation fromMainPage={undefined} />
 			<div className="bg-transparent w-full flex flex-col gap-5 px-3 md:px-16 lg:px-28 md:flex-row text-white">
 				<aside className="hidden py-4 md:w-1/3 lg:w-1/4 md:block">
 					<div className="sticky flex flex-col gap-2 p-4 text-sm border-r border-indigo-100 top-12">
@@ -95,13 +97,17 @@ export default function Profile() {
 
 							<div className="grid max-w-2xl mx-auto mt-8">
 								<div className="flex flex-col items-center space-y-5 sm:flex-row sm:space-y-0">
-									<Image
-										className="object-cover w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
-										alt="Bordered avatar"
-										src={session?.user?.image || session?.user.avatar || ""}
-										width={160}
-										height={160}
-									/>
+									{session?.user?.image || session?.user.avatar ? (
+										<Image
+											className="object-cover w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
+											alt="Bordered avatar"
+											src={session?.user?.image || session?.user.avatar || ""}
+											width={160}
+											height={160}
+										/>
+									) : (
+										<ProfileImageSkeleton />
+									)}
 
 									<div className="flex flex-col space-y-5 sm:ml-8">
 										<form

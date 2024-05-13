@@ -1,10 +1,10 @@
 import SkeletonDiv, {
 	SkeletonCard,
-} from "./components/JobDataHandler/JobListCardSkeleton";
+} from "./components/Loader/JobListCardSkeleton";
 
 export default function Loading() {
 	return (
-		<div className="w-screen h-screen flex justify-center items-start">
+		<div className="w-screen h-screen pt-44 flex justify-center items-start">
 			<SkeletonCard />
 		</div>
 	);

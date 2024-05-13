@@ -39,7 +39,7 @@ export default function Login(props: CredentialFormsProps) {
 				router.push(getCheckUsernameRoute());
 			}
 		}
-	}, [session]);
+	}, [session, router]);
 
 	const handleGoogleSignIn = async () => {
 		setgoogleProviderClicked(true);

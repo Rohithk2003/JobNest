@@ -1,6 +1,6 @@
 import DashboardNavigation from "../components/DashboardNavigation/layout";
 import { getaBackendRoute, getJobsRoute } from "@/configs/constants";
-import SkeletonDiv from "../components/JobDataHandler/JobListCardSkeleton";
+import SkeletonDiv from "../components/Loader/JobListCardSkeleton";
 import dynamic from "next/dynamic";
 import Pagination from "../components/Pagination";
 import { Suspense } from "react";
