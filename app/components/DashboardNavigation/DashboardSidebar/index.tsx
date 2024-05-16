@@ -30,10 +30,12 @@ export default function Sidebar({
 	});
 	return (
 		<aside
-			className={`lg:fixed relative  ${
+			className={`  ${
 				sideBarOpen ? "left-0" : "-left-[256px]"
 			} top-0  w-64 z-[900] h-screen  ${
-				fromMainPage != undefined && "fixed"
+				fromMainPage != undefined
+					? `fixed ${sideBarOpen ? "left-0 " : "-left-[256px] xl:left-0"}`
+					: "fixed"
 			} transition-all duration-500 ease-out  bg-white border-r border-gray-200  dark:bg-transparent backdrop-blur-lg dark:border-gray-700`}
 			aria-label="Sidenav"
 			id=""
