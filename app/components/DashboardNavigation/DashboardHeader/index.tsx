@@ -13,7 +13,7 @@ import { createClient } from "@/utils/supabase/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import ProfileImageSkeleton from "../../Loader/ProfileImageSkeleton";
-import { getSignOutRoute } from "@/configs/constants";
+import { getIconLocation, getSignOutRoute } from "@/configs/constants";
 
 export default function Header({
 	sideBarOpen,
@@ -39,7 +39,7 @@ export default function Header({
 			params.delete("search");
 		}
 		replace(`${pathname}?${params.toString()}`);
-	}, 500);
+	}, 0);
 	useEffect(() => {
 		const fetchData = async () => {
 			if (
@@ -72,7 +72,16 @@ export default function Header({
 			}}
 			className="relative bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-transparent backdrop-blur-lg dark:border-gray-700  left-0 right-0 top-0 z-[901]"
 		>
-			<div className="flex flex-wrap justify-between items-center">
+			<div className="flex flex-wrap justify-between items-center relative">
+				<div className=" gap-2 flex flex-row justify-end text-white items-center absolute left-0 top-0">
+					<Image
+						src={getIconLocation()}
+						alt="Icon"
+						width={50}
+						height={50}
+					/>
+					<p className="text-2xl">JobNest</p>
+				</div>
 				<div className="flex justify-start items-center">
 					<div className="bg-transparent flex flex-row items-center justify-center gap-10 mr-5">
 						{fromMainPage === undefined && (
@@ -118,8 +127,8 @@ export default function Header({
 						)}
 					</div>
 				</div>
-				<div className="flex justify-center items-center">
-					<div className="relative  md:w-96">
+				<div className="flex justify-between items-center flex-row">
+					<div className="relative md:w-96">
 						<div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
 							<svg
 								className="w-5 h-5 text-gray-500 dark:text-gray-400"

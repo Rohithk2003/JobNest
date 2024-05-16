@@ -10,6 +10,7 @@ export interface JobDataProps {
 	total_jobs: number;
 }
 export interface Job {
+	id: number;
 	title: String;
 	description: String;
 	location: String;
@@ -17,6 +18,7 @@ export interface Job {
 	link: string;
 	days: string;
 	metadata: string;
+	platform: string;
 }
 export interface UserProps {
 	name: string | null;
@@ -32,4 +34,15 @@ export interface UserProps {
 export interface SupabaseUpdateProps {
 	status: String;
 	statusText: String | null;
+}
+export interface SkeletonCardProps {
+	id: number;
+	title: String;
+	description: String;
+	location: String;
+	company: String;
+	link: string;
+	days: string;
+	metadata: string;
+	platform: string;
 }
