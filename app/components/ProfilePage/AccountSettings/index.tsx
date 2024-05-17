@@ -4,8 +4,7 @@ const AccountSettings: React.FC<{}> = () => {
 			<div className="p-2 md:p-4">
 				<div className="w-full px-6 pb-8 mt-8 sm:max-w-xl sm:rounded-lg">
 					<h2 className="text-2xl font-bold sm:text-xl">Account settings</h2>
-
-					<div className="grid max-w-2xl mx-auto mt-8">
+					<div className="grid w-44 p-3 rounded-full hover:bg-white transition-all ease-in-out hover:text-black mt-8 bg-primary-400">
 						<button>Delete account</button>
 					</div>
 				</div>

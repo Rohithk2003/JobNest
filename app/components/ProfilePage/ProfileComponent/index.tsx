@@ -126,7 +126,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
 											htmlFor="first_name"
 											className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
 										>
-											Your first name
+											First name
 										</label>
 										<input
 											type="text"
@@ -143,7 +143,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
 												});
 											}}
 											className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
-											placeholder="Your first name"
+											placeholder="First name"
 											value={formData.first_name}
 											required
 										/>
@@ -153,14 +153,14 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
 											htmlFor="last_name"
 											className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
 										>
-											Your last name
+											Last name
 										</label>
 										<input
 											type="text"
 											id="last_name"
 											name="last_name"
 											className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
-											placeholder="Your last name"
+											placeholder="Last name"
 											value={formData.last_name}
 											onChange={(e) => {
 												setFormData({
@@ -177,7 +177,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
 										htmlFor="username"
 										className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
 									>
-										Your username
+										Username
 									</label>
 									<input
 										type="username"
@@ -193,7 +193,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
 										htmlFor="email"
 										className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
 									>
-										Your email
+										email
 									</label>
 									<input
 										type="email"
@@ -226,7 +226,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
 											}
 										}}
 										className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
-										placeholder="your cgpa"
+										placeholder="cgpa"
 										required
 									/>
 								</div>
@@ -249,7 +249,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
 										}}
 										rows={4}
 										className="block p-2.5 w-full text-sm text-indigo-900 bg-indigo-50 rounded-lg border border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500 "
-										placeholder="Write your bio here..."
+										placeholder="Write bio here..."
 									></textarea>
 								</div>
 								<div className="flex justify-end">

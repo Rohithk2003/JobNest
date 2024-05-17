@@ -73,15 +73,17 @@ export default function Header({
 			className="relative bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-transparent backdrop-blur-lg dark:border-gray-700  left-0 right-0 top-0 z-[901]"
 		>
 			<div className="flex flex-wrap justify-between items-center relative">
-				<div className=" gap-2 xl:flex hidden flex-row justify-end text-white items-center absolute left-0 top-0">
-					<Image
-						src={getIconLocation()}
-						alt="Icon"
-						width={50}
-						height={50}
-					/>
-					<p className="text-2xl">JobNest</p>
-				</div>
+				{fromMainPage && (
+					<div className=" gap-2 xl:flex hidden flex-row justify-end text-white items-center absolute left-0 top-0">
+						<Image
+							src={getIconLocation()}
+							alt="Icon"
+							width={50}
+							height={50}
+						/>
+						<p className="text-2xl">JobNest</p>
+					</div>
+				)}
 				<div className="flex justify-start items-center">
 					<div className="bg-transparent flex flex-row items-center justify-center gap-10 mr-5">
 						<button

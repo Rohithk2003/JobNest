@@ -49,3 +49,7 @@ export function getHelpRoute(): string {
 export function getFAQRoute(): string {
 	return "/faq";
 }
+
+export const profileTab = "profile";
+export const accountSettingsTab = "accountSettings";
+export const premiumTab = "premium";

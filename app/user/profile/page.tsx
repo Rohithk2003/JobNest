@@ -24,6 +24,11 @@ import { SupabaseUpdateProps, UserProps } from "@/types/custom";
 import Popup from "@/app/components/Popup";
 import ProfileComponent from "@/app/components/ProfilePage/ProfileComponent";
 import AccountSettings from "@/app/components/ProfilePage/AccountSettings";
+import {
+	accountSettingsTab,
+	premiumTab,
+	profileTab,
+} from "@/configs/constants";
 
 export default function Profile() {
 	const { data: session, update } = useSession();
@@ -47,8 +52,12 @@ export default function Profile() {
 	});
 	const [showProfileData, setShowProfileData] = useState(true);
 	const [showAccountSettings, setShowAccountSettings] = useState(false);
-
 	const [profileData, setProfileData] = useState<UserProps | null>();
+	const [activeTab, setActiveTab] = useState(profileTab);
+	const [indicatorPosition, setIndicatorPosition] = useState({
+		top: 18,
+		left: 10,
+	});
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -180,31 +189,66 @@ export default function Profile() {
 				<>
 					<div className="bg-transparent w-full relative z-[400] flex flex-col gap-5 px-3 md:px-16 lg:px-28 md:flex-row text-white">
 						<aside className="hidden py-4 md:w-1/3 lg:w-1/4 md:block">
-							<div className="sticky flex flex-col gap-2 p-4 text-sm border-r border-indigo-100 top-12">
-								<h2 className="pl-3 mb-4 text-2xl font-semibold">Settings</h2>
+							<h2 className="pl-5 mb-4 text-2xl font-semibold mt-10">
+								Settings
+							</h2>
+							<div className="sticky flex flex-col gap-4 p-4 text-sm border-r  border-indigo-100 top-12">
+								<div
+									style={{
+										top: `${indicatorPosition.top}px`,
+										left: `${indicatorPosition.left}px`,
+									}}
+									className={`bg-white transition-top duration-300  px-[14px] py-[20px] z-[10] absolute rounded-full w-[92%]`}
+								></div>
 								<div
 									onClick={() => {
 										setShowProfileData(true);
 										setShowAccountSettings(false);
+										setActiveTab(profileTab);
+										setIndicatorPosition({
+											top: 18,
+											left: 10,
+										});
 									}}
-									className="flex items-center px-3 py-2.5 font-bold bg-white  text-indigo-900 border rounded-full"
+									className={`flex items-center ${
+										activeTab === profileTab ? "text-black" : "text-white"
+									}   bg-transparent  px-3 py-3 rounded-full z-[100] font-bold`}
 								>
-									Pubic Profile
+									View profile
 								</div>
 								<div
 									onClick={() => {
 										setShowProfileData(false);
 										setShowAccountSettings(true);
+										setActiveTab(accountSettingsTab);
+										setIndicatorPosition({
+											top: 80,
+											left: 10,
+										});
 									}}
-									className="flex items-center px-3 py-2.5 font-semibold  hover:text-white hover:border hover:rounded-full"
+									className={`flex items-center ${
+										activeTab === accountSettingsTab
+											? "text-black"
+											: "text-white"
+									} bg-transparent  px-3 py-3 rounded-full z-[100] font-bold`}
 								>
 									Account Settings
 								</div>
-								<div className="flex items-center px-3 py-2.5 font-semibold hover:text-indigo-900 hover:border hover:rounded-full  ">
-									Notifications
-								</div>
-								<div className="flex items-center px-3 py-2.5 font-semibold hover:text-indigo-900 hover:border hover:rounded-full  ">
-									Pro Account
+								<div
+									onClick={() => {
+										setShowProfileData(true);
+										setShowAccountSettings(false);
+										setActiveTab(premiumTab);
+										setIndicatorPosition({
+											top: 140,
+											left: 10,
+										});
+									}}
+									className={`flex items-center ${
+										activeTab === premiumTab ? "text-black" : "text-white"
+									}   bg-transparent  px-3 py-3 rounded-full z-[100] font-bold`}
+								>
+									Premium
 								</div>
 							</div>
 						</aside>
@@ -239,7 +283,6 @@ export default function Profile() {
 					<p>Loading</p>
 				</div>
 			)}
-			<BackgroundGlow />
 		</>
 	);
 }

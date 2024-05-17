@@ -10,6 +10,10 @@ const config: Config = {
 
 	theme: {
 		extend: {
+			transitionProperty: {
+				top: "top",
+				left: "left",
+			},
 			colors: {
 				primary: {
 					"50": "#eff6ff",
@@ -66,6 +70,11 @@ const config: Config = {
 					"Noto Color Emoji",
 				],
 			},
+		},
+	},
+	variants: {
+		extend: {
+			transitionProperty: ["responsive", "hover", "focus"],
 		},
 	},
 };
