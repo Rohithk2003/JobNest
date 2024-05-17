@@ -1,6 +1,9 @@
 export default function Testimonials() {
 	return (
-		<section className="py-14 relative z-[900]">
+		<section
+			id="testimonials"
+			className="py-14 relative z-[900]"
+		>
 			<div className="max-w-screen-xl mx-auto px-4 md:px-8">
 				<div className="max-w-3xl mx-auto">
 					<figure>

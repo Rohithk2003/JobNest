@@ -2,7 +2,10 @@ import { getLoginRoute } from "@/configs/constants";
 
 export default function Herosection() {
 	return (
-		<div className="bg-transparent h-[90vh] flex justify-center items-center">
+		<div
+			id="about"
+			className="bg-transparent h-[90vh] flex justify-center items-center"
+		>
 			<section className="relative">
 				<div className="relative z-[10] max-w-screen-xl mx-auto px-4 py-28 md:px-8">
 					<div className="space-y-5 max-w-4xl mx-auto text-center">

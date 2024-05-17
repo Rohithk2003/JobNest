@@ -5,9 +5,9 @@ import {
 	getRegisterRoute,
 } from "@/configs/constants";
 import Image from "next/image";
-import { DefaultSession, getServerSession } from "next-auth";
-import { Dispatch, SetStateAction, useEffect } from "react";
-import Skeleton from "react-loading-skeleton";
+import { Poppins } from "next/font/google";
+import { DefaultSession } from "next-auth";
+import { useEffect } from "react";
 interface Session {
 	user: {
 		username: string | null;
@@ -16,6 +16,12 @@ interface Session {
 interface Props {
 	session: Session | null;
 }
+
+const poppins = Poppins({
+	weight: ["500"],
+	subsets: ["latin"],
+});
+
 export default function Header({ session }: Props) {
 	useEffect(() => {
 		const header = document.querySelector("header");
@@ -30,9 +36,11 @@ export default function Header({ session }: Props) {
 		});
 	});
 	return (
-		<header className="bg-transparent pt-2 fixed z-[1000] w-full ">
-			<div className="mx-auto flex h-16 max-w-full-xl items-center gap-8  sm:px-6 ">
-				<div className="flex flex-1 items-center justify-end md:justify-center">
+		<header
+			className={`bg-transparent pt fixed z-[1000] w-full ${poppins.className}`}
+		>
+			<div className="mx-auto flex h-20 p-1 max-w-full-xl items-center gap-8  sm:px-6 ">
+				<div className="flex flex-1 items-center justify-end md:justify-start">
 					<div className="flex items-center gap-4 absolute right-4">
 						<div className="sm:flex sm:gap-4">
 							<a
@@ -54,7 +62,7 @@ export default function Header({ session }: Props) {
 						aria-label="Global"
 						className="hidden md:block"
 					>
-						<ul className="flex items-center gap-6 text-sm">
+						<ul className="flex items-center justify-start gap-6 text-md">
 							<li>
 								<a
 									className="block text-teal-600 dark:text-teal-300"
@@ -69,16 +77,16 @@ export default function Header({ session }: Props) {
 									/>
 								</a>
 							</li>
-							<li>
+							<li className="hover:translate-y-[-6px] transition-all ease-in-out duration-300">
 								<a
-									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
+									className="text-gray-500  hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
 									href="#about"
 								>
 									About
 								</a>
 							</li>
 
-							<li>
+							<li className="hover:translate-y-[-6px] transition-all ease-in-out duration-300">
 								<a
 									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
 									href="#features"
@@ -87,7 +95,7 @@ export default function Header({ session }: Props) {
 								</a>
 							</li>
 
-							<li>
+							<li className="hover:translate-y-[-6px] transition-all ease-in-out duration-300">
 								<a
 									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
 									href="#pricing"
@@ -96,7 +104,7 @@ export default function Header({ session }: Props) {
 								</a>
 							</li>
 
-							<li>
+							<li className="hover:translate-y-[-6px] transition-all ease-in-out duration-300">
 								<a
 									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
 									href="#stats"
@@ -105,7 +113,7 @@ export default function Header({ session }: Props) {
 								</a>
 							</li>
 
-							<li>
+							<li className="hover:translate-y-[-6px] transition-all ease-in-out duration-300">
 								<a
 									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
 									href="#testimonials"
@@ -114,7 +122,7 @@ export default function Header({ session }: Props) {
 								</a>
 							</li>
 
-							<li>
+							<li className="hover:translate-y-[-6px] transition-all ease-in-out duration-300">
 								<a
 									className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
 									href="/contact"

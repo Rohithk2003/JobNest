@@ -5,7 +5,6 @@ import {
 	getIconLocation,
 	getRegisterRoute,
 } from "@/configs/constants";
-import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,12 +12,9 @@ import Popup from "@/app/components/Popup";
 import { useSession } from "next-auth/react";
 import ReactLoadingSpinner from "@/app/components/reactLoadingSpinner";
 import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
+import { handleGoogleSignIn, handleSubmit } from "@/actions/login";
 
-interface CredentialFormsProps {
-	csrfToken?: string;
-}
-
-export default function Login(props: CredentialFormsProps) {
+export default function Login() {
 	const [signInClicked, setSignInClicked] = useState(false);
 	const [showPopup, setShowPopup] = useState(false);
 	const [googleProviderClicked, setgoogleProviderClicked] = useState(false);
@@ -41,31 +37,6 @@ export default function Login(props: CredentialFormsProps) {
 		}
 	}, [session, router]);
 
-	const handleGoogleSignIn = async () => {
-		setgoogleProviderClicked(true);
-		const googleSignInResponse = await signIn("google", {
-			callbackUrl: getCheckUsernameRoute(),
-		});
-		if (googleSignInResponse && !googleSignInResponse.error) {
-		}
-	};
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setSignInClicked(true);
-		const data = new FormData(e.currentTarget as HTMLFormElement);
-		const signInResponse = await signIn("custom-signin", {
-			redirect: false,
-			email: data.get("email") as string,
-			password: data.get("password") as string,
-		});
-		if (signInResponse && !signInResponse.error) {
-			setSignInClicked(false);
-		} else {
-			setSignInClicked(false);
-			setShowPopup(true);
-		}
-	};
 	return (
 		<>
 			<section className=" dark:bg-transparent h-[110vh] relative z-[400] p-5">
@@ -114,7 +85,7 @@ export default function Login(props: CredentialFormsProps) {
 						</div>
 						<form
 							onSubmit={(e) => {
-								handleSubmit(e);
+								handleSubmit(e, setSignInClicked, setShowPopup);
 								e.preventDefault();
 							}}
 						>
@@ -125,6 +96,12 @@ export default function Login(props: CredentialFormsProps) {
 									required
 									name="email"
 									id="email"
+									disabled={
+										signInClicked ||
+										googleProviderClicked ||
+										githubProviderClicked ||
+										twitterProviderClicked
+									}
 									className="w-full mt-2 px-3 py-3 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
 								/>
 							</div>
@@ -135,13 +112,32 @@ export default function Login(props: CredentialFormsProps) {
 									required
 									name="password"
 									id="password"
+									disabled={
+										signInClicked ||
+										googleProviderClicked ||
+										githubProviderClicked ||
+										twitterProviderClicked
+									}
 									className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
 								/>
 							</div>
 							{signInClicked ? (
 								<ReactLoadingSpinner />
 							) : (
-								<button className="w-full mt-4 px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150">
+								<button
+									disabled={
+										googleProviderClicked ||
+										githubProviderClicked ||
+										twitterProviderClicked
+									}
+									className={`w-full ${
+										googleProviderClicked ||
+										githubProviderClicked ||
+										twitterProviderClicked
+											? "opacity-30 bg-indigo-600 hover:cursor-not-allowed"
+											: "opacity-1 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600"
+									} mt-4 px-4 py-2 text-white font-medium  rounded-lg duration-150`}
+								>
 									Sign in
 								</button>
 							)}
@@ -156,8 +152,21 @@ export default function Login(props: CredentialFormsProps) {
 								<ReactLoadingSpinner />
 							) : (
 								<button
-									onClick={handleGoogleSignIn}
-									className="w-full flex items-center hover:text-black justify-center gap-x-3 py-2.5 border rounded-lg hover:bg-gray-50 duration-150 active:bg-gray-100"
+									onClick={() => {
+										handleGoogleSignIn(setgoogleProviderClicked);
+									}}
+									disabled={
+										signInClicked ||
+										githubProviderClicked ||
+										twitterProviderClicked
+									}
+									className={`w-full flex ${
+										signInClicked ||
+										githubProviderClicked ||
+										twitterProviderClicked
+											? "opacity-30 hover:cursor-not-allowed"
+											: "opacity-1 hover:text-black hover:bg-gray-50 "
+									} items-center justify-center gap-x-3 py-2.5  border rounded-lg duration-150 active:bg-gray-100`}
 								>
 									<svg
 										className="w-5 h-5"
@@ -199,7 +208,20 @@ export default function Login(props: CredentialFormsProps) {
 							{twitterProviderClicked ? (
 								<ReactLoadingSpinner />
 							) : (
-								<button className="w-full flex items-center justify-center gap-x-3 py-2.5 hover:text-black border rounded-lg hover:bg-gray-50 duration-150 active:bg-gray-100">
+								<button
+									disabled={
+										googleProviderClicked ||
+										githubProviderClicked ||
+										signInClicked
+									}
+									className={`w-full flex ${
+										googleProviderClicked ||
+										githubProviderClicked ||
+										signInClicked
+											? "opacity-30 hover:cursor-not-allowed"
+											: "opacity-1 hover:text-black hover:bg-gray-50 "
+									} items-center justify-center gap-x-3 py-2.5  border rounded-lg duration-150 active:bg-gray-100`}
+								>
 									<svg
 										className="w-5 h-5"
 										viewBox="0 0 48 48"
@@ -217,7 +239,20 @@ export default function Login(props: CredentialFormsProps) {
 							{githubProviderClicked ? (
 								<ReactLoadingSpinner />
 							) : (
-								<button className="w-full flex items-center justify-center gap-x-3 py-2.5 hover:text-black border rounded-lg hover:bg-gray-50 duration-150 active:bg-gray-100">
+								<button
+									disabled={
+										googleProviderClicked ||
+										signInClicked ||
+										twitterProviderClicked
+									}
+									className={`w-full flex ${
+										googleProviderClicked ||
+										signInClicked ||
+										twitterProviderClicked
+											? "opacity-30 hover:cursor-not-allowed"
+											: "opacity-1 hover:text-black hover:bg-gray-50 "
+									} items-center justify-center gap-x-3 py-2.5  border rounded-lg duration-150 active:bg-gray-100`}
+								>
 									<svg
 										className="w-5 h-5"
 										viewBox="0 0 48 48"

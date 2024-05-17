@@ -19,7 +19,10 @@ export default function StatsSection() {
 	];
 
 	return (
-		<section className="py-14 relative z-[900]">
+		<section
+			id="stats"
+			className="py-14 relative z-[900]"
+		>
 			<div className="max-w-screen-xl mx-auto px-4 text-gray-600 gap-x-12 items-start justify-between lg:flex md:px-8">
 				<div className="sm:hidden lg:block lg:max-w-xl">
 					<img

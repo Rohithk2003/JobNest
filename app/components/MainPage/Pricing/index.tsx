@@ -42,7 +42,10 @@ export default function PricingSection() {
 	];
 
 	return (
-		<section className="py-14 relative z-[900] bg-transparent">
+		<section
+			id="pricing"
+			className="py-14 relative z-[900] bg-transparent"
+		>
 			<div className="max-w-screen-xl mx-auto px-4 text-gray-300 md:px-8">
 				<div className="relative max-w-xl mx-auto sm:text-center">
 					<h3 className="text-gray-300 text-3xl font-semibold sm:text-4xl">
