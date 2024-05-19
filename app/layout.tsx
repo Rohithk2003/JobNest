@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "./context/AuthProvider";
 import "react-loading-skeleton/dist/skeleton.css";
+import PrelineScript from "./components/PrelineScript";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,10 @@ export default async function RootLayout({
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<AuthProvider>{children}</AuthProvider>
+				<AuthProvider>
+					{children}
+					<PrelineScript />
+				</AuthProvider>
 			</body>
 		</html>
 	);

@@ -54,9 +54,13 @@ export function getFAQRoute(): string {
 export function getSendEmailVerificationRoute(): string {
 	return "/send-verification-email";
 }
+export function getUserSetupRoute(): string {
+	return "/setup-user";
+}
 export const profileTab = "profile";
 export const accountSettingsTab = "accountSettings";
 export const premiumTab = "premium";
+export const savedTab = "saved";
 export const tables = {
 	supabaseUsers: "users",
 	credentials: "credentials",

@@ -16,7 +16,6 @@ export default withAuth(async function middleware(req) {
 	const token = await getToken({ req });
 	const isAuthenticated = !!token;
 	if (
-		req.nextUrl.pathname.startsWith("/welcome") ||
 		req.nextUrl.pathname.startsWith(getLoginRoute()) ||
 		req.nextUrl.pathname.startsWith(getRegisterRoute()) ||
 		req.nextUrl.pathname.startsWith(getUsernameCreationRoute()) ||
@@ -30,7 +29,7 @@ export default withAuth(async function middleware(req) {
 
 	if (
 		req.nextUrl.pathname.startsWith(getDashboardRoute()) ||
-		req.nextUrl.pathname.startsWith(getProfileRoute()) ||
+		req.nextUrl.pathname.includes(getProfileRoute()) ||
 		req.nextUrl.pathname.startsWith(getCheckUsernameRoute()) ||
 		req.nextUrl.pathname.startsWith(getUsernameCreationRoute())
 	) {

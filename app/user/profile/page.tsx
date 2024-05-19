@@ -1,35 +1,26 @@
 "use client";
-import { PiPaperclip } from "react-icons/pi";
-import { authOptions } from "@/app/api/auth/[...nextauth]/authoptions";
-import Image from "next/image";
+
 import { createClient } from "@/utils/supabase/client";
-import {
-	Dispatch,
-	SetStateAction,
-	use,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { set } from "firebase/database";
-import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
 import DashboardNavigation from "../../components/DashboardNavigation/layout";
-import { SkeletonCard } from "@/app/components/Loader/JobListCardSkeleton";
-import ProfileImageSkeleton from "@/app/components/Loader/ProfileImageSkeleton";
-import { BiEdit, BiErrorCircle } from "react-icons/bi";
-import { MdDeleteOutline, MdEdit } from "react-icons/md";
-import { RevolvingDot, ThreeCircles } from "react-loader-spinner";
-import { SupabaseUpdateProps, UserProps } from "@/types/custom";
+import { BiErrorCircle } from "react-icons/bi";
+import { RevolvingDot } from "react-loader-spinner";
+import { UserProps } from "@/types/custom";
 import Popup from "@/app/components/Popup";
 import ProfileComponent from "@/app/components/ProfilePage/ProfileComponent";
 import AccountSettings from "@/app/components/ProfilePage/AccountSettings";
 import {
 	accountSettingsTab,
+	getLoginRoute,
 	premiumTab,
 	profileTab,
+	savedTab,
 } from "@/configs/constants";
 import { PostgrestError } from "@supabase/supabase-js";
+import { redirect } from "next/navigation";
+import Loading from "@/app/loading";
+import Toast from "@/app/components/Toast";
 
 export default function Profile() {
 	const { data: session, update } = useSession();
@@ -53,6 +44,9 @@ export default function Profile() {
 	});
 	const [showProfileData, setShowProfileData] = useState(true);
 	const [showAccountSettings, setShowAccountSettings] = useState(false);
+	const [showPremium, setShowPremium] = useState(false);
+	const [showSaved, setShowSaved] = useState(false);
+
 	const [profileData, setProfileData] = useState<UserProps | null>();
 	const [activeTab, setActiveTab] = useState(profileTab);
 	const [indicatorPosition, setIndicatorPosition] = useState({
@@ -120,6 +114,7 @@ export default function Profile() {
 			}
 		}
 	}, [session, profileData]);
+
 	const uploadFile = async () => {
 		if (!file) {
 			alert("Please, select file you want to upload");
@@ -171,7 +166,7 @@ export default function Profile() {
 		}
 	};
 	return (
-		<>
+		<div className="relative overflow-x-hidden">
 			<DashboardNavigation
 				fromMainPage={undefined}
 				session={session}
@@ -183,30 +178,13 @@ export default function Profile() {
 				</div>
 			) : (
 				<>
-					{showPopup.show && (
-						<Popup
-							title={showPopup.title}
-							description={showPopup.description}
-							firstButtonText="Okay"
-							secondButtonText="Cancel"
-							showButtonOne={true}
-							showButtonTwo={false}
-							onConfirm={() => {
-								setShowPopup({
-									show: false,
-									title: "",
-									description: "",
-								});
-							}}
-							showPopup={() => {
-								setShowPopup({
-									show: false,
-									title: "",
-									description: "",
-								});
-							}}
-						/>
-					)}
+					<Toast
+						description={showPopup.description}
+						type={"success"}
+						controller={showPopup.show}
+						controllerHandler={setShowPopup}
+					/>
+
 					{sessionLoaded ? (
 						<>
 							<div className="bg-transparent w-full relative z-[400] flex flex-col gap-5 px-3 md:px-16 lg:px-28 md:flex-row text-white">
@@ -227,6 +205,8 @@ export default function Profile() {
 												setShowProfileData(true);
 												setShowAccountSettings(false);
 												setActiveTab(profileTab);
+												setShowPremium(false);
+												setShowSaved(false);
 												setIndicatorPosition({
 													top: 18,
 													left: 10,
@@ -242,6 +222,8 @@ export default function Profile() {
 											onClick={() => {
 												setShowProfileData(false);
 												setShowAccountSettings(true);
+												setShowPremium(false);
+												setShowSaved(false);
 												setActiveTab(accountSettingsTab);
 												setIndicatorPosition({
 													top: 80,
@@ -258,9 +240,11 @@ export default function Profile() {
 										</div>
 										<div
 											onClick={() => {
-												setShowProfileData(true);
+												setShowProfileData(false);
 												setShowAccountSettings(false);
 												setActiveTab(premiumTab);
+												setShowPremium(true);
+												setShowSaved(false);
 												setIndicatorPosition({
 													top: 140,
 													left: 10,
@@ -271,6 +255,24 @@ export default function Profile() {
 											}   bg-transparent  px-3 py-3 rounded-full z-[100] font-bold`}
 										>
 											Premium
+										</div>
+										<div
+											onClick={() => {
+												setShowProfileData(false);
+												setShowAccountSettings(false);
+												setActiveTab(savedTab);
+												setShowPremium(false);
+												setShowSaved(true);
+												setIndicatorPosition({
+													top: 200,
+													left: 10,
+												});
+											}}
+											className={`flex items-center ${
+												activeTab === savedTab ? "text-black" : "text-white"
+											}   bg-transparent  px-3 py-3 rounded-full z-[100] font-bold`}
+										>
+											Saved jobs
 										</div>
 									</div>
 								</aside>
@@ -293,20 +295,12 @@ export default function Profile() {
 							</div>
 						</>
 					) : (
-						<div className="w-screen h-screen -mt-16 flex justify-center items-center gap-10">
-							<RevolvingDot
-								visible={true}
-								height="100"
-								width="100"
-								color="#4fa94d"
-								wrapperStyle={{}}
-								wrapperClass=""
-							/>
-							<p>Loading</p>
+						<div className="w-screen h-screen -mt-16 flex justify-center items-center gap-2">
+							<Loading />
 						</div>
 					)}
 				</>
 			)}
-		</>
+		</div>
 	);
 }

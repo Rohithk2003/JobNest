@@ -172,3 +172,12 @@ body {
 .avatar-overlay:hover {
 	display: block;
 }
+.select-option {
+	background-color: transparent;
+	color: white;
+}
+
+.select-option:hover {
+	background-color: #d1d5db; /* Tailwind's bg-gray-300 */
+	color: black;
+}

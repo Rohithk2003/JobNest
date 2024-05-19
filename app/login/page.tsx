@@ -32,7 +32,7 @@ export default function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [emailNotVerified, setEmailNotVerified] = useState(false);
-
+	const [heading, setheading] = useState("Error Occured");
 	const router = useRouter();
 	const { data: session } = useSession({
 		required: false,
@@ -59,6 +59,7 @@ export default function Login() {
 		});
 
 		if (result.status === "success") {
+			setheading("Success");
 			settype("success");
 			setError("Login Successful.Redirecting you to dashboard...");
 			setShowPopup(true);
@@ -107,7 +108,7 @@ export default function Login() {
 						{showPopup && (
 							<AlertWithType
 								type={type}
-								heading={"Error Occured"}
+								heading={heading}
 								description={error}
 								alertHandler={setShowPopup}
 							/>
