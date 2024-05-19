@@ -1,8 +1,10 @@
+import { Database } from "@/types/supabase";
+
 export function getLoginRoute(): string {
-	return "/user/login";
+	return "/login";
 }
 export function getRegisterRoute(): string {
-	return "/user/register";
+	return "/register";
 }
 
 export function getIconLocation(): string {
@@ -49,7 +51,14 @@ export function getHelpRoute(): string {
 export function getFAQRoute(): string {
 	return "/faq";
 }
-
+export function getSendEmailVerificationRoute(): string {
+	return "/send-verification-email";
+}
 export const profileTab = "profile";
 export const accountSettingsTab = "accountSettings";
 export const premiumTab = "premium";
+export const tables = {
+	supabaseUsers: "users",
+	credentials: "credentials",
+	verificationTokens: "VerificationToken",
+};

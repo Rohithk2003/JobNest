@@ -4,7 +4,6 @@ import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
 import Herosection from "../components/MainPage/Hero";
 import FeatureSection from "../components/MainPage/Features";
 import PricingSection from "../components/MainPage/Pricing";
-import Testimonials from "../components/MainPage/Testimonials";
 import StatsSection from "../components/MainPage/Stats";
 import FooterSection from "../components/JobDataHandler/Footer";
 import GridLines from "../components/VisualComponents/GridLines";
@@ -14,9 +13,7 @@ import { redirect } from "next/navigation";
 
 export default function Home() {
 	const { data: session } = useSession();
-	if (session) {
-		redirect("/dashboard");
-	}
+
 	return (
 		<>
 			<Head>
@@ -32,7 +29,6 @@ export default function Home() {
 			<FeatureSection />
 			<PricingSection />
 			<StatsSection />
-			<Testimonials />
 			<FooterSection />
 			<BackgroundGlow />
 		</>

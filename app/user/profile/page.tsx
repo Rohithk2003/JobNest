@@ -17,7 +17,7 @@ import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
 import DashboardNavigation from "../../components/DashboardNavigation/layout";
 import { SkeletonCard } from "@/app/components/Loader/JobListCardSkeleton";
 import ProfileImageSkeleton from "@/app/components/Loader/ProfileImageSkeleton";
-import { BiEdit } from "react-icons/bi";
+import { BiEdit, BiErrorCircle } from "react-icons/bi";
 import { MdDeleteOutline, MdEdit } from "react-icons/md";
 import { RevolvingDot, ThreeCircles } from "react-loader-spinner";
 import { SupabaseUpdateProps, UserProps } from "@/types/custom";
@@ -29,6 +29,7 @@ import {
 	premiumTab,
 	profileTab,
 } from "@/configs/constants";
+import { PostgrestError } from "@supabase/supabase-js";
 
 export default function Profile() {
 	const { data: session, update } = useSession();
@@ -58,27 +59,32 @@ export default function Profile() {
 		top: 18,
 		left: 10,
 	});
-
+	const [error, seterror] = useState<PostgrestError | null>();
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		const { first_name, last_name, email, username, cgpa, bio } = formData;
 		const name = `${first_name} ${last_name}`;
+		let table = "users";
+		if (session?.user?.provider !== "google") {
+			table = "credentials";
+		}
 		const response = await supabase
 			.schema("next_auth")
-			.from("users")
+			.from(table)
 			.update({ name, username, cgpa, bio })
 			.eq("email", email);
 		if (response.error) {
 			setShowPopup({
 				show: true,
-				title: "User does not exist",
+				title: "Error",
 				description:
-					"Account with given credentials does not exist.Please create an account",
+					response.error.message ||
+					"An error occured while updating your profile.",
 			});
 		} else {
 			setShowPopup({
 				show: true,
-				title: "Success",
+				title: table,
 				description:
 					"Your profile has been updated successfully. Please refresh the page to see the changes.",
 			});
@@ -88,17 +94,23 @@ export default function Profile() {
 	useEffect(() => {
 		if (!sessionLoaded && session) {
 			const fetchData = async () => {
+				let table = "users";
+				if (session?.user?.provider !== "google") {
+					table = "credentials";
+				}
 				const { data, error } = await supabase
 					.schema("next_auth")
-					.from("users")
+					.from(table)
 					.select("*")
 					.eq("email", session?.user?.email);
+				console.log(data);
 				setProfileData(data && data[0]);
+				seterror(error);
 			};
 			fetchData();
 			if (profileData) {
 				setSessionLoaded(true);
-				console.log(profileData);
+				console.log(profileData.name);
 				formData.first_name = profileData?.name?.split(" ")[0] || "";
 				formData.last_name = profileData?.name?.split(" ")[1] || "";
 				formData.username = profileData?.username || "";
@@ -160,128 +172,140 @@ export default function Profile() {
 	};
 	return (
 		<>
-			<DashboardNavigation fromMainPage={undefined} />
-			{showPopup.show && (
-				<Popup
-					title={showPopup.title}
-					description={showPopup.description}
-					firstButtonText="Okay"
-					secondButtonText="Cancel"
-					showButtonOne={true}
-					showButtonTwo={false}
-					onConfirm={() => {
-						setShowPopup({
-							show: false,
-							title: "",
-							description: "",
-						});
-					}}
-					showPopup={() => {
-						setShowPopup({
-							show: false,
-							title: "",
-							description: "",
-						});
-					}}
-				/>
-			)}
-			{sessionLoaded ? (
-				<>
-					<div className="bg-transparent w-full relative z-[400] flex flex-col gap-5 px-3 md:px-16 lg:px-28 md:flex-row text-white">
-						<aside className="hidden py-4 md:w-1/3 lg:w-1/4 md:block">
-							<h2 className="pl-5 mb-4 text-2xl font-semibold mt-10">
-								Settings
-							</h2>
-							<div className="sticky flex flex-col gap-4 p-4 text-sm border-r  border-indigo-100 top-12">
-								<div
-									style={{
-										top: `${indicatorPosition.top}px`,
-										left: `${indicatorPosition.left}px`,
-									}}
-									className={`bg-white transition-top duration-300  px-[14px] py-[20px] z-[10] absolute rounded-full w-[92%]`}
-								></div>
-								<div
-									onClick={() => {
-										setShowProfileData(true);
-										setShowAccountSettings(false);
-										setActiveTab(profileTab);
-										setIndicatorPosition({
-											top: 18,
-											left: 10,
-										});
-									}}
-									className={`flex items-center ${
-										activeTab === profileTab ? "text-black" : "text-white"
-									}   bg-transparent  px-3 py-3 rounded-full z-[100] font-bold`}
-								>
-									View profile
-								</div>
-								<div
-									onClick={() => {
-										setShowProfileData(false);
-										setShowAccountSettings(true);
-										setActiveTab(accountSettingsTab);
-										setIndicatorPosition({
-											top: 80,
-											left: 10,
-										});
-									}}
-									className={`flex items-center ${
-										activeTab === accountSettingsTab
-											? "text-black"
-											: "text-white"
-									} bg-transparent  px-3 py-3 rounded-full z-[100] font-bold`}
-								>
-									Account Settings
-								</div>
-								<div
-									onClick={() => {
-										setShowProfileData(true);
-										setShowAccountSettings(false);
-										setActiveTab(premiumTab);
-										setIndicatorPosition({
-											top: 140,
-											left: 10,
-										});
-									}}
-									className={`flex items-center ${
-										activeTab === premiumTab ? "text-black" : "text-white"
-									}   bg-transparent  px-3 py-3 rounded-full z-[100] font-bold`}
-								>
-									Premium
-								</div>
-							</div>
-						</aside>
-						{showProfileData && (
-							<ProfileComponent
-								session={session}
-								formData={formData}
-								setFormData={setFormData}
-								handleSubmit={handleSubmit}
-								showEdtImage={showEdtImage}
-								setShowEdtImage={setShowEdtImage}
-								file={file}
-								setFile={setFile}
-								uploadFile={uploadFile}
-								handleChange={handleChange}
-								profileData={profileData}
-							/>
-						)}
-						{showAccountSettings && <AccountSettings />}
-					</div>
-				</>
-			) : (
-				<div className="w-screen h-screen -mt-16 flex justify-center items-center gap-10">
-					<RevolvingDot
-						visible={true}
-						height="100"
-						width="100"
-						color="#4fa94d"
-						wrapperStyle={{}}
-						wrapperClass=""
-					/>
-					<p>Loading</p>
+			<DashboardNavigation
+				fromMainPage={undefined}
+				session={session}
+			/>
+			{error ? (
+				<div className="w-screen h-dvh flex justify-center items-center text-3xl text-red-600">
+					Could not load data
+					<BiErrorCircle />
 				</div>
+			) : (
+				<>
+					{showPopup.show && (
+						<Popup
+							title={showPopup.title}
+							description={showPopup.description}
+							firstButtonText="Okay"
+							secondButtonText="Cancel"
+							showButtonOne={true}
+							showButtonTwo={false}
+							onConfirm={() => {
+								setShowPopup({
+									show: false,
+									title: "",
+									description: "",
+								});
+							}}
+							showPopup={() => {
+								setShowPopup({
+									show: false,
+									title: "",
+									description: "",
+								});
+							}}
+						/>
+					)}
+					{sessionLoaded ? (
+						<>
+							<div className="bg-transparent w-full relative z-[400] flex flex-col gap-5 px-3 md:px-16 lg:px-28 md:flex-row text-white">
+								<aside className="hidden py-4 md:w-1/3 lg:w-1/4 md:block">
+									<h2 className="pl-5 mb-4 text-2xl font-semibold mt-10">
+										Settings
+									</h2>
+									<div className="sticky flex flex-col gap-4 p-4 text-sm border-r  border-indigo-100 top-12">
+										<div
+											style={{
+												top: `${indicatorPosition.top}px`,
+												left: `${indicatorPosition.left}px`,
+											}}
+											className={`bg-white transition-top duration-300  px-[14px] py-[20px] z-[10] absolute rounded-full w-[92%]`}
+										></div>
+										<div
+											onClick={() => {
+												setShowProfileData(true);
+												setShowAccountSettings(false);
+												setActiveTab(profileTab);
+												setIndicatorPosition({
+													top: 18,
+													left: 10,
+												});
+											}}
+											className={`flex items-center ${
+												activeTab === profileTab ? "text-black" : "text-white"
+											}   bg-transparent  px-3 py-3 rounded-full z-[100] font-bold`}
+										>
+											View profile
+										</div>
+										<div
+											onClick={() => {
+												setShowProfileData(false);
+												setShowAccountSettings(true);
+												setActiveTab(accountSettingsTab);
+												setIndicatorPosition({
+													top: 80,
+													left: 10,
+												});
+											}}
+											className={`flex items-center ${
+												activeTab === accountSettingsTab
+													? "text-black"
+													: "text-white"
+											} bg-transparent  px-3 py-3 rounded-full z-[100] font-bold`}
+										>
+											Account Settings
+										</div>
+										<div
+											onClick={() => {
+												setShowProfileData(true);
+												setShowAccountSettings(false);
+												setActiveTab(premiumTab);
+												setIndicatorPosition({
+													top: 140,
+													left: 10,
+												});
+											}}
+											className={`flex items-center ${
+												activeTab === premiumTab ? "text-black" : "text-white"
+											}   bg-transparent  px-3 py-3 rounded-full z-[100] font-bold`}
+										>
+											Premium
+										</div>
+									</div>
+								</aside>
+								{showProfileData && (
+									<ProfileComponent
+										session={session}
+										formData={formData}
+										setFormData={setFormData}
+										handleSubmit={handleSubmit}
+										showEdtImage={showEdtImage}
+										setShowEdtImage={setShowEdtImage}
+										file={file}
+										setFile={setFile}
+										uploadFile={uploadFile}
+										handleChange={handleChange}
+										profileData={profileData}
+									/>
+								)}
+								{showAccountSettings && <AccountSettings />}
+							</div>
+						</>
+					) : (
+						<div className="w-screen h-screen -mt-16 flex justify-center items-center gap-10">
+							<RevolvingDot
+								visible={true}
+								height="100"
+								width="100"
+								color="#4fa94d"
+								wrapperStyle={{}}
+								wrapperClass=""
+							/>
+							<p>Loading</p>
+						</div>
+					)}
+				</>
 			)}
 		</>
 	);

@@ -10,8 +10,9 @@ interface Session {
 }
 interface props {
 	fromMainPage: boolean | undefined;
+	session: Session | null;
 }
-export default function DashboardNavigation({ fromMainPage }: props) {
+export default function DashboardNavigation({ fromMainPage, session }: props) {
 	const [sideBarOpen, setSideBarOpen] = useState(false);
 
 	return (
@@ -20,11 +21,13 @@ export default function DashboardNavigation({ fromMainPage }: props) {
 				fromMainPage={fromMainPage}
 				sideBarOpen={sideBarOpen}
 				setSideBarOpen={setSideBarOpen}
+				session={session}
 			/>
 			<Sidebar
 				fromMainPage={fromMainPage}
 				sideBarOpen={sideBarOpen}
 				setSideBarOpen={setSideBarOpen}
+				session={session}
 			/>
 		</>
 	);

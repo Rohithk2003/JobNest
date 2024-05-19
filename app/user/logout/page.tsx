@@ -6,7 +6,10 @@ import { InfinitySpin } from "react-loader-spinner";
 
 export default function SignoutPage() {
 	useEffect(() => {
-		signOut({ callbackUrl: "/" });
+		const signout = async () => {
+			await signOut({ callbackUrl: "/welcome" });
+		};
+		signout();
 	});
 	return (
 		<>

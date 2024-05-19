@@ -5,6 +5,9 @@ import dynamic from "next/dynamic";
 import Pagination from "../components/Pagination";
 import { Suspense } from "react";
 import { JobApiFetchProps } from "@/types/custom";
+import { createClient } from "@/utils/supabase/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/authoptions";
 
 async function fetchJobsData({
 	searchParams,
@@ -38,11 +41,14 @@ export default async function Dashboard({
 			ssr: false,
 		}
 	);
-
+	const session = await getServerSession(authOptions);
 	const { data, error } = await fetchJobsData({ searchParams });
 	return (
 		<>
-			<DashboardNavigation fromMainPage={true} />
+			<DashboardNavigation
+				fromMainPage={true}
+				session={session}
+			/>
 			<div className="antialiased bg-transparent min-h-dvh">
 				{!data && <SkeletonDiv />}
 				<Suspense fallback={<SkeletonDiv />}>

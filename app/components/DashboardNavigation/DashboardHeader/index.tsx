@@ -14,17 +14,20 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import ProfileImageSkeleton from "../../Loader/ProfileImageSkeleton";
 import { getIconLocation, getSignOutRoute } from "@/configs/constants";
+import { Session } from "next-auth";
 
 export default function Header({
 	sideBarOpen,
 	setSideBarOpen,
 	fromMainPage,
+	session,
 }: {
 	sideBarOpen: boolean;
 	setSideBarOpen: Dispatch<SetStateAction<boolean>>;
 	fromMainPage: boolean | undefined;
+	session: Session | null;
 }) {
-	const { data: session, update } = useSession();
+	const { update } = useSession();
 	const supabase = createClient();
 	const [link, setLink] = useState("");
 	const pathname = usePathname();
@@ -41,6 +44,7 @@ export default function Header({
 		replace(`${pathname}?${params.toString()}`);
 	}, 0);
 	useEffect(() => {
+		console.log(session);
 		const fetchData = async () => {
 			if (
 				session &&
@@ -48,16 +52,18 @@ export default function Header({
 				session.user.avatar &&
 				!session.user.avatar?.startsWith("http")
 			) {
-				const { data: link, error } = await supabase.storage
-					.from("jobnest")
-					.createSignedUrl(session.user.avatar, 3600);
-				setLink(link?.signedUrl ?? "");
-				update({
-					user: {
-						...session?.user,
-						avatar: link?.signedUrl,
-					},
-				});
+				if (session.user.avatar) {
+					const { data: link, error } = await supabase.storage
+						.from("jobnest")
+						.createSignedUrl(session.user.avatar, 3600);
+					setLink(link?.signedUrl ?? "");
+					update({
+						user: {
+							...session?.user,
+							avatar: link?.signedUrl,
+						},
+					});
+				}
 			}
 		};
 		fetchData();

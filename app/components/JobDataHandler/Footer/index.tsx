@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Logo from "../../Logo";
 export default function FooterSection() {
 	const footerNavs = [
 		{
@@ -72,14 +73,7 @@ export default function FooterSection() {
 				<div className="flex-1">
 					<div className="max-w-xs">
 						<div className="flex flex-row justify-center items-center w-10 ml-8 gap-3">
-							<Image
-								src={"/icons/icon.png"}
-								width={80}
-								height={80}
-								alt="logo"
-								className="mx-auto"
-							/>
-							<p>JobNest</p>
+							<Logo />
 						</div>
 						<p className="leading-relaxed mt-2 text-[15px]">
 							All in one job portal for job seekers and employers.

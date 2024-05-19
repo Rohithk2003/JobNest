@@ -31,7 +31,9 @@ export default function Popup({
 				<div className="mt-4 flex gap-2">
 					{showButtonOne && (
 						<button
-							onClick={onConfirm}
+							onClick={() => {
+								onConfirm();
+							}}
 							type="button"
 							className="rounded bg-primary-50 px-4 py-2 text-sm font-medium text-primary-600"
 						>

@@ -1,38 +1,10 @@
 import { Session } from "next-auth";
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction } from "react";
 import Image from "next/image";
-import { MdDeleteOutline, MdEdit } from "react-icons/md";
+import { MdAccountCircle, MdDeleteOutline, MdEdit } from "react-icons/md";
 import ProfileImageSkeleton from "../../Loader/ProfileImageSkeleton";
-import { UserProps } from "@/types/custom";
-interface ProfileComponentProps {
-	session: Session | null;
-	uploadFile: () => void;
-	handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	file: File | null;
-	handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-	formData: {
-		first_name: string;
-		last_name: string;
-		username: string;
-		email: string;
-		cgpa: number;
-		bio: string;
-	};
-	setFormData: Dispatch<
-		SetStateAction<{
-			first_name: string;
-			last_name: string;
-			username: string;
-			email: string;
-			cgpa: number;
-			bio: string;
-		}>
-	>;
-	setFile: Dispatch<SetStateAction<File | null>>;
-	showEdtImage: boolean;
-	setShowEdtImage: Dispatch<SetStateAction<boolean>>;
-	profileData: UserProps | null | undefined;
-}
+import { ProfileComponentProps, UserProps } from "@/types/custom";
+
 const ProfileComponent: React.FC<ProfileComponentProps> = ({
 	session,
 	uploadFile,
@@ -54,15 +26,23 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
 
 					<div className="grid max-w-2xl mx-auto mt-8">
 						<div className="flex flex-col items-center space-y-5 sm:flex-row sm:space-y-0">
-							{session?.user?.image || session?.user.avatar ? (
+							{session?.user ? (
 								<div className="relative ">
-									<Image
-										className="avatar object-cover z-30 w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
-										alt="Bordered avatar"
-										src={session?.user?.image || session?.user.avatar || ""}
-										width={160}
-										height={160}
-									/>
+									{session?.user?.image || session?.user.avatar ? (
+										<Image
+											className="avatar object-cover z-30 w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
+											alt="Bordered avatar"
+											src={session?.user?.image || session?.user.avatar || ""}
+											width={160}
+											height={160}
+										/>
+									) : (
+										<MdAccountCircle
+											className="avatar object-cover z-30 w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
+											width={160}
+											height={160}
+										/>
+									)}
 									<div className="w-full h-full z-50 avatar-overlay bg-black opacity-50 hidden absolute top-0 left-0 rounded-full">
 										<div className="flex items-center justify-center w-full h-full">
 											<MdEdit
@@ -71,9 +51,10 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
 												}}
 												className="text-gray-600 hover:cursor-pointer hover:text-white text-2xl"
 											/>
-											{session?.user.provider != "google" && (
-												<MdDeleteOutline className="text-gray-600 hover:text-white text-2xl" />
-											)}
+											{session?.user.provider != "google" &&
+												(session?.user?.image || session?.user.avatar) && (
+													<MdDeleteOutline className="text-gray-600 hover:text-white text-2xl" />
+												)}
 										</div>
 									</div>
 								</div>

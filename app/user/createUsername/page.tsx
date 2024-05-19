@@ -13,9 +13,10 @@ import { useRouter } from "next/navigation";
 import { TailSpin } from "react-loader-spinner";
 import { useSession } from "next-auth/react";
 import { createClient } from "@/utils/supabase/client";
-import ReactLoadingSpinner from "@/app/components/reactLoadingSpinner";
+import LoadingButton from "@/app/components/reactLoadingSpinner";
 import { set } from "firebase/database";
 import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
+import Logo from "@/app/components/Logo";
 
 export default function Register() {
 	type PopupButtonFunctionType = () => any;
@@ -118,19 +119,7 @@ export default function Register() {
 				)}
 				<div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 ">
 					<div className="w-full bg-transparent rounded-lg shadow-2xl  h-[400px]  md:mt-0 sm:max-w-md xl:p-0 ">
-						<a
-							href="/"
-							className="flex justify-center items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-						>
-							<Image
-								className=" mr-2"
-								src={getIconLocation()}
-								alt="logo"
-								width={64}
-								height={64}
-							/>
-							JobNest
-						</a>
+						<Logo />
 						<div className="p-6 space-y-4 md:space-y-6 sm:p-8 gap-5 flex flex-col">
 							<h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
 								Create a username for your account
@@ -167,7 +156,7 @@ export default function Register() {
 								</div>
 
 								{signUpClicked ? (
-									<ReactLoadingSpinner />
+									<LoadingButton />
 								) : (
 									<button
 										onSubmit={handleSubmit}

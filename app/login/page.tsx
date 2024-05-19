@@ -4,70 +4,91 @@ import {
 	getDashboardRoute,
 	getIconLocation,
 	getRegisterRoute,
+	getSendEmailVerificationRoute,
 } from "@/configs/constants";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Popup from "@/app/components/Popup";
 import { useSession } from "next-auth/react";
-import ReactLoadingSpinner from "@/app/components/reactLoadingSpinner";
+import LoadingButton from "@/app/components/reactLoadingSpinner";
 import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
 import { handleGoogleSignIn, handleSubmit } from "@/actions/login";
+import { useSearchParams } from "next/navigation";
+import AlertWithType from "../components/Alert";
+import Header from "../components/MainPage/Navigation/Header";
+import { RegisterActionResultProps } from "@/types/custom";
+import { set } from "firebase/database";
+import Logo from "../components/Logo";
 
 export default function Login() {
-	const [signInClicked, setSignInClicked] = useState(false);
+	const searchParams = useSearchParams();
+	const [error, setError] = useState("");
+	const [type, settype] = useState("error");
+	const [signInStarted, setSignInStarted] = useState(false);
 	const [showPopup, setShowPopup] = useState(false);
 	const [googleProviderClicked, setgoogleProviderClicked] = useState(false);
 	const [githubProviderClicked, setgithubProviderClicked] = useState(false);
 	const [twitterProviderClicked, setfacebookProviderClicked] = useState(false);
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [emailNotVerified, setEmailNotVerified] = useState(false);
+
 	const router = useRouter();
 	const { data: session } = useSession({
 		required: false,
 	});
-	const [removeCustomInputTransition, setRemoveCustomInputTransition] =
-		useState(false);
-
+	// useEffect(() => {
+	// 	if (session && !error) {
+	// 		if ("username" in session.user && session.user.username != null)
+	// 			window.location.replace(getDashboardRoute());
+	// 		else {
+	// 			router.push(getCheckUsernameRoute());
+	// 		}
+	// 	}
+	// }, [session, router]);
 	useEffect(() => {
-		if (session) {
-			if ("username" in session.user && session.user.username != null)
-				window.location.replace(getDashboardRoute());
-			else {
-				router.push(getCheckUsernameRoute());
+		setError(searchParams.get("error") ?? "");
+	}, [setError, searchParams]);
+
+	const handleLOgin = async (event: React.FormEvent) => {
+		event.preventDefault();
+		setSignInStarted(true);
+		const result: RegisterActionResultProps | undefined = await handleSubmit({
+			email,
+			password,
+		});
+
+		if (result.status === "success") {
+			settype("success");
+			setError("Login Successful.Redirecting you to dashboard...");
+			setShowPopup(true);
+			setTimeout(() => {
+				router.push(getDashboardRoute());
+			}, 1500);
+		} else {
+			if (result.error?.toLowerCase() === "accessdenied") {
+				setEmailNotVerified(true);
 			}
+			setError(
+				(result.error?.toLowerCase() === "accessdenied" &&
+					"Email not verified") ||
+					result.error ||
+					"Something happened"
+			);
+			settype("error");
+			setSignInStarted(false);
+			setShowPopup(true);
 		}
-	}, [session, router]);
+	};
 
 	return (
 		<>
+			<Header session={session} />
 			<section className=" dark:bg-transparent h-[110vh] relative z-[400] p-5">
-				{showPopup && (
-					<Popup
-						title="User does not exist"
-						description="Account with given credentials does not exist.Please create an account"
-						firstButtonText="Try again"
-						secondButtonText="Cancel"
-						onConfirm={() => setShowPopup(false)}
-						showButtonOne={true}
-						showButtonTwo={false}
-						showPopup={setShowPopup}
-					/>
-				)}
 				<main className="w-full h-screen flex flex-col items-center justify-center px-4">
 					<div className="max-w-sm w-full text-gray-300 space-y-8">
 						<div className="text-center">
-							<a
-								href="#"
-								className="flex items-center mb-6 text-2xl justify-center w-full font-semibold text-gray-900 dark:text-white"
-							>
-								<Image
-									className=" mr-2"
-									src={getIconLocation()}
-									alt="logo"
-									width={64}
-									height={64}
-								/>
-								<p>JobNest</p>
-							</a>
+							<Logo />
 							<div className="mt-5 space-y-2">
 								<h3 className="text-gray-300 text-2xl font-bold sm:text-3xl">
 									Log in to your account
@@ -83,10 +104,17 @@ export default function Login() {
 								</p>
 							</div>
 						</div>
+						{showPopup && (
+							<AlertWithType
+								type={type}
+								heading={"Error Occured"}
+								description={error}
+								alertHandler={setShowPopup}
+							/>
+						)}
 						<form
-							onSubmit={(e) => {
-								handleSubmit(e, setSignInClicked, setShowPopup);
-								e.preventDefault();
+							onSubmit={(event: React.FormEvent) => {
+								handleLOgin(event);
 							}}
 						>
 							<div className="pt-2">
@@ -94,10 +122,12 @@ export default function Login() {
 								<input
 									type="email"
 									required
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
 									name="email"
 									id="email"
 									disabled={
-										signInClicked ||
+										signInStarted ||
 										googleProviderClicked ||
 										githubProviderClicked ||
 										twitterProviderClicked
@@ -105,15 +135,17 @@ export default function Login() {
 									className="w-full mt-2 px-3 py-3 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
 								/>
 							</div>
-							<div>
-								<label className="font-medium">Password</label>
+							<div className="mt-5">
+								<label className="font-medium mt-5">Password</label>
 								<input
 									type="password"
 									required
 									name="password"
 									id="password"
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
 									disabled={
-										signInClicked ||
+										signInStarted ||
 										googleProviderClicked ||
 										githubProviderClicked ||
 										twitterProviderClicked
@@ -121,8 +153,10 @@ export default function Login() {
 									className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
 								/>
 							</div>
-							{signInClicked ? (
-								<ReactLoadingSpinner />
+							{signInStarted ? (
+								<div className="mt-5">
+									<LoadingButton text={"Please wait.."} />
+								</div>
 							) : (
 								<button
 									disabled={
@@ -135,13 +169,22 @@ export default function Login() {
 										githubProviderClicked ||
 										twitterProviderClicked
 											? "opacity-30 bg-indigo-600 hover:cursor-not-allowed"
-											: "opacity-1 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600"
+											: "opacity-1 bg-indigo-600 hover:bg-indigo-800 active:bg-indigo-600"
 									} mt-4 px-4 py-2 text-white font-medium  rounded-lg duration-150`}
 								>
 									Sign in
 								</button>
 							)}
 						</form>
+						{emailNotVerified && (
+							<a href={getSendEmailVerificationRoute()}>
+								<div
+									className={`w-full mt-5 flex justify-center items-center opacity-1  bg-indigo-600 hover:bg-indigo-800 active:bg-indigo-600 px-4 py-2 text-white font-medium  rounded-lg duration-150`}
+								>
+									Send verification email
+								</div>
+							</a>
+						)}
 						<div className="flex flex-row justify-center items-center">
 							<p className="inline-block after:block after:w-32 after:h-[1.5px] after:absolute relative after:left-[100%] after:top-2 after:bg-gray-500 before:block before:w-32 before:h-[1.5px] before:absolute  before:right-[100%] before:top-2 before:bg-gray-500 w-fit text-sm bg-transparent px-2  -top-2 inset-x-0 mx-auto">
 								Or continue with
@@ -149,19 +192,19 @@ export default function Login() {
 						</div>
 						<div className="space-y-4 text-sm font-medium">
 							{googleProviderClicked ? (
-								<ReactLoadingSpinner />
+								<LoadingButton text={"Please wait.."} />
 							) : (
 								<button
 									onClick={() => {
 										handleGoogleSignIn(setgoogleProviderClicked);
 									}}
 									disabled={
-										signInClicked ||
+										signInStarted ||
 										githubProviderClicked ||
 										twitterProviderClicked
 									}
 									className={`w-full flex ${
-										signInClicked ||
+										signInStarted ||
 										githubProviderClicked ||
 										twitterProviderClicked
 											? "opacity-30 hover:cursor-not-allowed"
@@ -206,18 +249,18 @@ export default function Login() {
 								</button>
 							)}
 							{twitterProviderClicked ? (
-								<ReactLoadingSpinner />
+								<LoadingButton text={"Please wait.."} />
 							) : (
 								<button
 									disabled={
 										googleProviderClicked ||
 										githubProviderClicked ||
-										signInClicked
+										signInStarted
 									}
 									className={`w-full flex ${
 										googleProviderClicked ||
 										githubProviderClicked ||
-										signInClicked
+										signInStarted
 											? "opacity-30 hover:cursor-not-allowed"
 											: "opacity-1 hover:text-black hover:bg-gray-50 "
 									} items-center justify-center gap-x-3 py-2.5  border rounded-lg duration-150 active:bg-gray-100`}
@@ -237,17 +280,17 @@ export default function Login() {
 								</button>
 							)}
 							{githubProviderClicked ? (
-								<ReactLoadingSpinner />
+								<LoadingButton text={"Please wait.."} />
 							) : (
 								<button
 									disabled={
 										googleProviderClicked ||
-										signInClicked ||
+										signInStarted ||
 										twitterProviderClicked
 									}
 									className={`w-full flex ${
 										googleProviderClicked ||
-										signInClicked ||
+										signInStarted ||
 										twitterProviderClicked
 											? "opacity-30 hover:cursor-not-allowed"
 											: "opacity-1 hover:text-black hover:bg-gray-50 "

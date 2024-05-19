@@ -3,6 +3,9 @@ import { ReactEventHandler, useState } from "react";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
+import Header from "../components/MainPage/Navigation/Header";
+import { useSession } from "next-auth/react";
+import GridLines from "../components/VisualComponents/GridLines";
 
 export default function Contact() {
 	const [emailid, setemailid] = useState("");
@@ -10,7 +13,7 @@ export default function Contact() {
 	const [lastname, setlastname] = useState("");
 	const [subject, setSubject] = useState("");
 	const [message, setMessage] = useState("");
-
+	const { data: session } = useSession();
 	const names = [
 		{
 			name: "First Name",
@@ -57,6 +60,7 @@ export default function Contact() {
 	});
 	return (
 		<>
+			<Header session={session} />
 			<div
 				ref={ref}
 				className="relative z-[400] bg-transparent flex justify-center items-center w"
@@ -278,7 +282,7 @@ export default function Contact() {
 					</div>
 				</section>
 			</div>
-			<BackgroundGlow />
+			<GridLines />
 		</>
 	);
 }

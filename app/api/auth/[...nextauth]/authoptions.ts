@@ -1,17 +1,13 @@
-import NextAuth from "next-auth";
+import NextAuth, { Account, User } from "next-auth";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { createClient } from "@/utils/supabase/client";
-import type { Adapter } from "next-auth/adapters";
-
+import type { Adapter, AdapterUser } from "next-auth/adapters";
+import { getLoginRoute } from "@/configs/constants";
+import { getCredentialUserByEmail } from "@/Database/database";
 const bcrypt = require("bcrypt");
-
-interface Credentials {
-	email: string;
-	password: string;
-}
 
 const supabase = createClient();
 
@@ -19,8 +15,9 @@ const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!;
 export const authOptions: NextAuthOptions = {
 	pages: {
-		signIn: '/user/login',
-		error: '/user/login',
+		signIn: "/login",
+		error: "/login",
+		signOut: "/welcome",
 	},
 	session: {
 		strategy: "jwt",
@@ -29,11 +26,12 @@ export const authOptions: NextAuthOptions = {
 
 	providers: [
 		CredentialsProvider({
-			id: "custom-signin",
+			id: "customsignin",
+			name: "customsignin",
 			type: "credentials",
 			credentials: {
 				email: { label: "Email", type: "email" },
-				password: { label: "Password", type: "password" }
+				password: { label: "Password", type: "password" },
 			},
 			async authorize(credentials) {
 				try {
@@ -46,17 +44,24 @@ export const authOptions: NextAuthOptions = {
 						.from("credentials")
 						.select("*")
 						.eq("email", email)
-						.single();
+						.maybeSingle();
 					if (error) {
 						throw "No user exists";
 					}
-					const passwordsMatch = await bcrypt.compareSync(credentials.password, user.password);
+					if (!user) {
+						throw "No user exists";
+					}
+					const passwordsMatch = await bcrypt.compareSync(
+						credentials.password,
+						user.password
+					);
 					if (user && passwordsMatch) {
-						const { password, createdAt, id, ...userWithoutSensitiveInfo } =
+						const { password, created_at, id, ...userWithoutSensitiveInfo } =
 							user;
 						return userWithoutSensitiveInfo;
+					} else {
+						throw "Invalid password";
 					}
-					return user;
 				} catch (error: any) {
 					console.error("Error fetching user data:", error);
 					throw new Error(error, {
@@ -66,13 +71,13 @@ export const authOptions: NextAuthOptions = {
 			},
 		}),
 		CredentialsProvider({
-			id: "custom-signup",
+			id: "customsignup",
+			name: "customsignup",
 			type: "credentials",
 			credentials: {
 				email: { label: "Email", type: "email" },
 				password: { label: "Password", type: "password" },
-				username: { label: "Username", type: "text" }
-
+				username: { label: "Username", type: "text" },
 			},
 			async authorize(credentials) {
 				try {
@@ -80,22 +85,29 @@ export const authOptions: NextAuthOptions = {
 						throw new Error("Email and password are required.");
 					}
 					const hashedPassword = await bcrypt.hash(credentials.password, 10);
-					const { data: user, error } = await supabase
+					let { data: user, error } = await supabase
 						.schema("next_auth")
 						.from("credentials")
 						.insert([
-							{ email: credentials.email, password: hashedPassword, username: credentials.username },
+							{
+								email: credentials.email,
+								password: hashedPassword,
+								username: credentials.username,
+							},
 						]);
-
-					if (error == null) {
-						return null
-					}
+					console.log(user, error);
 					if (error) {
 						throw new Error(error.details, {
-							cause: "No user exists",
+							cause: "User already exists",
 						});
+					} else {
+						let { data: user } = await supabase
+							.schema("next_auth")
+							.from("credentials")
+							.select("*")
+							.eq("email", credentials.email);
+						return user && user[0];
 					}
-					return user;
 				} catch (error: any) {
 					console.error("Error fetching user data:", error);
 					throw new Error(error, {
@@ -114,6 +126,19 @@ export const authOptions: NextAuthOptions = {
 		secret: process.env.NEXT_PUBLIC_SUPABASE_PROJECT_SERVICE_KEY!,
 	}) as Adapter,
 	callbacks: {
+		async signIn({ user, account }) {
+			if (account?.provider === "google") {
+				return true;
+			}
+
+			console.log(user);
+			console.log(account);
+			if (user?.email_verified) {
+				return true;
+			} else {
+				return false;
+			}
+		},
 		jwt: async ({ token, trigger, account, profile, session, user }) => {
 			// user && (token.user = user)
 			if (user) {
@@ -121,22 +146,20 @@ export const authOptions: NextAuthOptions = {
 					...user,
 					username: user.username,
 					avatar: user.avatar,
-					provider: account?.provider
-				}
+					provider: account?.provider,
+				};
 			}
 			if (trigger === "update" && session.user) {
-				token.user = session.user
+				token.user = session.user;
 			}
 
-
-			return token
+			return token;
 		},
 		session: async ({ session, token }) => {
-			console.log(token)
-			session.user = token.user
+			console.log(token);
+			session.user = token.user;
 
-			return session
-		}
-
+			return session;
+		},
 	},
 };

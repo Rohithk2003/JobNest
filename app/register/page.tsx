@@ -4,22 +4,21 @@ import {
 	getDashboardRoute,
 	getIconLocation,
 	getLoginRoute,
-	getTermsRoute,
-	getUsernameCreationRoute,
 } from "@/configs/constants";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import Popup from "../../components/Popup";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { Grid } from "react-loader-spinner";
-import { set } from "firebase/database";
-import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
 import { useSession } from "next-auth/react";
-import ReactLoadingSpinner from "@/app/components/reactLoadingSpinner";
-import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
-import { getVerificationToken } from "@/lib/token";
+import LoadingButton from "@/app/components/reactLoadingSpinner";
+import Popup from "../components/Popup";
+import { handleGoogleSignIn, handleSubmit } from "@/actions/register";
+import AlertWithType from "../components/Alert";
+import Header from "../components/MainPage/Navigation/Header";
+import { RegisterActionResultProps } from "@/types/custom";
+import { set } from "firebase/database";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
+import Logo from "../components/Logo";
 export default function Register() {
 	type PopupButtonFunctionType = () => any;
 
@@ -28,99 +27,84 @@ export default function Register() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [showPopup, setShowPopup] = useState(false);
 	const [username, setUsername] = useState("");
-
+	const [registerDone, setRegisterDone] = useState(false);
 	const [signUpClicked, setSignUpClicked] = useState(false);
 	const [googleProviderClicked, setgoogleProviderClicked] = useState(false);
 	const [githubProviderClicked, setgithubProviderClicked] = useState(false);
 	const [twitterProviderClicked, setfacebookProviderClicked] = useState(false);
+	const [passwordValidation, setPasswordValidation] = useState(true);
 	const [signUpStarted, setSignUpStarted] = useState(false);
-
-	const [Popuptext, setPopuptext] = useState("");
-	const [PopupTitle, setPopupTitle] = useState("");
-	const [PopupButton1, setPopupButton1] = useState("");
-	const [PopupButton2, setPopupButton2] = useState("");
-	const [PopupButton1Function, setPopupButton1Function] =
-		useState<PopupButtonFunctionType>(() => {});
-	const [showPopupButton2, setShowPopupButton2] = useState(false);
-	const [showPopupButton1, setShowPopupButton1] = useState(false);
-
+	const [error, setError] = useState("");
+	const [type, settype] = useState("error");
+	const [heading, setHeading] = useState("");
 	const { data: session, status } = useSession({
 		required: false,
 	});
+	const [passwordsMatch, setPasswordsMatch] = useState(true);
 	const router = useRouter();
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	useEffect(() => {
-		if (session) {
-			if ("username" in session.user && session.user.username != null)
-				window.location.replace(getDashboardRoute());
-			else {
-				router.push(getCheckUsernameRoute());
-			}
-		}
+		// if (session) {
+		// 	if ("username" in session.user && session.user.username != null)
+		// 		window.location.replace(getDashboardRoute());
+		// 	else {
+		// 		router.push(getCheckUsernameRoute());
+		// 	}
+		// }
 	}, [session]);
-	const handleGoogleSignIn = async () => {
-		setSignUpStarted(true);
-		setgoogleProviderClicked(true);
-		const googleSignInResponse = await signIn("google", {
-			callbackUrl: getCheckUsernameRoute(),
-		});
-		if (googleSignInResponse && !googleSignInResponse.error) {
-			router.push(getUsernameCreationRoute());
-		}
-	};
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setSignUpStarted(true);
+	const handleRegister = async (event: React.FormEvent) => {
+		event.preventDefault();
 		setSignUpClicked(true);
-
-		const data = new FormData(e.currentTarget as HTMLFormElement);
-		if (password !== confirmPassword) {
-			setShowPopup(true);
-		} else {
-			try {
-				const signUpResponse = await signIn("custom-signup", {
-					redirect: false,
-					email: data.get("email") as string,
-					password: data.get("password") as string,
-					username: username as string,
-				});
-				const verificationtoken = await getVerificationToken(
-					data.get("email") as string
-				);
-				
-
-				setSignUpClicked(false);
+		setSignUpStarted(true);
+		const result: RegisterActionResultProps | undefined = await handleSubmit({
+			email,
+			password,
+			confirmPassword,
+			username,
+		});
+		if (result) {
+			if (result.error) {
+				setError(result.error);
+				settype("error");
 				setShowPopup(true);
-				setPopupTitle("Account created");
-				setPopuptext("Your account has been created successfully.");
-				setPopupButton1("Login");
-				setPopupButton2("Cancel");
-				setPopupButton1Function(() => {
-					// generate verification token
-					router.push(getLoginRoute());
-				});
-				setShowPopupButton1(true);
-				setShowPopupButton2(true);
-			} catch (error) {
-				setPopupTitle("Error occurred");
-				setPopuptext(
-					`An error occurred while creating your account. Please try again. - ${error}`
-				);
-				setPopupButton1("Try again");
-				setPopupButton2("Cancel");
-				setPopupButton1Function(() => setShowPopup(false));
-				setShowPopupButton1(true);
-				setShowPopupButton2(false);
 				setSignUpClicked(false);
+				setSignUpStarted(false);
+				setHeading("Error occurred");
+			} else if (result.status) {
+				setError(result.status);
+				settype("success");
 				setShowPopup(true);
+				setSignUpClicked(false);
+				setRegisterDone(true);
+				setHeading("Success");
 			}
 		}
 	};
+	const validatePassword = (password: string) => {
+		if (password.length < 8) {
+			return "Password must be at least 8 characters long.";
+		}
+		if (!/[A-Z]/.test(password)) {
+			return "Password must contain at least one uppercase letter.";
+		}
+		if (!/[a-z]/.test(password)) {
+			return "Password must contain at least one lowercase letter.";
+		}
+		if (!/[0-9]/.test(password)) {
+			return "Password must contain at least one number.";
+		}
+		if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+			return "Password must contain at least one special character.";
+		}
 
+		return "success";
+	};
 	return (
 		<>
+			<Header session={session} />
 			<section className="bg-gray-50 dark:bg-transparent h-dvh  relative z-[100]">
-				{showPopup && (
+				{/* {showPopup && (
 					<Popup
 						title={PopupTitle}
 						description={Popuptext}
@@ -131,23 +115,11 @@ export default function Register() {
 						showPopup={() => {}}
 						showButtonTwo={showPopupButton2}
 					/>
-				)}
+				)} */}
 				<main className="w-full flex">
 					<div className="relative flex-1 hidden items-center justify-center h-screen bg-transparent lg:flex">
 						<div className="relative z-10 w-full max-w-md">
-							<a
-								href="#"
-								className="flex items-center mb-6 text-2xl justify-start w-full font-semibold text-gray-900 dark:text-white"
-							>
-								<Image
-									className=" mr-2"
-									src={getIconLocation()}
-									alt="logo"
-									width={64}
-									height={64}
-								/>
-								<p>JobNest</p>
-							</a>
+							<Logo />
 							<div className=" mt-16 space-y-3">
 								<h3 className="text-white text-3xl font-bold">
 									Start growing your career quickly
@@ -195,11 +167,7 @@ export default function Register() {
 					<div className="flex-1 flex items-center justify-center h-screen">
 						<div className="w-full max-w-md space-y-8 px-4 bg-transparent text-gray-300 sm:px-0">
 							<div className="">
-								<img
-									src="https://floatui.com/logo.svg"
-									width={150}
-									className="lg:hidden"
-								/>
+								<Logo />
 								<div className="mt-5 space-y-2">
 									<h3 className="text-gray-300 text-2xl font-bold sm:text-3xl">
 										Sign up
@@ -217,10 +185,16 @@ export default function Register() {
 							</div>
 							<div className="grid grid-cols-3 gap-x-3">
 								{googleProviderClicked ? (
-									<ReactLoadingSpinner />
+									<LoadingButton text={"Please wait.."} />
 								) : (
 									<button
-										onClick={handleGoogleSignIn}
+										onClick={() => {
+											handleGoogleSignIn({
+												setSignUpStarted,
+												setgoogleProviderClicked,
+												router,
+											});
+										}}
 										disabled={signUpStarted}
 										className={`flex items-center justify-center py-2.5 border rounded-lg ${
 											signUpStarted
@@ -265,7 +239,7 @@ export default function Register() {
 									</button>
 								)}
 								{twitterProviderClicked ? (
-									<ReactLoadingSpinner />
+									<LoadingButton text={"Please wait.."} />
 								) : (
 									<button
 										disabled={signUpStarted}
@@ -289,7 +263,7 @@ export default function Register() {
 									</button>
 								)}
 								{githubProviderClicked ? (
-									<ReactLoadingSpinner />
+									<LoadingButton text={"Please wait.."} />
 								) : (
 									<button
 										disabled={signUpStarted}
@@ -359,12 +333,19 @@ export default function Register() {
 									Or continue with
 								</p>
 							</div>
+							{(error || showPopup) && (
+								<AlertWithType
+									type={type}
+									heading={heading}
+									description={error}
+									alertHandler={setShowPopup}
+								/>
+							)}
 							<form
-								onSubmit={(e) => {
-									e.preventDefault();
-									handleSubmit(e);
+								onSubmit={(event: React.FormEvent) => {
+									handleRegister(event);
 								}}
-								className="space-y-5"
+								className="space-y-5 mb-10"
 							>
 								<div>
 									<label className="font-medium">Username</label>
@@ -376,7 +357,7 @@ export default function Register() {
 										id="Username"
 										disabled={signUpClicked}
 										required
-										className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+										className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
 									/>
 								</div>
 								<div>
@@ -389,47 +370,127 @@ export default function Register() {
 										type="email"
 										disabled={signUpClicked}
 										required
-										className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+										className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
 									/>
 								</div>
 								<div>
 									<label className="font-medium">Password</label>
-									<input
-										type="password"
-										disabled={signUpClicked}
-										required
-										name="password"
-										id="password"
-										value={password}
-										onChange={(e) => setPassword(e.target.value)}
-										placeholder="••••••••"
-										className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-									/>
+									<div className="relative">
+										<input
+											type={showPassword ? "text" : "password"}
+											disabled={signUpClicked}
+											required
+											name="password"
+											id="password"
+											value={password}
+											onChange={(e) => {
+												setPassword(e.target.value);
+												setPasswordValidation(
+													validatePassword(e.target.value) === "success"
+												);
+											}}
+											placeholder="••••••••"
+											className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+										/>
+										<div
+											onClick={() => {
+												setShowPassword(!showPassword);
+											}}
+											className="absolute z-[900] right-2 top-4 p-1 hover:bg-gray-300 rounded-lg hover:text-black "
+										>
+											{!showPassword ? (
+												<BsEye size={20} />
+											) : (
+												<BsEyeSlash size={20} />
+											)}
+										</div>
+									</div>
+									<div
+										className={`${
+											!passwordValidation ? "block" : "hidden"
+										} text-red-500 mt-4`}
+									>
+										<div
+											role="alert"
+											className="rounded border-s-4 border-red-500 bg-red-50 p-4"
+										>
+											<strong className="block font-medium text-red-800">
+												{" "}
+												{validatePassword(password)}
+											</strong>
+										</div>
+									</div>
 								</div>
 								<div>
-									<label className="font-medium">Password</label>
-									<input
-										type="confirm-password"
-										name="confirm-password"
-										id="confirm-password"
-										value={confirmPassword}
-										onChange={(e) => setConfirmPassword(e.target.value)}
-										disabled={signUpClicked}
-										required
-										placeholder="••••••••"
-										className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-									/>
+									<label className="font-medium">Confirm Password</label>
+									<div className="relative">
+										<input
+											type={showConfirmPassword ? "text" : "password"}
+											name="confirm-password"
+											id="confirm-password"
+											value={confirmPassword}
+											onChange={(e) => {
+												setConfirmPassword(e.target.value);
+												setPasswordsMatch(password === e.target.value);
+											}}
+											disabled={signUpClicked}
+											required
+											placeholder="••••••••"
+											className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+										/>
+										<div
+											onClick={() => {
+												setShowConfirmPassword(!showConfirmPassword);
+											}}
+											className="absolute z-[900] right-2 top-4 p-1 hover:bg-gray-300 rounded-lg hover:text-black "
+										>
+											{!showConfirmPassword ? (
+												<BsEye size={20} />
+											) : (
+												<BsEyeSlash size={20} />
+											)}
+										</div>
+									</div>
+									<div
+										className={`${
+											!passwordsMatch ? "block" : "hidden"
+										} text-red-500 mt-4`}
+									>
+										<div
+											role="alert"
+											className="rounded border-s-4 border-red-500 bg-red-50 p-4"
+										>
+											<strong className="block font-medium text-red-800">
+												{" "}
+												Passwords do not match
+											</strong>
+										</div>
+									</div>
 								</div>
-								<button
-									disabled={signUpClicked}
-									className={`w-full px-4 py-2 text-white font-medium ${
-										signUpStarted
-											? "opacity-30 bg-indigo-600"
-											: "opacity-1  bg-indigo-500 active:bg-indigo-600 "
-									} rounded-lg duration-150`}
-								>
-									Create account
-								</button>
+								{(signUpStarted || signUpClicked) && !registerDone ? (
+									<div className="mt-4">
+										<LoadingButton text={"Please wait.."} />
+									</div>
+								) : !registerDone ? (
+									<button
+										disabled={signUpClicked}
+										className={`w-full px-4 mt-4 py-2 text-white font-medium ${
+											signUpStarted
+												? "opacity-30 bg-indigo-600"
+												: "opacity-1  bg-indigo-500 active:bg-indigo-600 "
+										} rounded-lg duration-150`}
+									>
+										Create account
+									</button>
+								) : (
+									<a href={getLoginRoute()}>
+										<div
+											className={`flex justify-center items-center w-full px-4 py-2 mb-20 text-white font-medium opacity-1  bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150`}
+										>
+											Login
+										</div>
+									</a>
+								)}
 							</form>
 						</div>
 					</div>

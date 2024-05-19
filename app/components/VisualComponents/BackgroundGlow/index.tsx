@@ -11,6 +11,7 @@ export default function BackgroundGlow() {
 			var followDiv = document.getElementsByClassName(
 				"bg-glow"
 			)[0] as HTMLDivElement;
+			if (!followDiv) return;
 			const viewportWidth = window.innerWidth;
 			const viewportHeight = window.innerHeight;
 			const mouseX = event.clientX - 150;

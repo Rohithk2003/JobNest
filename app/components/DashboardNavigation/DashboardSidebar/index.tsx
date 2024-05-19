@@ -1,15 +1,18 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { RiAccountCircleFill } from "react-icons/ri";
 import Image from "next/image";
+import { Session } from "next-auth";
 import { getIconLocation } from "@/configs/constants";
 export default function Sidebar({
 	sideBarOpen,
 	setSideBarOpen,
 	fromMainPage,
+	session,
 }: {
 	sideBarOpen: boolean;
 	setSideBarOpen: Dispatch<SetStateAction<boolean>>;
 	fromMainPage: boolean | undefined;
+	session: Session | null;
 }) {
 	const [userScrolled, setUserScrolled] = useState(false);
 	useEffect(() => {

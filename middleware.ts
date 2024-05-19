@@ -25,8 +25,6 @@ export default withAuth(async function middleware(req) {
 	) {
 		if (isAuthenticated) {
 			return NextResponse.redirect(new URL(getDashboardRoute(), req.url));
-		} else {
-			return fetch(req.url);
 		}
 	}
 
