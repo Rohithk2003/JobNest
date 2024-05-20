@@ -182,7 +182,9 @@ export default function Profile() {
 						description={showPopup.description}
 						type={"success"}
 						controller={showPopup.show}
-						controllerHandler={setShowPopup}
+						controllerHandlerObject={setShowPopup}
+						controllerHandlerBoolean={null}
+						loader={null}
 					/>
 
 					{sessionLoaded ? (

@@ -89,7 +89,6 @@ export default function Login() {
 				<main className="w-full h-screen flex flex-col items-center justify-center px-4">
 					<div className="max-w-sm w-full text-gray-300 space-y-8">
 						<div className="text-center">
-							<Logo />
 							<div className="mt-5 space-y-2">
 								<h3 className="text-gray-300 text-2xl font-bold sm:text-3xl">
 									Log in to your account
@@ -151,7 +150,7 @@ export default function Login() {
 										githubProviderClicked ||
 										twitterProviderClicked
 									}
-									className="w-full mt-2 px-3 py-2 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+									className="w-full mt-2 px-3 py-3 text-white bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
 								/>
 							</div>
 							{signInStarted ? (

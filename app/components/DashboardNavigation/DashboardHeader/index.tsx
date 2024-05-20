@@ -15,6 +15,7 @@ import { useDebouncedCallback } from "use-debounce";
 import ProfileImageSkeleton from "../../Loader/ProfileImageSkeleton";
 import { getIconLocation, getSignOutRoute } from "@/configs/constants";
 import { Session } from "next-auth";
+import { MdAccountCircle } from "react-icons/md";
 
 export default function Header({
 	sideBarOpen,
@@ -195,19 +196,27 @@ export default function Header({
 					>
 						<span className="sr-only">Open user menu</span>
 						{session ? (
-							<Image
-								className="w-8 h-8 rounded-full"
-								src={
-									session?.user.provider === "custom-signin"
-										? session.user.avatar?.startsWith("http")
-											? session.user.avatar
-											: link
-										: session?.user.avatar || session?.user.image || ""
-								}
-								alt="user photo"
-								width={32}
-								height={32}
-							/>
+							session.user.avatar || session.user.image ? (
+								<Image
+									className="w-8 h-8 rounded-full"
+									src={
+										session?.user.provider === "custom-signin"
+											? session.user.avatar?.startsWith("http")
+												? session.user.avatar
+												: link
+											: session?.user.avatar || session?.user.image || ""
+									}
+									alt="user photo"
+									width={32}
+									height={32}
+								/>
+							) : (
+								<MdAccountCircle
+									className="avatar object-cover z-30 w-8 h-8 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
+									width={160}
+									height={160}
+								/>
+							)
 						) : (
 							<div>
 								<ProfileImageSkeleton
@@ -224,11 +233,9 @@ export default function Header({
 						id="dropdown"
 					>
 						<div className="py-3 px-4">
+							Signed in as
 							<span className="block text-sm font-semibold text-gray-900 dark:text-white">
 								{session?.user.username}
-							</span>
-							<span className="block text-sm text-gray-900 truncate dark:text-white">
-								{session?.user.email}
 							</span>
 						</div>
 						<ul
