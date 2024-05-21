@@ -7,6 +7,7 @@ const AccountSettings: React.FC<{}> = () => {
 					<div className="grid w-44 p-3 rounded-full hover:bg-white transition-all ease-in-out hover:text-black mt-8 bg-primary-400">
 						<button>Delete account</button>
 					</div>
+					<div>Change password</div>
 				</div>
 			</div>
 		</main>

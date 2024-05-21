@@ -1,5 +1,6 @@
 "use client";
 import {
+	getDashboardRoute,
 	getIconLocation,
 	getLoginRoute,
 	getRegisterRoute,
@@ -42,21 +43,35 @@ export default function Header({ session }: Props) {
 			<div className="mx-auto flex h-20 p-1 max-w-full-xl items-center gap-8  sm:px-6 ">
 				<div className="flex flex-1 items-center justify-end md:justify-start">
 					<div className="flex items-center gap-4 absolute right-4">
-						<div className="sm:flex sm:gap-4">
-							<a
-								className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-								href={getLoginRoute()}
-							>
-								{"Login"}
-							</a>
+						{session ? (
+							<>
+								<div>{session.user.username}</div>
+								<div>
+									<a
+										className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+										href={getDashboardRoute()}
+									>
+										Dashboard
+									</a>
+								</div>
+							</>
+						) : (
+							<div className="sm:flex sm:gap-4">
+								<a
+									className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+									href={getLoginRoute()}
+								>
+									{"Login"}
+								</a>
 
-							<a
-								className="hidden rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600 transition hover:text-teal-600/75 sm:block dark:bg-gray-800 dark:text-white dark:hover:text-white/75"
-								href={getRegisterRoute()}
-							>
-								Register
-							</a>
-						</div>
+								<a
+									className="hidden rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600 transition hover:text-teal-600/75 sm:block dark:bg-gray-800 dark:text-white dark:hover:text-white/75"
+									href={getRegisterRoute()}
+								>
+									Register
+								</a>
+							</div>
+						)}
 					</div>
 					<nav
 						aria-label="Global"

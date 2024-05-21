@@ -37,7 +37,6 @@ export const handleSubmit = async (props: RegisterActionProps) => {
 				}),
 			});
 			const signUpResponse: registerProps = await res.json();
-			console.log(signUpResponse);
 			if (signUpResponse?.message.toLowerCase() === "success") {
 				const verificationtoken = await getVerificationToken(
 					props.email as string
@@ -52,7 +51,8 @@ export const handleSubmit = async (props: RegisterActionProps) => {
 			if (signUpResponse?.message === "User already exists") {
 				return {
 					status: null,
-					error: "User already exists",
+					error:
+						"User already exists.If you have created an account using Google Sign In with the same email, please sign in using Google Sign In.",
 				} as RegisterActionResultProps;
 			} else if (
 				signUpResponse?.message?.includes("network") ||
@@ -68,15 +68,5 @@ export const handleSubmit = async (props: RegisterActionProps) => {
 		} catch (e) {
 			console.log(e);
 		}
-	}
-};
-export const handleGoogleSignIn = async (props: googleSignInProps) => {
-	props.setSignUpStarted(true);
-	props.setgoogleProviderClicked(true);
-	const googleSignInResponse = await signIn("google", {
-		callbackUrl: getCheckUsernameRoute(),
-	});
-	if (googleSignInResponse && !googleSignInResponse.error) {
-		props.router.push(getUsernameCreationRoute());
 	}
 };

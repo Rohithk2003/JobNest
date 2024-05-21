@@ -17,14 +17,18 @@ async function fetchJobsData({
 		page?: number;
 	};
 }) {
-	const res = await fetch(
-		`${getaBackendRoute()}${getJobsRoute()}?page=${
-			searchParams?.page ?? 1
-		}&search=${searchParams?.search ?? ""}`
-	);
-	const data: JobApiFetchProps = await res.json();
-	const error = res.ok ? null : data;
-	return { data, error };
+	try {
+		const res = await fetch(
+			`${getaBackendRoute()}${getJobsRoute()}?page=${
+				searchParams?.page ?? 1
+			}&search=${searchParams?.search ?? ""}`
+		);
+		const data: JobApiFetchProps = await res.json();
+		const error = res.ok ? null : data;
+		return { data, error };
+	} catch (error) {
+		return { data: null, error };
+	}
 }
 
 export default async function Dashboard({

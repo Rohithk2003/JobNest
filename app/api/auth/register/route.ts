@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/client";
 import { NextResponse } from "next/server";
 import { hash } from "bcrypt";
 import { cookies } from "next/headers";
+import { tables } from "@/configs/constants";
 
 export async function POST(request: Request) {
 	const { email, password, username, confirmPassword } = await request.json();
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
 		try {
 			let { data: user, error } = await supabase
 				.schema("next_auth")
-				.from("credentials")
+				.from(tables.supabaseUsers)
 				.insert([
 					{
 						email: email,

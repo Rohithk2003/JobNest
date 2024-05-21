@@ -3,15 +3,22 @@ import { ReactNode, useState } from "react";
 import Information from "../components/Setup-User/Information";
 import Header from "../components/MainPage/Navigation/Header";
 import { useSession } from "next-auth/react";
-
+import ResumeUpload from "../components/Setup-User/ResumeUpload";
+import SendVerificationEmailComponent from "../components/SenVerificationEmailComponent";
+import { getDashboardRoute } from "@/configs/constants";
+import { useRouter } from "next/navigation";
 export default function SetupUser() {
+	const router = useRouter();
+
 	const { data: session } = useSession();
 	const [steps, setStep] = useState({
-		stepsItems: ["Profile", "Education", "Resume", "Email verification"],
+		stepsItems: ["Profile", "Resume", "Email verification"],
 		currentStep: 1,
 	});
 	const components: Record<number, ReactNode> = {
 		1: <Information />,
+		2: <ResumeUpload />,
+		3: <SendVerificationEmailComponent />,
 	};
 	return (
 		<>
@@ -52,7 +59,9 @@ export default function SetupUser() {
 							</li>
 						))}
 					</ul>
-					{components[steps.currentStep]}
+					<div className="min-h-[60vh] flex justify-center items-center">
+						{components[steps.currentStep]}
+					</div>
 					<div className="flex justify-between mt-4 items-center">
 						<button
 							onClick={() => {
@@ -85,7 +94,9 @@ export default function SetupUser() {
 							Next
 						</button>
 						<button
-							onClick={() => {}}
+							onClick={() => {
+								router.push(getDashboardRoute());
+							}}
 							className={`px-6 py-2 leading-5 ${
 								steps.currentStep === steps.stepsItems.length
 									? "block"

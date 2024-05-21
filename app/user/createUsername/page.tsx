@@ -4,6 +4,7 @@ import {
 	getIconLocation,
 	getLoginRoute,
 	getTermsRoute,
+	tables,
 } from "@/configs/constants";
 
 import Image from "next/image";
@@ -59,13 +60,9 @@ export default function Register() {
 			setShowPopup(true);
 		} else {
 			try {
-				let table = "credentials";
-				if (session?.user.provider === "google") {
-					table = "users";
-				}
 				const result = await supabase
 					.schema("next_auth")
-					.from(table)
+					.from(tables.supabaseUsers)
 					.update({
 						username: userUsername,
 					})
@@ -156,7 +153,7 @@ export default function Register() {
 								</div>
 
 								{signUpClicked ? (
-									<LoadingButton />
+									<LoadingButton text="Please wait" />
 								) : (
 									<button
 										onSubmit={handleSubmit}

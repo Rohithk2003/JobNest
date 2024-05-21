@@ -110,6 +110,44 @@ export type Database = {
 				};
 				Relationships: [];
 			};
+			resumeUser: {
+				Row: {
+					created_at: string;
+					file_name: string | null;
+					file_uuid: string | null;
+					id: number;
+					link_expires_after: string | null;
+					resume_link: string | null;
+					user_id: string | null;
+				};
+				Insert: {
+					created_at?: string;
+					file_name?: string | null;
+					file_uuid?: string | null;
+					id?: number;
+					link_expires_after?: string | null;
+					resume_link?: string | null;
+					user_id?: string | null;
+				};
+				Update: {
+					created_at?: string;
+					file_name?: string | null;
+					file_uuid?: string | null;
+					id?: number;
+					link_expires_after?: string | null;
+					resume_link?: string | null;
+					user_id?: string | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: "resumeUser_user_id_fkey";
+						columns: ["user_id"];
+						isOneToOne: false;
+						referencedRelation: "users";
+						referencedColumns: ["id"];
+					}
+				];
+			};
 			sessions: {
 				Row: {
 					expires: string;
@@ -144,30 +182,33 @@ export type Database = {
 					bio: string | null;
 					cgpa: number | null;
 					email: string | null;
-					emailVerified: string | null;
+					emailVerified: boolean | null;
 					id: string;
 					image: string | null;
 					name: string | null;
+					password: string | null;
 					username: string | null;
 				};
 				Insert: {
 					bio?: string | null;
 					cgpa?: number | null;
 					email?: string | null;
-					emailVerified?: string | null;
+					emailVerified?: boolean | null;
 					id?: string;
 					image?: string | null;
 					name?: string | null;
+					password?: string | null;
 					username?: string | null;
 				};
 				Update: {
 					bio?: string | null;
 					cgpa?: number | null;
 					email?: string | null;
-					emailVerified?: string | null;
+					emailVerified?: boolean | null;
 					id?: string;
 					image?: string | null;
 					name?: string | null;
+					password?: string | null;
 					username?: string | null;
 				};
 				Relationships: [];
@@ -175,19 +216,19 @@ export type Database = {
 			VerificationToken: {
 				Row: {
 					email: string | null;
-					expires: Date;
+					expires: string;
 					id: string;
 					token: string | null;
 				};
 				Insert: {
 					email?: string | null;
-					expires: Date;
+					expires: string;
 					id?: string;
 					token?: string | null;
 				};
 				Update: {
 					email?: string | null;
-					expires?: Date;
+					expires?: string;
 					id?: string;
 					token?: string | null;
 				};

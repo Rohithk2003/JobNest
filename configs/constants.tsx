@@ -63,6 +63,6 @@ export const premiumTab = "premium";
 export const savedTab = "saved";
 export const tables = {
 	supabaseUsers: "users",
-	credentials: "credentials",
 	verificationTokens: "VerificationToken",
+	resumeUserLink: "resumeUser",
 };

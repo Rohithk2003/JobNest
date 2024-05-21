@@ -3,52 +3,50 @@ import { tableTypes } from "@/types/custom";
 import { Database } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/client";
 import { PostgrestError } from "@supabase/supabase-js";
+import { User } from "next-auth";
+import { AdapterUser } from "next-auth/adapters";
 
 const supabase = createClient();
-export const getProviderUserByEmail = async (email: string) => {
+export const getUserByEmail = async (email: string) => {
 	const { data, error } = await supabase
 		.schema("next_auth")
 		.from(tables.supabaseUsers)
 		.select("*")
 		.eq("email", email)
-		.single();
+		.limit(1)
+		.maybeSingle();
 	return { data, error } as {
 		data: tableTypes["supabaseUser"];
 		error: PostgrestError | null;
 	};
 };
-export const getCredentialUserByEmail = async (email: string) => {
+export const getUserByUsername = async (username: string) => {
 	const { data, error } = await supabase
 		.schema("next_auth")
-		.from(tables.credentials)
-		.select("*")
-		.eq("email", email)
-		.single();
-	return { data, error } as {
-		data: tableTypes["credentials"];
-		error: PostgrestError | null;
-	};
-};
-export const getCredentialUserByUsername = async (username: string) => {
-	const { data, error } = await supabase
-		.schema("next_auth")
-		.from(tables.credentials)
+		.from(tables.supabaseUsers)
 		.select("*")
 		.eq("username", username)
-		.single();
-
+		.limit(1)
+		.maybeSingle();
 	return { data, error } as {
-		data: tableTypes["credentials"];
+		data: tableTypes["supabaseUser"];
 		error: PostgrestError | null;
 	};
 };
-export const createCredentialUser = async (
-	user: Database["next_auth"]["Tables"]["credentials"]["Row"]
+
+export const createUser = async (
+	email: string,
+	password: string,
+	username: string
 ) => {
 	const { data, error } = await supabase
 		.schema("next_auth")
 		.from(tables.supabaseUsers)
-		.insert(user);
+		.insert({
+			email: email,
+			password: password,
+			username: username,
+		});
 	if (error)
 		return {
 			message: error.message,

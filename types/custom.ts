@@ -35,6 +35,8 @@ export interface UserProps {
 	id: string;
 	emailVerified: boolean | null;
 	bio: string | null;
+	country: string | null;
+	gender: string | null;
 }
 export interface SupabaseUpdateProps {
 	status: String;
@@ -73,7 +75,7 @@ export interface RegisterActionResultProps {
 }
 export interface ProfileComponentProps {
 	session: Session | null;
-	uploadFile: () => void;
+	pdfImageUploader: Function;
 	handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
 	file: File | null;
 	handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -102,6 +104,10 @@ export interface ProfileComponentProps {
 }
 export interface tableTypes {
 	supabaseUser: Database["next_auth"]["Tables"]["users"]["Row"];
-	credentials: Database["next_auth"]["Tables"]["credentials"]["Row"];
 	verificationTokens: Database["next_auth"]["Tables"]["VerificationToken"]["Row"];
+	resumeUser: Database["next_auth"]["Tables"]["resumeUser"]["Row"];
+}
+export interface SupabaseError {
+	message: string;
+	details: string;
 }

@@ -53,15 +53,21 @@ export default function VerifyEmailForm() {
 					Please click the button below to verify your email address.
 				</p>
 				<div className="mt-4 flex justify-center">
-					<button
-						disabled={success || error == false}
-						className="inline-flex items-center border border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-indigo-600 text-sm font-medium text-white shadow-sm"
-						type="button"
-					>
-						Resend Verify Email
-					</button>
+					{errorMessage?.toLowerCase() === "email already verified" ? (
+						<div className="inline-flex items-center border border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-indigo-600 text-sm font-medium text-white shadow-sm">
+							Go to Dashboard
+						</div>
+					) : (
+						<button
+							disabled={success || error == false}
+							className="inline-flex items-center border border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-indigo-600 text-sm font-medium text-white shadow-sm"
+							type="button"
+						>
+							Resend Verify Email
+						</button>
+					)}
 				</div>
-				{message && (
+				{message && !error && !success && (
 					<div className="mt-4 text-center flex justify-center items-center">
 						<div className="text-indigo-600 flex flex-rwo gap-2">
 							<div>

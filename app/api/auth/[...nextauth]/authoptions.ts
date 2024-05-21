@@ -5,8 +5,8 @@ import { SupabaseAdapter } from "@auth/supabase-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { createClient } from "@/utils/supabase/client";
 import type { Adapter, AdapterUser } from "next-auth/adapters";
-import { getLoginRoute } from "@/configs/constants";
-import { getCredentialUserByEmail } from "@/Database/database";
+import { getLoginRoute, tables } from "@/configs/constants";
+import { getUserByEmail } from "@/Database/database";
 const bcrypt = require("bcrypt");
 
 const supabase = createClient();
@@ -33,18 +33,13 @@ export const authOptions: NextAuthOptions = {
 				email: { label: "Email", type: "email" },
 				password: { label: "Password", type: "password" },
 			},
-			async authorize(credentials) {
+			async authorize(credentials, req) {
 				try {
 					if (!credentials || !credentials.email || !credentials.password) {
 						throw new Error("Email and password are required.");
 					}
 					const { email, password } = credentials;
-					const { data: user, error } = await supabase
-						.schema("next_auth")
-						.from("credentials")
-						.select("*")
-						.eq("email", email)
-						.maybeSingle();
+					const { data: user, error } = await getUserByEmail(email);
 					if (error) {
 						throw "No user exists";
 					}
@@ -52,61 +47,14 @@ export const authOptions: NextAuthOptions = {
 						throw "No user exists";
 					}
 					const passwordsMatch = await bcrypt.compareSync(
-						credentials.password,
+						password,
 						user.password
 					);
 					if (user && passwordsMatch) {
-						const { password, created_at, id, ...userWithoutSensitiveInfo } =
-							user;
-						return userWithoutSensitiveInfo;
+						const { password, ...userWithoutSensitiveInfo } = user;
+						return userWithoutSensitiveInfo as User;
 					} else {
 						throw "Invalid password";
-					}
-				} catch (error: any) {
-					console.error("Error fetching user data:", error);
-					throw new Error(error, {
-						cause: "No user exists",
-					});
-				}
-			},
-		}),
-		CredentialsProvider({
-			id: "customsignup",
-			name: "customsignup",
-			type: "credentials",
-			credentials: {
-				email: { label: "Email", type: "email" },
-				password: { label: "Password", type: "password" },
-				username: { label: "Username", type: "text" },
-			},
-			async authorize(credentials) {
-				try {
-					if (!credentials || !credentials.email || !credentials.password) {
-						throw new Error("Email and password are required.");
-					}
-					const hashedPassword = await bcrypt.hash(credentials.password, 10);
-					let { data: user, error } = await supabase
-						.schema("next_auth")
-						.from("credentials")
-						.insert([
-							{
-								email: credentials.email,
-								password: hashedPassword,
-								username: credentials.username,
-							},
-						]);
-					console.log(user, error);
-					if (error) {
-						throw new Error(error.details, {
-							cause: "User already exists",
-						});
-					} else {
-						let { data: user } = await supabase
-							.schema("next_auth")
-							.from("credentials")
-							.select("*")
-							.eq("email", credentials.email);
-						return user && user[0];
 					}
 				} catch (error: any) {
 					console.error("Error fetching user data:", error);
@@ -130,23 +78,19 @@ export const authOptions: NextAuthOptions = {
 			if (account?.provider === "google") {
 				return true;
 			}
-
-			console.log(user);
-			console.log(account);
-			if (user?.email_verified) {
+			if (user?.emailVerified) {
 				return true;
 			} else {
 				return false;
 			}
 		},
 		jwt: async ({ token, trigger, account, profile, session, user }) => {
-			// user && (token.user = user)
 			if (user) {
 				token.user = {
-					...user,
 					username: user.username,
-					avatar: user.avatar,
 					provider: account?.provider,
+					image: user.image,
+					email: user.email,
 				};
 			}
 			if (trigger === "update" && session.user) {
@@ -156,9 +100,7 @@ export const authOptions: NextAuthOptions = {
 			return token;
 		},
 		session: async ({ session, token }) => {
-			console.log(token);
 			session.user = token.user;
-
 			return session;
 		},
 	},

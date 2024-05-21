@@ -1,5 +1,7 @@
 "use server";
 
+import { tables } from "@/configs/constants";
+import { tableTypes } from "@/types/custom";
 import { Database } from "@/types/supabase";
 import { doesVerificationTokenExist } from "@/user/gettoken";
 import { createClient } from "@/utils/supabase/client";
@@ -33,7 +35,7 @@ const newVerification = async (token: string | null) => {
 		}
 		const user = await supabase
 			.schema("next_auth")
-			.from("credentials")
+			.from(tables.supabaseUsers)
 			.select("*")
 			.eq("email", tokenData.email);
 		if (!user || user.error) {
@@ -41,21 +43,20 @@ const newVerification = async (token: string | null) => {
 				error: "User not found",
 			};
 		} else {
-			const currentUser: Database["next_auth"]["Tables"]["credentials"]["Row"] =
-				user.data && user.data[0];
+			const currentUser: tableTypes["supabaseUser"] = user.data && user.data[0];
 			if (!currentUser) {
 				return {
 					error: "User not found",
 				};
 			} else {
-				if (currentUser.email_verified) {
+				if (currentUser.emailVerified) {
 					return {
 						error: "Email already verified",
 					};
 				} else {
 					const updatedUser = await supabase
 						.schema("next_auth")
-						.from("credentials")
+						.from(tables.supabaseUsers)
 						.update({ email_verified: true })
 						.eq("id", currentUser.id);
 					if (updatedUser.error) {

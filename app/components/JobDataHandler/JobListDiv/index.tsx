@@ -5,7 +5,7 @@ export default function JobListDiv({
 	data,
 	error,
 }: {
-	data: JobApiFetchProps;
+	data: JobApiFetchProps|null;
 	error: any;
 }) {
 	return (

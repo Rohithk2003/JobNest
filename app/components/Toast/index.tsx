@@ -68,70 +68,48 @@ export default function Toast({
 	description,
 	type,
 	controller,
-	controllerHandlerObject,
 	controllerHandlerBoolean,
 	loader,
+	time,
 }: {
 	description: string;
 	type: "success" | "error" | "warning" | "normal";
 	controller: boolean;
-	controllerHandlerObject: Dispatch<
-		SetStateAction<{
-			show: boolean;
-			title: string;
-			description: string;
-		}>
-	> | null;
-	controllerHandlerBoolean: Dispatch<SetStateAction<boolean>> | null;
+	controllerHandlerBoolean: Dispatch<SetStateAction<boolean>>;
 	loader: ReactNode;
+	time: number | null;
 }) {
 	useEffect(() => {
 		if (controller) {
 			setTimeout(() => {
-				if (controllerHandlerObject)
-					controllerHandlerObject({
-						show: false,
-						title: "",
-						description: "",
-					});
-				else {
-					if (controllerHandlerBoolean) controllerHandlerBoolean(false);
-				}
-			}, 3000);
+				controllerHandlerBoolean(false);
+			}, time || 3000);
 		}
-	}, [controller, controllerHandlerObject, controllerHandlerBoolean]);
+	}, [controller, controllerHandlerBoolean]);
 
 	const { color, icon } = typeProperties[type];
 
 	return (
 		<div
-			className={`fixed right-0 z-[1000] w-32 top-20  transition-all ease-in-out duration-500 ${
+			className={`fixed right-0 z-[1000] w-96 top-20  transition-all ease-in-out duration-500 ${
 				controller ? "right-0" : "right-[-200%]"
 			}`}
 		>
 			<div
-				className="w-full bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
+				className="w-full relative bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
 				role="alert"
 			>
 				<div className="flex p-4">
 					<div className="flex-shrink-0">{loader ? loader : icon}</div>
-					<div className="ms-3 relative">
+					<div className="ms-3 ">
 						<p className="text-sm text-gray-700 dark:text-neutral-400">
 							{description}
 						</p>
 						<div
 							onClick={() => {
-								if (controllerHandlerObject)
-									controllerHandlerObject({
-										show: false,
-										title: "",
-										description: "",
-									});
-								else {
-									if (controllerHandlerBoolean) controllerHandlerBoolean(false);
-								}
+								controllerHandlerBoolean(false);
 							}}
-							className="absolute top-0 right-0"
+							className="absolute top-2 right-2"
 						>
 							<RxCross1 className={`cursor-pointer ${color}`} />
 						</div>

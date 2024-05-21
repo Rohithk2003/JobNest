@@ -44,19 +44,19 @@ export default function Header({
 		}
 		replace(`${pathname}?${params.toString()}`);
 	}, 0);
+
 	useEffect(() => {
-		console.log(session);
 		const fetchData = async () => {
 			if (
 				session &&
 				session.user.provider === "custom-signin" &&
-				session.user.avatar &&
-				!session.user.avatar?.startsWith("http")
+				session.user.image &&
+				!session.user.image?.startsWith("http")
 			) {
-				if (session.user.avatar) {
+				if (session.user.image) {
 					const { data: link, error } = await supabase.storage
 						.from("jobnest")
-						.createSignedUrl(session.user.avatar, 3600);
+						.createSignedUrl(session.user.image, 3600);
 					setLink(link?.signedUrl ?? "");
 					update({
 						user: {
@@ -71,6 +71,7 @@ export default function Header({
 	}, [session, supabase.storage, update]);
 
 	const [showDropDown, setShowDropDown] = useState(false);
+	const [dropdownToggler, setDropdownToggler] = useState(false);
 	return (
 		<nav
 			onClick={(e) => {
@@ -144,8 +145,8 @@ export default function Header({
 								xmlns="http://www.w3.org/2000/svg"
 							>
 								<path
-									fill-rule="evenodd"
-									clip-rule="evenodd"
+									fillRule="evenodd"
+									clipRule="evenodd"
 									d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
 								></path>
 							</svg>
@@ -179,8 +180,8 @@ export default function Header({
 							xmlns="http://www.w3.org/2000/svg"
 						>
 							<path
-								clip-rule="evenodd"
-								fill-rule="evenodd"
+								clipRule="evenodd"
+								fillRule="evenodd"
 								d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
 							></path>
 						</svg>
@@ -189,22 +190,21 @@ export default function Header({
 					<button
 						type="button"
 						className="flex mx-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-						id="user-menu-button"
-						aria-expanded="false"
-						onClick={() => setShowDropDown(!showDropDown)}
-						data-dropdown-toggle="dropdown"
+						onClick={() => {
+							setDropdownToggler(!dropdownToggler);
+						}}
 					>
 						<span className="sr-only">Open user menu</span>
 						{session ? (
-							session.user.avatar || session.user.image ? (
+							session.user.image || session.user.image ? (
 								<Image
 									className="w-8 h-8 rounded-full"
 									src={
 										session?.user.provider === "custom-signin"
-											? session.user.avatar?.startsWith("http")
-												? session.user.avatar
+											? session.user.image?.startsWith("http")
+												? session.user.image
 												: link
-											: session?.user.avatar || session?.user.image || ""
+											: session?.user.image || ""
 									}
 									alt="user photo"
 									width={32}
@@ -228,9 +228,8 @@ export default function Header({
 					</button>
 					<div
 						className={`${
-							showDropDown ? "block" : "hidden"
+							dropdownToggler ? "block" : "hidden"
 						} z-50 my-4 w-56 text-base absolute right-8 top-10 list-none bg-white  divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl`}
-						id="dropdown"
 					>
 						<div className="py-3 px-4">
 							Signed in as
@@ -267,9 +266,9 @@ export default function Header({
 										xmlns="http://www.w3.org/2000/svg"
 									>
 										<path
-											fill-rule="evenodd"
+											fillRule="evenodd"
 											d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-											clip-rule="evenodd"
+											clipRule="evenodd"
 										></path>
 									</svg>
 									My likes
