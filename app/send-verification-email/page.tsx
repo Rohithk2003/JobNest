@@ -1,9 +1,9 @@
-import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
 import Header from "../components/MainPage/Navigation/Header";
-import SendVerificationEmailComponent from "../components/SenVerificationEmailComponent";
+import SendVerificationEmailComponent from "../components/SendVerificationEmailComponent";
 
-export default function SendVerificationEmail() {
-	const { data: session } = useSession();
+export default async function SendVerificationEmail() {
+	const session = await getServerSession();
 	return (
 		<div className="h-screen">
 			<Header session={session} />

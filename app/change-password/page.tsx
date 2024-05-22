@@ -16,13 +16,13 @@ export default function ChangePassword() {
 	const [currentPassword, setCurrentPassword] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const searchParams = useSearchParams();
-	const [message, setMessage] = useState("Verifying your email...");
 	const [error, setError] = useState<boolean>(false);
 	const [errorMessage, setErrorMessage] = useState<string | undefined>(
 		undefined
 	);
 	const [success, setSuccess] = useState<boolean>(false);
 	const token = searchParams.get("token");
+	const resetParameter = JSON.parse(searchParams.get("reset") ?? "");
 	const [password, setPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
@@ -87,7 +87,7 @@ export default function ChangePassword() {
 			currentPassword: password,
 			newPassword: newPassword,
 			confirmPassword: confirmPassword,
-			PasswordAlreadySet: currentPassword,
+			PasswordAlreadySet: currentPassword && !resetParameter,
 			email: session?.user?.email as string,
 		}).then((result) => {
 			setUpdationStarted(false);
@@ -120,7 +120,7 @@ export default function ChangePassword() {
 						Change Password
 					</h1>
 					<div className="w-full max-w-md bg-zinc-100 dark:bg-zinc-700 shadow-md rounded px-8 pt-6 pb-8 mb-4">
-						{currentPassword && !passwordUpdated && (
+						{currentPassword && !passwordUpdated && !resetParameter && (
 							<div className="mb-4">
 								<label
 									htmlFor="current-password"
@@ -192,7 +192,6 @@ export default function ChangePassword() {
 										: "mt-10 relative after:absolute after:top-0 after:left-0 after:w-full after:h-full after:bg-black after:z-[900] z-50 after:opacity-30 after:rounded-full justify-center items-center gap-1 w-44 flex flex-row p-3 rounded-full hover:cursor-pointer text-center  transition-all ease-in-out  bg-primary-900"
 								}`}
 							>
-								
 								{updationStarted ? (
 									<div className="flex flex-row w-full gap-4 justify-center items-center">
 										Updating Password

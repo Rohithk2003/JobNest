@@ -6,7 +6,16 @@ export const handleGoogleSignIn = async (
 	setgoogleProviderClicked: Dispatch<SetStateAction<boolean>>
 ) => {
 	setgoogleProviderClicked(true);
-	const googleSignInResponse = await signIn("google", {
+	await signIn("google", {
+		redirect: false,
+		callbackUrl: getCheckUsernameRoute(),
+	});
+};
+export const handleGithuSignIn = async (
+	setgoogleProviderClicked: Dispatch<SetStateAction<boolean>>
+) => {
+	setgoogleProviderClicked(true);
+	await signIn("github", {
 		redirect: false,
 		callbackUrl: getCheckUsernameRoute(),
 	});

@@ -4,7 +4,7 @@ import Information from "../components/Setup-User/Information";
 import Header from "../components/MainPage/Navigation/Header";
 import { useSession } from "next-auth/react";
 import ResumeUpload from "../components/Setup-User/ResumeUpload";
-import SendVerificationEmailComponent from "../components/SenVerificationEmailComponent";
+import SendVerificationEmailComponent from "../components/SendVerificationEmailComponent";
 import { getDashboardRoute } from "@/configs/constants";
 import { useRouter } from "next/navigation";
 export default function SetupUser() {
@@ -12,12 +12,12 @@ export default function SetupUser() {
 
 	const { data: session } = useSession();
 	const [steps, setStep] = useState({
-		stepsItems: ["Profile", "Resume", "Email verification"],
+		stepsItems: ["Resume", "Profile", "Email verification"],
 		currentStep: 1,
 	});
 	const components: Record<number, ReactNode> = {
-		1: <Information />,
-		2: <ResumeUpload />,
+		1: <ResumeUpload />,
+		2: <Information />,
 		3: <SendVerificationEmailComponent />,
 	};
 	return (

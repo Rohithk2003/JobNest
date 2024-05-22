@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Toast from "../../Toast";
 import LoaderCircle from "../../LoaderCircle";
+import BackgroundGlow from "../../VisualComponents/BackgroundGlow";
 
 export default function Information() {
 	const [startedUpdatingInfo, setStartUpdatingInfo] = useState<boolean>(false);
@@ -29,7 +30,7 @@ export default function Information() {
 				loader={<LoaderCircle />}
 				time={3000}
 			/>
-			<section className="max-w-7xl p-6 mx-auto bg-transparent  rounded-lg dark mt-20">
+			<section className="max-w-7xl p-6 mx-auto bg-transparent  relative z-[900] rounded-lg dark mt-20">
 				<h1 className="text-xl font-bold mb-10 text-white capitalize dark:text-white">
 					Account settings
 				</h1>
@@ -196,6 +197,7 @@ export default function Information() {
 					</div>
 				</form>
 			</section>
+			<BackgroundGlow />
 		</>
 	);
 }

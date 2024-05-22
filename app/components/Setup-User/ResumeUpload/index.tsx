@@ -12,7 +12,8 @@ import { createClient } from "@/utils/supabase/client";
 import { useSession } from "next-auth/react";
 import Toast from "../../Toast";
 import { tables } from "@/configs/constants";
-import { getCredentialUserByUsername } from "@/Database/database";
+import { getUserByUsername } from "@/Database/database";
+import BackgroundGlow from "../../VisualComponents/BackgroundGlow";
 export default function ResumeUpload() {
 	const [file, setFile]: [File | null, Dispatch<SetStateAction<File | null>>] =
 		useState<File | null>(null);
@@ -56,7 +57,7 @@ export default function ResumeUpload() {
 				return;
 			}
 
-			const { data: user, error: er } = await getCredentialUserByUsername(
+			const { data: user, error: er } = await getUserByUsername(
 				session.user.username
 			);
 			console.log(user, er);
@@ -125,7 +126,7 @@ export default function ResumeUpload() {
 				time={3000}
 			/>
 			<section
-				className={`w-full p-6 mx-auto flex-col bg-transparent tet-white  gap-20 h-[50vh] flex justify-start items-center  rounded-lg dark mt-20 ${poppins.className}`}
+				className={`w-full p-6 relative z-[900] mx-auto flex-col bg-transparent text-white  gap-20 h-[50vh] flex justify-start items-center  rounded-lg dark mt-20 ${poppins.className}`}
 			>
 				<div className="text-5xl text-white">Upload resume</div>
 				<div className="max-w-sm">
@@ -161,6 +162,7 @@ export default function ResumeUpload() {
 					</form>
 				</div>
 			</section>
+			<BackgroundGlow />
 		</>
 	);
 }

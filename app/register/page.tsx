@@ -108,6 +108,13 @@ export default function Register() {
 			callbackUrl: getUsernameCreationRoute(),
 		});
 	};
+	const handleGithubSignIn = async () => {
+		setSignUpStarted(true);
+		setgithubProviderClicked(true);
+		await signIn("github", {
+			callbackUrl: getUsernameCreationRoute(),
+		});
+	};
 
 	return (
 		<>
@@ -280,6 +287,7 @@ export default function Register() {
 									/>
 								) : (
 									<button
+										onClick={handleGithubSignIn}
 										disabled={signUpStarted}
 										className={`flex items-center justify-center py-2.5 border rounded-lg ${
 											signUpStarted

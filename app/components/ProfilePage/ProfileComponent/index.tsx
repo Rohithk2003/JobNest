@@ -585,15 +585,13 @@ const ProfileComponent = ({}) => {
 													}}
 													rows={4}
 													className="block p-2.5 w-full text-sm text-inwhite  bg-transparent text-white rounded-lg border border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500 "
-													placeholder="Write bio here..."
+													placeholder="Write a few sentences about yourself."
 												></textarea>
-												<p className="mt-3 text-sm leading-6 text-gray-600">
-													Write a few sentences about yourself.
-												</p>
+												<p className="mt-3 text-sm leading-6 text-gray-600"></p>
 											</div>
 											{!noPdfUploaded ? (
-												<div className="w-1/2">
-													Download Resume
+												<div className="mb-4 mt-2 min-w-1/2 text-white">
+													Your Resume
 													<a
 														target="_blank"
 														href={downloadUrl}

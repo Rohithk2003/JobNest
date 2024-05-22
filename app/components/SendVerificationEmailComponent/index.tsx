@@ -1,15 +1,13 @@
 "use client";
 
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getorCreateVerificationToken } from "@/lib/token";
-import { getCredentialUserByEmail } from "@/Database/database";
 import { sendVerificationMail } from "@/lib/mail";
 import { useSession } from "next-auth/react";
-import Header from "../MainPage/Navigation/Header";
-import Logo from "../Logo";
 import { ErrorAlert, MailSentAlert } from "../Alert";
 import LoadingButton from "../LoadingButton";
 import BackgroundGlow from "../VisualComponents/BackgroundGlow";
+import { getUserByUsername } from "@/Database/database";
 
 export default function SendVerificationEmailComponent() {
 	const [username, setUsername] = useState("");
@@ -24,7 +22,7 @@ export default function SendVerificationEmailComponent() {
 		}
 		setMailSent(true);
 		setError(false);
-		const { data } = await getCredentialUserByEmail(username);
+		const { data } = await getUserByUsername(username);
 
 		const verificationtoken = await getorCreateVerificationToken(
 			data.email as string
@@ -85,7 +83,10 @@ export default function SendVerificationEmailComponent() {
 						/>
 					)}
 					{mailSent ? (
-						<LoadingButton text={`Resend email in ${timer} seconds`} />
+						<LoadingButton
+							width={64}
+							text={`Resend email in ${timer} seconds`}
+						/>
 					) : (
 						<button
 							onClick={onsubmit}

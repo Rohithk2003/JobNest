@@ -57,6 +57,10 @@ export function getSendEmailVerificationRoute(): string {
 export function getUserSetupRoute(): string {
 	return "/setup-user";
 }
+
+export const getForgotPasswordRoute = (): string => {
+	return "/forgot-password";
+};
 export const profileTab = "profile";
 export const accountSettingsTab = "accountSettings";
 export const premiumTab = "premium";

@@ -18,7 +18,19 @@ export const sendVerificationMail = async (email: string, token: string) => {
 	});
 };
 export const sendPasswordResetMail = async (email: string, token: string) => {
-	const confirmationlink = `${domain}/change-password?token=${token}`;
+	const confirmationlink = `${domain}/change-password?token=${token}&reset=false`;
+	await resend.emails.send({
+		from: "onboarding@resend.dev",
+		to: email,
+		subject: "Reset Password",
+		react: ChangePasswordEmail({ resetLink: confirmationlink }),
+	});
+};
+export const sendPasswordWithCPasswordResetMail = async (
+	email: string,
+	token: string
+) => {
+	const confirmationlink = `${domain}/change-password?token=${token}&reset=true`;
 	await resend.emails.send({
 		from: "onboarding@resend.dev",
 		to: email,

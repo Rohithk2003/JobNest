@@ -2,6 +2,7 @@
 import {
 	getCheckUsernameRoute,
 	getDashboardRoute,
+	getForgotPasswordRoute,
 	getIconLocation,
 	getRegisterRoute,
 	getSendEmailVerificationRoute,
@@ -196,7 +197,7 @@ export default function Login() {
 						<div className="space-y-4 text-sm font-medium">
 							{googleProviderClicked ? (
 								<LoadingButton
-									width={32}
+									width={96}
 									text={"Please wait.."}
 								/>
 							) : (
@@ -261,6 +262,9 @@ export default function Login() {
 								/>
 							) : (
 								<button
+									onClick={() => {
+										handleGoogleSignIn(setgoogleProviderClicked);
+									}}
 									disabled={
 										googleProviderClicked ||
 										githubProviderClicked ||
@@ -365,7 +369,10 @@ export default function Login() {
 							)}
 						</div>
 						<div className="text-center">
-							<a className="text-indigo-600 hover:text-indigo-500">
+							<a
+								href={getForgotPasswordRoute()}
+								className="text-indigo-600 hover:underline hover:text-indigo-500"
+							>
 								Forgot password?
 							</a>
 						</div>
