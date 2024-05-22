@@ -1,14 +1,14 @@
 "use client";
 
 import { SetStateAction, useEffect, useState } from "react";
-import { getVerificationToken } from "@/lib/token";
+import { getorCreateVerificationToken } from "@/lib/token";
 import { getCredentialUserByEmail } from "@/Database/database";
 import { sendVerificationMail } from "@/lib/mail";
 import { useSession } from "next-auth/react";
 import Header from "../MainPage/Navigation/Header";
 import Logo from "../Logo";
 import { ErrorAlert, MailSentAlert } from "../Alert";
-import LoadingButton from "../reactLoadingSpinner";
+import LoadingButton from "../LoadingButton";
 import BackgroundGlow from "../VisualComponents/BackgroundGlow";
 
 export default function SendVerificationEmailComponent() {
@@ -26,7 +26,9 @@ export default function SendVerificationEmailComponent() {
 		setError(false);
 		const { data } = await getCredentialUserByEmail(username);
 
-		const verificationtoken = await getVerificationToken(data.email as string);
+		const verificationtoken = await getorCreateVerificationToken(
+			data.email as string
+		);
 		await sendVerificationMail(data.email as string, verificationtoken);
 	};
 	useEffect(() => {

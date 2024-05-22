@@ -2,11 +2,9 @@ import {
 	createVerificationToken,
 	getVerificationTokenByEmail,
 } from "@/Database/database";
-import { Database } from "@/types/supabase";
-import { doesVerificationTokenExist } from "@/user/gettoken";
 import { createClient } from "@/utils/supabase/client";
 import { v4 as uuidv4 } from "uuid";
-export const getVerificationToken = async (email: string) => {
+export const getorCreateVerificationToken = async (email: string) => {
 	const token = uuidv4();
 	const supabase = createClient();
 	const expires = new Date().getTime() + 1000 * 60 * 60 * 24; // 24 hours
@@ -24,5 +22,5 @@ export const getVerificationToken = async (email: string) => {
 		token,
 		expires
 	);
-	return token;
+	return token as string;
 };

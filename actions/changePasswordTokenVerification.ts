@@ -2,11 +2,9 @@
 
 import { tables } from "@/configs/constants";
 import { tableTypes } from "@/types/custom";
-import { Database } from "@/types/supabase";
-import { doesVerificationTokenExist } from "@/user/gettoken";
 import { createClient } from "@/utils/supabase/client";
 
-const newVerification = async (token: string | null) => {
+const changePasswordTokenVerification = async (token: string | null) => {
 	const supabase = createClient();
 	if (!token) {
 		return {
@@ -29,6 +27,11 @@ const newVerification = async (token: string | null) => {
 
 		const hasExpired = new Date(tokenData.expires) < new Date();
 		if (hasExpired) {
+			await supabase
+				.schema("next_auth")
+				.from("VerificationToken")
+				.delete()
+				.eq("id", tokenData.id);
 			return {
 				error: "Token has expired",
 			};
@@ -49,30 +52,19 @@ const newVerification = async (token: string | null) => {
 					error: "User not found",
 				};
 			} else {
-				if (currentUser.emailVerified) {
+				if (!currentUser.emailVerified) {
 					return {
-						error: "Email already verified",
+						error: "Email not verified",
 					};
 				} else {
-					const updatedUser = await supabase
-						.schema("next_auth")
-						.from(tables.supabaseUsers)
-						.update({ emailVerified: true })
-						.eq("id", currentUser.id);
-					if (updatedUser.error) {
-						return {
-							error: "Error verifying email",
-						};
-					} else {
-						await supabase
-							.schema("next_auth")
-							.from("VerificationToken")
-							.delete()
-							.eq("id", tokenData.id);
-						return {
-							success: "Email verified",
-						};
-					}
+					// await supabase
+					// 	.schema("next_auth")
+					// 	.from("VerificationToken")
+					// 	.delete()
+					// 	.eq("id", tokenData.id);
+					return {
+						success: "success",
+					};
 				}
 			}
 		}
@@ -82,4 +74,4 @@ const newVerification = async (token: string | null) => {
 		};
 	}
 };
-export default newVerification;
+export default changePasswordTokenVerification;

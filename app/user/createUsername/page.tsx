@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { TailSpin } from "react-loader-spinner";
 import { useSession } from "next-auth/react";
 import { createClient } from "@/utils/supabase/client";
-import LoadingButton from "@/app/components/reactLoadingSpinner";
+import LoadingButton from "@/app/components/LoadingButton";
 import { set } from "firebase/database";
 import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
 import Logo from "@/app/components/Logo";

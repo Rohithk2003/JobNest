@@ -62,7 +62,8 @@ export const getVerificationToken = async (token: string) => {
 		.from(tables.verificationTokens)
 		.select("*")
 		.eq("token", token)
-		.single();
+		.limit(1)
+		.maybeSingle();
 	if (error) {
 		throw error;
 	}

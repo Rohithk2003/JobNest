@@ -5,7 +5,7 @@ import {
 	getUsernameCreationRoute,
 } from "@/configs/constants";
 import { sendVerificationMail } from "@/lib/mail";
-import { getVerificationToken } from "@/lib/token";
+import { getorCreateVerificationToken } from "@/lib/token";
 import {
 	googleSignInProps,
 	RegisterActionProps,
@@ -38,7 +38,7 @@ export const handleSubmit = async (props: RegisterActionProps) => {
 			});
 			const signUpResponse: registerProps = await res.json();
 			if (signUpResponse?.message.toLowerCase() === "success") {
-				const verificationtoken = await getVerificationToken(
+				const verificationtoken = await getorCreateVerificationToken(
 					props.email as string
 				);
 				await sendVerificationMail(props.email as string, verificationtoken);

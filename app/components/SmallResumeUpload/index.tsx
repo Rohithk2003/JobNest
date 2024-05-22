@@ -12,7 +12,7 @@ import { useSession } from "next-auth/react";
 import { tables } from "@/configs/constants";
 import Toast from "../Toast";
 import LoaderCircle from "../LoaderCircle";
-import LoadingButton from "../reactLoadingSpinner";
+import LoadingButton from "../LoadingButton";
 import { getUserByEmail } from "@/Database/database";
 export default function SmallResumeUpload() {
 	const [file, setFile]: [File | null, Dispatch<SetStateAction<File | null>>] =
@@ -171,7 +171,10 @@ export default function SmallResumeUpload() {
 							Upload your resume
 						</button>
 					) : (
-						<LoadingButton text={"uploading.."} />
+						<LoadingButton
+							width={64}
+							text={"uploading.."}
+						/>
 					)}
 				</div>
 			</section>

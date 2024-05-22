@@ -10,7 +10,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import LoadingButton from "@/app/components/reactLoadingSpinner";
+import LoadingButton from "@/app/components/LoadingButton";
 import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
 import { handleGoogleSignIn, handleSubmit } from "@/actions/login";
 import { useSearchParams } from "next/navigation";
@@ -154,8 +154,11 @@ export default function Login() {
 								/>
 							</div>
 							{signInStarted ? (
-								<div className="mt-5">
-									<LoadingButton text={"Please wait.."} />
+								<div className="mt-5 w-32">
+									<LoadingButton
+										width={32}
+										text={"Please wait.."}
+									/>
 								</div>
 							) : (
 								<button
@@ -170,7 +173,7 @@ export default function Login() {
 										twitterProviderClicked
 											? "opacity-30 bg-indigo-600 hover:cursor-not-allowed"
 											: "opacity-1 bg-indigo-600 hover:bg-indigo-800 active:bg-indigo-600"
-									} mt-4 px-4 py-2 text-white font-medium  rounded-lg duration-150`}
+									} mt-4 px-4 py-2 text-white font-medium  w-32 rounded-lg duration-150`}
 								>
 									Sign in
 								</button>
@@ -192,7 +195,10 @@ export default function Login() {
 						</div>
 						<div className="space-y-4 text-sm font-medium">
 							{googleProviderClicked ? (
-								<LoadingButton text={"Please wait.."} />
+								<LoadingButton
+									width={32}
+									text={"Please wait.."}
+								/>
 							) : (
 								<button
 									onClick={() => {
@@ -249,7 +255,10 @@ export default function Login() {
 								</button>
 							)}
 							{twitterProviderClicked ? (
-								<LoadingButton text={"Please wait.."} />
+								<LoadingButton
+									width={32}
+									text={"Please wait.."}
+								/>
 							) : (
 								<button
 									disabled={
@@ -280,7 +289,10 @@ export default function Login() {
 								</button>
 							)}
 							{githubProviderClicked ? (
-								<LoadingButton text={"Please wait.."} />
+								<LoadingButton
+									width={32}
+									text={"Please wait.."}
+								/>
 							) : (
 								<button
 									disabled={

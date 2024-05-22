@@ -9,17 +9,22 @@ import { tables } from "@/configs/constants";
 import { BiDownload } from "react-icons/bi";
 import SmallResumeUpload from "../../SmallResumeUpload";
 import { useSession } from "next-auth/react";
-import { getUserByEmail, getUserByUsername } from "@/Database/database";
+import {
+	getUserByEmail,
+	getUserByUsername,
+	getVerificationToken,
+} from "@/Database/database";
 import { PostgrestError } from "@supabase/supabase-js";
 import Toast from "../../Toast";
 import Loading from "@/app/loading";
-import LoadingButton from "../../reactLoadingSpinner";
-import { set } from "firebase/database";
+import LoadingButton from "../../LoadingButton";
+import { sendPasswordResetMail, sendVerificationMail } from "@/lib/mail";
+import LoaderCircle from "../../LoaderCircle";
+import { getorCreateVerificationToken } from "@/lib/token";
 
 const ProfileComponent = ({}) => {
 	const [countryDropdown, showcountryDropdown] = useState(false);
 	const [genderDropdown, showgenderDropdown] = useState(false);
-	const [country, setCountry] = useState("Country");
 	const [pdfFileName, setPdfFileName] = useState("");
 	const [downloadUrl, setDownloadUrl] = useState("");
 	const [noPdfUploaded, setNoPdfUploaded] = useState(false);
@@ -30,8 +35,8 @@ const ProfileComponent = ({}) => {
 	const [type, settype] = useState<"success" | "error" | "normal" | "warning">(
 		"success"
 	);
+	const [emailVerified, setEmailVerified] = useState(false);
 	const { data: session, update } = useSession();
-	const [gender, setGender] = useState("Select your gender");
 	const [formData, setFormData] = useState({
 		first_name: "",
 		last_name: "",
@@ -39,10 +44,11 @@ const ProfileComponent = ({}) => {
 		email: "",
 		cgpa: 0.0,
 		bio: "",
-		country: "",
-		gender: "",
+		country: "Select country",
+		gender: "Select your gender",
 	});
 	const [profileData, setProfileData] = useState<UserProps | null>();
+	const [mailsent, setMailSent] = useState(false);
 	const [showEdtImage, setShowEdtImage] = useState(false);
 	const [file, setFile]: [File | null, Dispatch<SetStateAction<File | null>>] =
 		useState<File | null>(null);
@@ -57,6 +63,12 @@ const ProfileComponent = ({}) => {
 			.from(tables.supabaseUsers)
 			.update({ name, ...rest })
 			.eq("email", formData.email);
+		update({
+			user: {
+				...session?.user,
+				username: formData.username,
+			},
+		});
 		if (response.error) {
 			setToastHandler(true);
 			setDescription(
@@ -88,7 +100,6 @@ const ProfileComponent = ({}) => {
 			fetchData();
 			if (profileData) {
 				setSessionLoaded(true);
-				console.log(profileData.name);
 				formData.first_name = profileData?.name?.split(" ")[0] || "";
 				formData.last_name = profileData?.name?.split(" ")[1] || "";
 				formData.username = profileData?.username || "";
@@ -97,6 +108,7 @@ const ProfileComponent = ({}) => {
 				formData.bio = profileData?.bio || "";
 				formData.country = profileData?.country || "";
 				formData.gender = profileData?.gender || "";
+				setEmailVerified(profileData?.emailVerified || false);
 			}
 		}
 	}, [session, profileData]);
@@ -222,6 +234,23 @@ const ProfileComponent = ({}) => {
 			alert("File updated successfully!");
 		});
 	};
+	async function sendVerifyEmail() {
+		if (!session || !session.user || !session.user.email) {
+			setMailSent(false);
+			return;
+		}
+		const verificationtoken = await getorCreateVerificationToken(
+			session.user.email as string
+		);
+		await sendVerificationMail(
+			session.user.email as string,
+			verificationtoken ?? ""
+		);
+		setToastHandler(true);
+		setDescription("Verification email sent successfully.");
+		settype("success");
+		setMailSent(false);
+	}
 	return (
 		<>
 			<Toast
@@ -232,6 +261,7 @@ const ProfileComponent = ({}) => {
 				controllerHandlerBoolean={setToastHandler}
 				loader={null}
 			/>
+
 			{sessionLoaded ? (
 				<main className="w-full min-h-screen py-1 ">
 					<form
@@ -471,22 +501,44 @@ const ProfileComponent = ({}) => {
 													</div>
 												</div>
 											</div>
-											<div className="mb-2 sm:mb-6">
-												<label
-													htmlFor="email"
-													className="block mb-2 text-sm font-medium text-inwhite dark:text-white"
-												>
-													Email
-												</label>
-												<input
-													type="email"
-													id="email"
-													value={`${session?.user?.email}`}
-													className=" bg-transparent text-white border border-indigo-300  text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
-													placeholder="your.email@mail.com"
-													required
-													disabled={session?.user?.provider == "google"}
-												/>
+											<div className="flex flex-row justify-end items-center gap-5">
+												<div className="mb-2 sm:mb-6 flex-1">
+													<label
+														htmlFor="email"
+														className="block mb-2 text-sm font-medium text-inwhite dark:text-white"
+													>
+														Email
+													</label>
+													<input
+														type="email"
+														id="email"
+														value={`${session?.user?.email}`}
+														className=" bg-transparent text-white border border-indigo-300  text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+														placeholder="your.email@mail.com"
+														required
+														disabled={session?.user?.provider == "google"}
+													/>
+												</div>
+												{!emailVerified && (
+													<div
+														onClick={() => {
+															setMailSent(true);
+															sendVerifyEmail();
+														}}
+														className={`${
+															!mailsent ? "bg-primary-600" : "bg-primary-900"
+														}  gap-2 flex-row flex-shrink-0 flex relative justify-center items-center hover:bg-primary-700 focus:outline-none text-white focus:ring-primary-300 font-medium rounded-lg text-sm w-32 hover:cursor-pointer h-max p-2.5`}
+													>
+														{mailsent ? (
+															<div className="relative after:absolute after:top-0 after:left-0 after:w-full after:h-full after:bg-black after:z-[900] z-50 after:opacity-30 after:rounded-full justify-center items-center gap-1 flex flex-row  rounded-full hover:cursor-pointer text-center  transition-all ease-in-out  bg-primary-900">
+																Sending email
+																<LoaderCircle />
+															</div>
+														) : (
+															"Verify email"
+														)}
+													</div>
+												)}
 											</div>
 
 											<div className="mb-2 sm:mb-6">
@@ -721,16 +773,19 @@ const ProfileComponent = ({}) => {
 													</div>
 												</div>
 												{!saving ? (
-													<div className="mt-6 flex items-center justify-start ">
-														<button
-															type="submit"
-															className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-														>
-															Save
-														</button>
-													</div>
+													// <div className="mt-6 flex items-center justify-start ">
+													<button
+														type="submit"
+														className="bg-primary-600 flex relative justify-center items-center hover:bg-primary-700 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-32 px-5 py-2.5"
+													>
+														Save
+													</button>
 												) : (
-													<LoadingButton text={"Saving.."} />
+													// </div>
+													<LoadingButton
+														width={32}
+														text={"Saving.."}
+													/>
 												)}
 											</div>
 										</div>

@@ -54,7 +54,12 @@ export default function VerifyEmailForm() {
 				</p>
 				<div className="mt-4 flex justify-center">
 					{errorMessage?.toLowerCase() === "email already verified" ? (
-						<div className="inline-flex items-center border border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-indigo-600 text-sm font-medium text-white shadow-sm">
+						<div
+							onClick={() => {
+								window.location.href = "/dashboard";
+							}}
+							className="hover:scale-110 tranisition-all ease-in-out duration-300 hover:cursor-pointer inline-flex items-center border border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 justify-center rounded-md py-2 px-4 bg-indigo-600 text-sm font-medium text-white shadow-sm"
+						>
 							Go to Dashboard
 						</div>
 					) : (

@@ -11,7 +11,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import LoadingButton from "@/app/components/reactLoadingSpinner";
+import LoadingButton from "@/app/components/LoadingButton";
 import Popup from "../components/Popup";
 import { handleSubmit } from "@/actions/register";
 import AlertWithType from "../components/Alert";
@@ -194,7 +194,10 @@ export default function Register() {
 							</div>
 							<div className="grid grid-cols-3 gap-x-3">
 								{googleProviderClicked ? (
-									<LoadingButton text={"Please wait.."} />
+									<LoadingButton
+										width={32}
+										text={"Please wait.."}
+									/>
 								) : (
 									<button
 										onClick={() => {
@@ -244,7 +247,10 @@ export default function Register() {
 									</button>
 								)}
 								{twitterProviderClicked ? (
-									<LoadingButton text={"Please wait.."} />
+									<LoadingButton
+										width={32}
+										text={"Please wait.."}
+									/>
 								) : (
 									<button
 										disabled={signUpStarted}
@@ -268,7 +274,10 @@ export default function Register() {
 									</button>
 								)}
 								{githubProviderClicked ? (
-									<LoadingButton text={"Please wait.."} />
+									<LoadingButton
+										width={32}
+										text={"Please wait.."}
+									/>
 								) : (
 									<button
 										disabled={signUpStarted}
@@ -474,7 +483,10 @@ export default function Register() {
 								</div>
 								{(signUpStarted || signUpClicked) && !registerDone ? (
 									<div className="mt-4">
-										<LoadingButton text={"Please wait.."} />
+										<LoadingButton
+											width={32}
+											text={"Please wait.."}
+										/>
 									</div>
 								) : !registerDone ? (
 									<button
