@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 export const getorCreateVerificationToken = async (email: string) => {
 	const token = uuidv4();
 	const supabase = createClient();
-	const expires = new Date().getTime() + 1000 * 60 * 60 * 24; // 24 hours
+	const expires = new Date().getTime() + 300 * 1000; // 5 minutes
 
 	const exisingToken = await getVerificationTokenByEmail(email);
 	if (exisingToken) {

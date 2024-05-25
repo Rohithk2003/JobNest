@@ -229,7 +229,7 @@ export default function Header({
 					<div
 						className={`${
 							dropdownToggler ? "block" : "hidden"
-						} z-50 my-4 w-56 text-base absolute right-8 top-10 list-none bg-white  divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl`}
+						} z-50 my-4 w-56 text-base absolute right-4 top-6 list-none bg-white  divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl`}
 					>
 						<div className="py-3 px-4">
 							Signed in as

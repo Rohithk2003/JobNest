@@ -6,11 +6,12 @@ import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { getUserByEmail } from "@/Database/database";
 import newVerification from "@/actions/verification";
-import { getDashboardRoute } from "@/configs/constants";
+import { getDashboardRoute, getLoginRoute } from "@/configs/constants";
 import HandleChangePassword from "@/actions/changepassword";
 import AlertWithType, { ErrorAlert } from "../components/Alert";
 import LoaderCircle from "../components/LoaderCircle";
 import changePasswordTokenVerification from "@/actions/changePasswordTokenVerification";
+import Header from "../components/MainPage/Navigation/Header";
 export default function ChangePassword() {
 	const { data: session, status } = useSession();
 	const [currentPassword, setCurrentPassword] = useState(false);
@@ -20,17 +21,20 @@ export default function ChangePassword() {
 	const [errorMessage, setErrorMessage] = useState<string | undefined>(
 		undefined
 	);
+	const [heading, setHeading] = useState<string | undefined>(undefined);
 	const [success, setSuccess] = useState<boolean>(false);
 	const token = searchParams.get("token");
-	const resetParameter = JSON.parse(searchParams.get("reset") ?? "");
+	const resetParameter = JSON.parse(searchParams.get("reset") ?? "False");
 	const [password, setPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [updationStarted, setUpdationStarted] = useState(false);
+	const [currentUserEmail, setCurrentUserEmail] = useState("");
+	const [tokenError, setTokenError] = useState(false);
 	useEffect(() => {
 		const fetchData = async () => {
 			const { data, error } = await getUserByEmail(
-				session?.user?.email as string
+				(currentUserEmail as string) ?? session?.user?.email
 			);
 			if (error) {
 				console.error("Error fetching user data:", error);
@@ -50,16 +54,21 @@ export default function ChangePassword() {
 		}
 		if (!token) {
 			setErrorMessage("no token provided");
+			setTokenError(true);
 		}
 		changePasswordTokenVerification(token)
 			.then((result) => {
-				console.log("f");
+				console.log(result);
 				if (result && result.success) {
 					setSuccess(true);
 					setErrorMessage("");
+					setCurrentUserEmail(result.email ?? "");
 				} else if (!success && result && result.error) {
 					setErrorMessage(result.error);
 					setError(true);
+				}
+				if (errorMessage?.toLowerCase() === "Token has expired") {
+					setTokenError(true);
 				}
 				if (errorMessage?.toLowerCase() === "email not verified") {
 					setTimeout(() => {
@@ -83,43 +92,55 @@ export default function ChangePassword() {
 		onsubmit();
 	}, [token]);
 	function handleCurrentPassword() {
+		console.log(resetParameter);
+		console.log(!resetParameter);
 		HandleChangePassword({
 			currentPassword: password,
 			newPassword: newPassword,
 			confirmPassword: confirmPassword,
 			PasswordAlreadySet: currentPassword && !resetParameter,
-			email: session?.user?.email as string,
+			email: currentUserEmail ?? (session?.user?.email as string),
 		}).then((result) => {
 			setUpdationStarted(false);
 			console.log(result);
 			if (result.error) {
 				setErrorMessage(result.error);
 				setError(true);
+				setHeading("Error");
 				settype("error");
 			} else {
 				setSuccess(true);
+				setHeading("Success");
 				settype("success");
-				setErrorMessage("Password changed successfully");
-				setError(false);
+				setErrorMessage(
+					"Password changed successfully.Redirecting please wait.."
+				);
+				setError(true);
 				setPasswordUpdated(true);
 				setTimeout(() => {
-					window.location.href = getDashboardRoute();
-				}, 1000);
+					window.location.href = session
+						? getDashboardRoute()
+						: getLoginRoute();
+				}, 3000);
 			}
 		});
 	}
 	return (
 		<>
-			<DashboardNavigation
-				fromMainPage={undefined}
-				session={session}
-			/>
+			{!session ? (
+				<Header session={null} />
+			) : (
+				<DashboardNavigation
+					fromMainPage={undefined}
+					session={session}
+				/>
+			)}
 			{!loading ? (
 				<div className="relative z-[1000] bg-transparent min-h-screen flex flex-col items-center justify-center">
 					<h1 className="text-3xl font-bold text-zinc-800 dark:text-white mb-8">
 						Change Password
 					</h1>
-					<div className="w-full max-w-md bg-zinc-100 dark:bg-zinc-700 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+					<div className="w-full max-w-md  shadow-md rounded px-8 pt-6 pb-8 mb-4">
 						{currentPassword && !passwordUpdated && !resetParameter && (
 							<div className="mb-4">
 								<label
@@ -137,7 +158,7 @@ export default function ChangePassword() {
 										errorMessage?.toLowerCase() === "email not verified"
 									}
 									onChange={(e) => setPassword(e.target.value)}
-									className="form-input mt-1 block w-full px-3 py-2 border rounded-md"
+									className="form-input mt-1 block w-full px-3 py-2 bg-transparent border rounded-md"
 									placeholder="Enter your current password"
 								/>
 							</div>
@@ -158,7 +179,7 @@ export default function ChangePassword() {
 									errorMessage?.toLowerCase() === "email not verified"
 								}
 								onChange={(e) => setNewPassword(e.target.value)}
-								className="form-input mt-1 block w-full px-3 py-2 border rounded-md"
+								className="form-input mt-1 block w-full px-3 py-2 bg-transparent border rounded-md"
 								placeholder="Enter your new password"
 							/>
 						</div>
@@ -175,7 +196,7 @@ export default function ChangePassword() {
 								value={confirmPassword}
 								disabled={errorMessage?.toLowerCase() === "no token provided"}
 								onChange={(e) => setConfirmPassword(e.target.value)}
-								className="form-input mt-1 block w-full px-3 py-2 border rounded-md"
+								className="form-input mt-1 block w-full px-3 py-2 border bg-transparent rounded-md"
 								placeholder="Confirm your new password"
 							/>
 						</div>
@@ -186,10 +207,15 @@ export default function ChangePassword() {
 									handleCurrentPassword();
 								}}
 								type="submit"
+								disabled={passwordUpdated || tokenError}
 								className={`${
-									errorMessage?.toLowerCase() != "email not verified"
-										? "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-										: "mt-10 relative after:absolute after:top-0 after:left-0 after:w-full after:h-full after:bg-black after:z-[900] z-50 after:opacity-30 after:rounded-full justify-center items-center gap-1 w-44 flex flex-row p-3 rounded-full hover:cursor-pointer text-center  transition-all ease-in-out  bg-primary-900"
+									errorMessage?.toLowerCase() === "email not verified" ||
+									errorMessage?.toLowerCase() ===
+										"Password changed successfully.Redirecting please wait.." ||
+									passwordUpdated ||
+									tokenError
+										? "mt-10 relative after:absolute after:top-0 after:left-0 after:w-full after:h-full after:bg-black after:z-[900] z-50 after:opacity-30 after:rounded-full justify-center items-center gap-1 w-44 flex flex-row p-3 rounded-full hover:cursor-pointer text-center  transition-all ease-in-out  bg-primary-900"
+										: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 								}`}
 							>
 								{updationStarted ? (
@@ -216,7 +242,7 @@ export default function ChangePassword() {
 								<AlertWithType
 									alertHandler={setError}
 									type={type}
-									heading="Error"
+									heading={heading ?? "Error"}
 									description={errorMessage ?? ""}
 								/>
 							</div>

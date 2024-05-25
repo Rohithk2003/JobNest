@@ -64,6 +64,7 @@ const changePasswordTokenVerification = async (token: string | null) => {
 					// 	.eq("id", tokenData.id);
 					return {
 						success: "success",
+						email: tokenData.email,
 					};
 				}
 			}
