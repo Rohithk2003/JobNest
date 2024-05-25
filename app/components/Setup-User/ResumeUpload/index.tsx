@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import { Poppins } from "next/font/google";
-const poppins = Poppins({
-	weight: ["400"],
-	subsets: ["latin"],
-});
 import { v4 as uuidv4 } from "uuid";
-
 import LoaderCircle from "../../LoaderCircle";
 import { SetStateAction, Dispatch } from "react";
 import { createClient } from "@/utils/supabase/client";
@@ -14,8 +8,6 @@ import Toast from "../../Toast";
 import { tables } from "@/configs/constants";
 import { getUserByUsername } from "@/Database/database";
 import BackgroundGlow from "../../VisualComponents/BackgroundGlow";
-import LoadingButton from "../../LoadingButton";
-import { set } from "firebase/database";
 export default function ResumeUpload() {
 	const [file, setFile]: [File | null, Dispatch<SetStateAction<File | null>>] =
 		useState<File | null>(null);
@@ -75,7 +67,7 @@ export default function ResumeUpload() {
 				const { data, error } = await supabase
 					.schema("next_auth")
 					.from(tables.resumeUserLink)
-					.insert({
+					.upsert({
 						user_id: user.id,
 						resume_link: Data.signedUrl,
 						link_expires_after: new Date(

@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 import Toast from "../../Toast";
 import LoaderCircle from "../../LoaderCircle";
 import BackgroundGlow from "../../VisualComponents/BackgroundGlow";
-
+import LoadingButton from "../../LoadingButton";
+import AddInterest from "../../AddInterest";
 export default function Information() {
 	const [startedUpdatingInfo, setStartUpdatingInfo] = useState<boolean>(false);
 	const [firstTimeoutDone, setFirstTimeoutDone] = useState<boolean>(false);
+	const [savingStarted, setSavingStarted] = useState<boolean>(false);
+	const [genderDropDown, showGenderDropDown] = useState<boolean>(false);
+	const [countryDropdown, showcountryDropdown] = useState<boolean>(false);
 	const [toastInfo, setToastInfo] = useState({
 		description: "Saving changes..",
 		loader: <LoaderCircle />,
@@ -19,7 +23,23 @@ export default function Information() {
 			return () => clearTimeout(timeout);
 		}
 	});
-
+	const [formData, setFormData] = useState({
+		first_name: "",
+		last_name: "",
+		username: "",
+		email: "",
+		cgpa: 0.0,
+		bio: "",
+		country: "Select country",
+		gender: "Select your gender",
+		age: 21,
+		dob: "",
+		address: "",
+		city: "",
+		state: "",
+		zip_code: "",
+		interests: [],
+	});
 	return (
 		<>
 			<Toast
@@ -165,8 +185,215 @@ export default function Information() {
 									className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
 								/>
 							</div>
+							<div className="relative w-full z-[901]  text-white ">
+								<div>Gender</div>
+
+								<div
+									onClick={() => {
+										showGenderDropDown(!genderDropDown);
+									}}
+									className="flex flex-row justify-between w-full  py-1 px-2  mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+								>
+									<div className="p-2  text-sm/none  border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500">
+										{formData.gender}
+									</div>
+
+									<div className="h-full p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-200">
+										<span className="sr-only">Menu</span>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											className="h-4 w-4"
+											viewBox="0 0 20 20"
+											fill="currentColor"
+										>
+											<path
+												fillRule="evenodd"
+												d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+												clipRule="evenodd"
+											/>
+										</svg>
+									</div>
+								</div>
+								<div
+									className={`absolute end-0 z-[900] mt-2 w-full right-0 rounded-md border ring-indigo-500 bg-gray-900  border-indigo-300 shadow-lg  ${
+										genderDropDown
+											? "opacity-1 translate-y-0"
+											: "opacity-0 translate-y-[-150%]"
+									} transition ease-in-out duration-300 `}
+									role="menu"
+								>
+									<div className="p-2">
+										<div
+											onClick={() => {
+												setFormData((prev) => ({
+													...prev,
+													gender: "Male",
+												}));
+												showGenderDropDown(!genderDropDown);
+											}}
+											className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+											role="menuitem"
+										>
+											Male
+										</div>
+
+										<div
+											onClick={() => {
+												setFormData((prev) => ({
+													...prev,
+													gender: "Female",
+												}));
+												showGenderDropDown(!genderDropDown);
+											}}
+											className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+											role="menuitem"
+										>
+											Female
+										</div>
+
+										<div
+											onClick={() => {
+												setFormData((prev) => ({
+													...prev,
+													gender: "Other",
+												}));
+												showGenderDropDown(!genderDropDown);
+											}}
+											className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+											role="menuitem"
+										>
+											Other
+										</div>
+									</div>
+								</div>
+							</div>
+							<div className="relative w-full z-[901]  text-white ">
+								<div>Country</div>
+								<div
+									onClick={() => {
+										showcountryDropdown(!countryDropdown);
+									}}
+									className="flex flex-row justify-between w-full  py-1 px-2  mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+								>
+									<div className="p-2  text-sm/none  border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500">
+										{formData.country}
+									</div>
+
+									<div className="h-full p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-200">
+										<span className="sr-only">Menu</span>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											className="h-4 w-4"
+											viewBox="0 0 20 20"
+											fill="currentColor"
+										>
+											<path
+												fillRule="evenodd"
+												d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+												clipRule="evenodd"
+											/>
+										</svg>
+									</div>
+								</div>
+
+								<div
+									className={`absolute end-0 z-[900] mt-2 w-full right-0 rounded-md border ring-indigo-500 bg-gray-900  border-indigo-300 shadow-lg  ${
+										countryDropdown
+											? "opacity-1 translate-y-0"
+											: "opacity-0 translate-y-[-200%]"
+									} transition ease-in-out duration-300 `}
+									role="menu"
+								>
+									<div className="p-2">
+										<div
+											onClick={() => {
+												setFormData((prev) => ({
+													...prev,
+													country: "India",
+												}));
+												showcountryDropdown(!countryDropdown);
+											}}
+											className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+											role="menuitem"
+										>
+											India
+										</div>
+
+										<div
+											onClick={() => {
+												setFormData((prev) => ({
+													...prev,
+													gender: "USA",
+												}));
+												showcountryDropdown(!countryDropdown);
+											}}
+											className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+											role="menuitem"
+										>
+											USA
+										</div>
+
+										<div
+											onClick={() => {
+												setFormData((prev) => ({
+													...prev,
+													gender: "Mexico",
+												}));
+												showcountryDropdown(!countryDropdown);
+											}}
+											className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+											role="menuitem"
+										>
+											Mexico
+										</div>
+									</div>
+								</div>
+							</div>
+							<div>
+								<label
+									className="text-white dark:text-gray-200"
+									htmlFor="text"
+								>
+									City
+								</label>
+								<input
+									id="text"
+									type="text"
+									placeholder="Enter your city..."
+									className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+								/>
+							</div>
+
+							<div>
+								<label
+									className="text-white dark:text-gray-200"
+									htmlFor="text"
+								>
+									State/Province
+								</label>
+								<input
+									id="text"
+									type="text"
+									placeholder="Enter your state..."
+									className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+								/>
+							</div>
+							<div>
+								<label
+									className="text-white dark:text-gray-200"
+									htmlFor="text"
+								>
+									Zip-Code
+								</label>
+								<input
+									id="text"
+									type="text"
+									placeholder="Enter your zipcode..."
+									className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+								/>
+							</div>
 						</div>
-						<div className="w-full">
+						<div className="w-full mt-10">
 							<label
 								className="text-white dark:text-gray-200"
 								htmlFor="passwordConfirmation"
@@ -181,6 +408,10 @@ export default function Information() {
 								className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
 							></textarea>
 						</div>
+						<AddInterest
+							userInterest={formData.interests}
+							setUserInterest={setFormData}
+						/>
 					</div>
 					<div
 						onClick={() => {
