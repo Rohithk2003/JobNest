@@ -4,7 +4,7 @@ import "./globals.css";
 import AuthProvider from "./context/AuthProvider";
 import "react-loading-skeleton/dist/skeleton.css";
 import PrelineScript from "./components/PrelineScript";
-
+import { ViewTransitions } from "next-view-transitions";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -18,13 +18,15 @@ export default async function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body className={inter.className}>
-				<AuthProvider>
-					{children}
-					<PrelineScript />
-				</AuthProvider>
-			</body>
-		</html>
+		<ViewTransitions>
+			<html lang="en">
+				<body className={inter.className}>
+					<AuthProvider>
+						{children}
+						<PrelineScript />
+					</AuthProvider>
+				</body>
+			</html>
+		</ViewTransitions>
 	);
 }
