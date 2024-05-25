@@ -2,7 +2,6 @@
 
 import VerificationEmail from "@/app/components/EmailTemplate/VerificationEmail";
 import { Resend } from "resend";
-import ReactDOMServer from "react-dom/server";
 import ChangePasswordEmail from "@/app/components/EmailTemplate/ChangePassword";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);

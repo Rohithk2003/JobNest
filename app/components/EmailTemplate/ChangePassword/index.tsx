@@ -42,8 +42,7 @@ const ChangePasswordEmail: React.FC<Readonly<ChangePasswordEmailProps>> = ({
 							style={{ margin: "0 0 20px 0", fontSize: "16px", color: "#333" }}
 						>
 							You requested to change your password. Please click the button
-							below to reset your password.This token is valid only for 5
-							minutes.
+							below to reset your password.
 						</p>
 						<p style={{ margin: "0 0 20px 0", textAlign: "center" }}>
 							<a

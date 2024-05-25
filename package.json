@@ -21,6 +21,7 @@
 		"jsonwebtoken": "^9.0.2",
 		"next": "14.2.3",
 		"next-auth": "^4.24.7",
+		"next-view-transitions": "^0.1.1",
 		"pattern.css": "^1.0.0",
 		"pg": "^8.11.5",
 		"preline": "^2.1.0",
