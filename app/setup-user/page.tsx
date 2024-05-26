@@ -7,10 +7,7 @@ import ResumeUpload from "../components/Setup-User/ResumeUpload";
 import SendVerificationEmailComponent from "../components/SendVerificationEmailComponent";
 import { getDashboardRoute } from "@/configs/constants";
 import { useRouter } from "next/navigation";
-import {
-	InfoAddedProvider,
-	useInfoAdded,
-} from "../components/Setup-User/InfoAddingContext";
+import { useInfoAdded } from "../components/Setup-User/InfoAddingContext";
 export default function SetupUser() {
 	const router = useRouter();
 	const { data: session } = useSession();
@@ -21,7 +18,7 @@ export default function SetupUser() {
 	const { isInfoAdded, setIsInfoAdded } = useInfoAdded();
 	const components: Record<number, ReactNode> = {
 		1: <ResumeUpload session={session} />,
-		2: <Information />,
+		2: <Information session={session} />,
 		3: <SendVerificationEmailComponent />,
 	};
 
@@ -86,7 +83,11 @@ export default function SetupUser() {
 								Prev
 							</button>
 						) : (
-							<button className="relative x-6 py-2 w-20 h-10 after:absolute after:top-0 after:left-0 after:w-full after:h-full after:bg-black after:z-[900] z-50 after:opacity-30 after:rounded-full justify-center items-center gap-1 flex flex-row  rounded-full hover:cursor-pointer text-center  transition-all ease-in-out  bg-primary-900">
+							<button
+								className={`${
+									steps.currentStep > 1 ? "block" : "hidden"
+								} relative x-6 py-2 w-20 h-10 after:absolute after:top-0 after:left-0 after:w-full after:h-full after:bg-black after:z-[900] z-50 after:opacity-30 after:rounded-full justify-center items-center gap-1 flex flex-row  rounded-full hover:cursor-pointer text-center  transition-all ease-in-out  bg-primary-900`}
+							>
 								Prev
 							</button>
 						)}

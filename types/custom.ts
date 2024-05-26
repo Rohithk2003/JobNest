@@ -36,6 +36,13 @@ export interface UserProps {
 	emailVerified: boolean | null;
 	bio: string | null;
 	country: string | null;
+	age: number | null;
+	dob: string | null;
+	address: string | null;
+	city: string | null;
+	state: string | null;
+	zip_code: string | null;
+	interests: string | null;
 	gender: string | null;
 }
 export interface SupabaseUpdateProps {

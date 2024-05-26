@@ -6,13 +6,23 @@ import BackgroundGlow from "../../VisualComponents/BackgroundGlow";
 import LoadingButton from "../../LoadingButton";
 import AddInterest from "../../AddInterest";
 import { InputProvider } from "../SharedInputContextState";
-export default function Information() {
+import { getUserByUsername } from "@/Database/database";
+import { Session } from "next-auth";
+import { SupabaseAdapter } from "@auth/supabase-adapter";
+import { createClient } from "@/utils/supabase/client";
+import { tables } from "@/configs/constants";
+import { useInfoAdded } from "../InfoAddingContext";
+export default function Information({ session }: { session: Session | null }) {
 	const [startedUpdatingInfo, setStartUpdatingInfo] = useState<boolean>(false);
 	const [firstTimeoutDone, setFirstTimeoutDone] = useState<boolean>(false);
 	const [savingStarted, setSavingStarted] = useState<boolean>(false);
 	const [genderDropDown, showGenderDropDown] = useState<boolean>(false);
 	const [countryDropdown, showcountryDropdown] = useState<boolean>(false);
-	const [toastInfo, setToastInfo] = useState({
+	const { isInfoAdded, setIsInfoAdded } = useInfoAdded();
+	const [toastInfo, setToastInfo] = useState<{
+		description: string;
+		loader: JSX.Element | null;
+	}>({
 		description: "Saving changes..",
 		loader: <LoaderCircle />,
 	});
@@ -24,6 +34,57 @@ export default function Information() {
 			return () => clearTimeout(timeout);
 		}
 	});
+	const supabase = createClient();
+	async function onSubmit() {
+		setSavingStarted(true);
+		setStartUpdatingInfo(true);
+		setToastInfo({
+			description: "Saving changes..",
+			loader: <LoaderCircle />,
+		});
+		if (!session) {
+			return;
+		}
+		const { data: user, error: err } = await getUserByUsername(
+			session.user.username
+		);
+		if (err) {
+			setToastInfo({
+				description: "An error occured while updating the information.",
+				loader: null,
+			});
+			return;
+		}
+		const { data, error } = await supabase
+			.schema("next_auth")
+			.from(tables.supabaseUsers)
+			.update({
+				name: formData.first_name + " " + formData.last_name,
+				cgpa: formData.cgpa,
+				bio: formData.bio,
+				country: formData.country,
+				age: formData.age,
+				dob: new Date(formData.dob),
+				address: formData.address,
+				city: formData.city,
+				state: formData.state,
+				zip_code: formData.zip_code,
+				interests: formData.interests.join(","),
+			})
+
+			.eq("id", user.id);
+		if (error) {
+			setToastInfo({
+				description: error.message,
+				loader: null,
+			});
+		}
+		setIsInfoAdded(true);
+		setToastInfo({
+			description: "Your data has been updated sucessfully",
+			loader: null,
+		});
+	}
 	const [formData, setFormData] = useState({
 		first_name: "",
 		last_name: "",
@@ -59,6 +120,7 @@ export default function Information() {
 					<form
 						onSubmit={(e) => {
 							e.preventDefault();
+							onSubmit();
 						}}
 					>
 						<div>
@@ -92,6 +154,7 @@ export default function Information() {
 													id="file-upload"
 													name="file-upload"
 													type="file"
+													required
 													className="sr-only"
 												/>
 											</label>
@@ -113,6 +176,16 @@ export default function Information() {
 										id="firstname"
 										placeholder="John"
 										type="text"
+										value={formData.first_name}
+										onChange={(e) => {
+											setFormData((prev) => {
+												return {
+													...prev,
+													first_name: e.target.value,
+												};
+											});
+										}}
+										required
 										className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
 									/>
 								</div>
@@ -126,6 +199,16 @@ export default function Information() {
 									</label>
 									<input
 										id="lastname"
+										required
+										value={formData.last_name}
+										onChange={(e) => {
+											setFormData((prev) => {
+												return {
+													...prev,
+													last_name: e.target.value,
+												};
+											});
+										}}
 										type="text"
 										placeholder="Doe"
 										className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
@@ -137,26 +220,22 @@ export default function Information() {
 										className="text-white dark:text-gray-200"
 										htmlFor="passwordConfirmation"
 									>
-										Country
-									</label>
-									<select className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring">
-										<option>India</option>
-										<option>USA</option>
-										<option>Mexico</option>
-										<option>Russia</option>
-									</select>
-								</div>
-								<div>
-									<label
-										className="text-white dark:text-gray-200"
-										htmlFor="passwordConfirmation"
-									>
 										Age
 									</label>
 									<input
 										id="range"
+										required
+										value={formData.age}
+										onChange={(e) => {
+											setFormData((prev) => {
+												return {
+													...prev,
+													age: parseInt(e.target.value),
+												};
+											});
+										}}
 										type="range"
-										className="block w-full py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+										className="block w-full relative z-[1000] py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
 									/>
 									<p>21</p>
 								</div>
@@ -169,8 +248,18 @@ export default function Information() {
 									</label>
 									<input
 										id="date"
+										required
+										value={formData.dob}
+										onChange={(e) => {
+											setFormData((prev) => {
+												return {
+													...prev,
+													dob: e.target.value,
+												};
+											});
+										}}
 										type="date"
-										className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+										className="block w-full relative z-[1000] px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
 									/>
 								</div>
 								<div>
@@ -182,6 +271,16 @@ export default function Information() {
 									</label>
 									<input
 										id="text"
+										required
+										value={formData.address}
+										onChange={(e) => {
+											setFormData((prev) => {
+												return {
+													...prev,
+													address: e.target.value,
+												};
+											});
+										}}
 										type="text"
 										placeholder="Enter your address..."
 										className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
@@ -360,7 +459,17 @@ export default function Information() {
 									</label>
 									<input
 										id="text"
+										value={formData.city}
+										onChange={(e) => {
+											setFormData((prev) => {
+												return {
+													...prev,
+													city: e.target.value,
+												};
+											});
+										}}
 										type="text"
+										required
 										placeholder="Enter your city..."
 										className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
 									/>
@@ -376,6 +485,16 @@ export default function Information() {
 									<input
 										id="text"
 										type="text"
+										required
+										value={formData.state}
+										onChange={(e) => {
+											setFormData((prev) => {
+												return {
+													...prev,
+													state: e.target.value,
+												};
+											});
+										}}
 										placeholder="Enter your state..."
 										className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
 									/>
@@ -390,6 +509,16 @@ export default function Information() {
 									<input
 										id="text"
 										type="text"
+										value={formData.zip_code}
+										onChange={(e) => {
+											setFormData((prev) => {
+												return {
+													...prev,
+													zip_code: e.target.value,
+												};
+											});
+										}}
+										required
 										placeholder="Enter your zipcode..."
 										className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
 									/>
@@ -406,21 +535,23 @@ export default function Information() {
 									id="textarea"
 									typeof="textarea"
 									rows={10}
+									value={formData.bio}
+									onChange={(e) => {
+										setFormData((prev) => {
+											return {
+												...prev,
+												bio: e.target.value,
+											};
+										});
+									}}
+									required
 									placeholder="write something about yourself..."
 									className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
 								></textarea>
 							</div>
 							<AddInterest />
 						</div>
-						<div
-							onClick={() => {
-								setStartUpdatingInfo(true);
-								setTimeout(() => {
-									setStartUpdatingInfo(false);
-								}, 3000);
-							}}
-							className="flex justify-end mt-6"
-						>
+						<div className="flex justify-end mt-6">
 							<button className="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-pink-500 rounded-md hover:bg-pink-700 focus:outline-none focus:bg-gray-600">
 								Save
 							</button>

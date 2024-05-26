@@ -135,7 +135,7 @@ export default function AddInterest() {
 						size={20}
 					/>
 				</div>
-				<div className="flex flex-row flex-wrap gap-4 p-5">
+				<div className="flex flex-row flex-wrap gap-4 ">
 					{defaultJobs.map(
 						(input, index) =>
 							defaultNumberOfInterests > index && (

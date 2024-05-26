@@ -13,6 +13,13 @@ export interface CommonUser {
 	name: string | null;
 	password: string;
 	image: string | null;
+	age: number | null;
+	dob: string | null;
+	address: string | null;
+	city: string | null;
+	state: string | null;
+	zip_code: string | null;
+	interests: string | null;
 }
 export interface AuthUserProps {
 	username: string;

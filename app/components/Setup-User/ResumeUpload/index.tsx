@@ -73,7 +73,7 @@ export default function ResumeUpload({ session }: { session: Session | null }) {
 					.schema("next_auth")
 					.from(tables.resumeUserLink)
 					.upsert({
-						user_id: user.id,
+						user_id: user?.id,
 						resume_link: Data.signedUrl,
 						link_expires_after: new Date(
 							new Date().getTime() + 1000 * 60 * 60 * 24

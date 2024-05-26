@@ -7,7 +7,14 @@ export default async function Help() {
 	const session = await getServerSession();
 	return (
 		<>
-			{session ? <DashboardNavigation /> : <Navigation session={session} />}
+			{session ? (
+				<DashboardNavigation
+					fromMainPage={false}
+					session={session}
+				/>
+			) : (
+				<Navigation session={session} />
+			)}
 			<BackgroundGlow />
 			<section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
 				<div className="mx-auto max-w-screen-lg px-4 2xl:px-0">

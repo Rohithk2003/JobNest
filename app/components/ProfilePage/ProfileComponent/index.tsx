@@ -18,7 +18,7 @@ import { PostgrestError } from "@supabase/supabase-js";
 import Toast from "../../Toast";
 import Loading from "@/app/loading";
 import LoadingButton from "../../LoadingButton";
-import { sendPasswordResetMail, sendVerificationMail } from "@/lib/mail";
+import { sendVerificationMail } from "@/lib/mail";
 import LoaderCircle from "../../LoaderCircle";
 import { getorCreateVerificationToken } from "@/lib/token";
 
@@ -46,6 +46,13 @@ const ProfileComponent = ({}) => {
 		bio: "",
 		country: "Select country",
 		gender: "Select your gender",
+		age: 21,
+		dob: new Date(),
+		address: "",
+		city: "",
+		state: "",
+		zip_code: "",
+		interests: [],
 	});
 	const [profileData, setProfileData] = useState<UserProps | null>();
 	const [mailsent, setMailSent] = useState(false);
@@ -108,6 +115,11 @@ const ProfileComponent = ({}) => {
 				formData.bio = profileData?.bio || "";
 				formData.country = profileData?.country || "";
 				formData.gender = profileData?.gender || "";
+				formData.address = profileData?.address || "";
+				formData.age = profileData?.age || 0;
+				formData.state = profileData?.state || "";
+				formData.city = profileData?.city || "";
+				formData.zip_code = profileData?.zip_code || "";
 				setEmailVerified(profileData?.emailVerified || false);
 			}
 		}
@@ -712,6 +724,15 @@ const ProfileComponent = ({}) => {
 														id="street-address"
 														autoComplete="street-address"
 														placeholder="123 Main St"
+														value={formData.address}
+														onChange={(e) => {
+															setFormData((prev) => {
+																return {
+																	...prev,
+																	address: e.target.value,
+																};
+															});
+														}}
 														className=" bg-transparent text-white border border-indigo-300  text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
 													/>
 												</div>
@@ -729,6 +750,15 @@ const ProfileComponent = ({}) => {
 															type="text"
 															name="city"
 															id="city"
+															value={formData.city}
+															onChange={(e) => {
+																setFormData((prev) => {
+																	return {
+																		...prev,
+																		city: e.target.value,
+																	};
+																});
+															}}
 															autoComplete="address-level2"
 															className=" bg-transparent text-white border border-indigo-300 text-inwhite text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
 														/>
@@ -747,6 +777,15 @@ const ProfileComponent = ({}) => {
 															type="text"
 															name="region"
 															id="region"
+															value={formData.state}
+															onChange={(e) => {
+																setFormData((prev) => {
+																	return {
+																		...prev,
+																		state: e.target.value,
+																	};
+																});
+															}}
 															autoComplete="address-level1"
 															className=" bg-transparent text-white border border-indigo-300 text-inwhite text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
 														/>
@@ -764,6 +803,15 @@ const ProfileComponent = ({}) => {
 														<input
 															type="text"
 															name="postal-code"
+															value={formData.zip_code}
+															onChange={(e) => {
+																setFormData((prev) => {
+																	return {
+																		...prev,
+																		zip_code: e.target.value,
+																	};
+																});
+															}}
 															id="postal-code"
 															autoComplete="postal-code"
 															className=" bg-transparent text-white border border-indigo-300 text-inwhite text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
@@ -781,9 +829,9 @@ const ProfileComponent = ({}) => {
 												) : (
 													// </div>
 													<LoadingButton
-														width={32}
+														width={null}
 														text={"Saving.."}
-														className="w-full"
+														className="w-[130px]"
 													/>
 												)}
 											</div>
