@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import LoaderCircle from "../../LoaderCircle";
 import { SetStateAction, Dispatch } from "react";
@@ -8,7 +8,9 @@ import Toast from "../../Toast";
 import { tables } from "@/configs/constants";
 import { getUserByUsername } from "@/Database/database";
 import BackgroundGlow from "../../VisualComponents/BackgroundGlow";
-export default function ResumeUpload() {
+import { useInfoAdded } from "../InfoAddingContext";
+import { Session } from "next-auth";
+export default function ResumeUpload({ session }: { session: Session | null }) {
 	const [file, setFile]: [File | null, Dispatch<SetStateAction<File | null>>] =
 		useState<File | null>(null);
 	const [toastHandler, setToastHandler] = useState<boolean>(false);
@@ -23,7 +25,10 @@ export default function ResumeUpload() {
 	});
 	const [buttonClicked, setButtonClicked] = useState<boolean>(false);
 	const supabase = createClient();
-	const { data: session, update } = useSession();
+	const { isInfoAdded, setIsInfoAdded } = useInfoAdded();
+	useEffect(() => {
+		console.log(session);
+	});
 	const uploadFile = async () => {
 		if (session && session.user && session.user.username) {
 			if (!file) {
@@ -54,7 +59,7 @@ export default function ResumeUpload() {
 				});
 				return;
 			}
-
+			console.log(session.user.username);
 			const { data: user, error: er } = await getUserByUsername(
 				session.user.username
 			);
@@ -76,6 +81,43 @@ export default function ResumeUpload() {
 						file_uuid: unique_file_id,
 						file_name: file.name,
 					});
+				if (error && error.message.includes("duplicate key value violates")) {
+					const { data, error } = await supabase
+						.schema("next_auth")
+						.from(tables.resumeUserLink)
+						.update({
+							resume_link: Data.signedUrl,
+							link_expires_after: new Date(
+								new Date().getTime() + 1000 * 60 * 60 * 24
+							),
+							file_uuid: unique_file_id,
+							file_name: file.name,
+						})
+						.match({
+							user_id: user.id,
+						});
+					if (error) {
+						setButtonClicked(false);
+
+						setToastHandler(true);
+						setToastInfo({
+							description:
+								"An error occured while creating the link. Please try again.",
+							loader: null,
+							type: "error",
+						});
+						return;
+					}
+					setIsInfoAdded(true);
+					setToastHandler(true);
+					setToastInfo({
+						description: "File uploaded successfully.",
+						loader: null,
+						type: "success",
+					});
+					setButtonClicked(false);
+					return;
+				}
 				if (error) {
 					setButtonClicked(false);
 
@@ -88,6 +130,7 @@ export default function ResumeUpload() {
 					});
 					return;
 				}
+				setIsInfoAdded(true);
 				setToastHandler(true);
 				setToastInfo({
 					description: "File uploaded successfully.",
@@ -113,9 +156,7 @@ export default function ResumeUpload() {
 			setFile(e.target.files[0]);
 		}
 	};
-	useEffect(() => {
-		console.log(session);
-	});
+
 	return (
 		<>
 			<Toast
@@ -132,8 +173,8 @@ export default function ResumeUpload() {
 						Upload Your Resume
 					</h1>
 					<p className="text-gray-600 dark:text-gray-400 mb-6">
-						Submit your resume for consideration. We&apos;ll review it and get
-						back to you.
+						Submit your resume for processing. We will keep your resume safe and
+						secure.
 					</p>
 					<div className="space-y-4">
 						<div>

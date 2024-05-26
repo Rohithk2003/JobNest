@@ -36,8 +36,9 @@
     "./types/next-auth-extension.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
-, "configs/constants.tsx"  ],
+    ".next/types/**/*.ts",
+    "configs/constants.tsx"
+  ],
   "exclude": [
     "node_modules"
   ]

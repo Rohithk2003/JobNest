@@ -1,9 +1,5 @@
 "use server";
-import {
-	getCheckUsernameRoute,
-	getRegisterRoute,
-	getUsernameCreationRoute,
-} from "@/configs/constants";
+
 import { sendVerificationMail } from "@/lib/mail";
 import { getorCreateVerificationToken } from "@/lib/token";
 import {
@@ -11,7 +7,6 @@ import {
 	RegisterActionProps,
 	RegisterActionResultProps,
 } from "@/types/custom";
-import { signIn } from "next-auth/react";
 interface registerProps {
 	message: string;
 }
@@ -38,13 +33,9 @@ export const handleSubmit = async (props: RegisterActionProps) => {
 			});
 			const signUpResponse: registerProps = await res.json();
 			if (signUpResponse?.message.toLowerCase() === "success") {
-				const verificationtoken = await getorCreateVerificationToken(
-					props.email as string
-				);
-				await sendVerificationMail(props.email as string, verificationtoken);
 				return {
 					status:
-						"Account has been created and a verification mail has been sent to your email. Please verify your email to continue.",
+						"Account has been created , you will be redirected please wait...",
 					error: null,
 				} as RegisterActionResultProps;
 			}
@@ -63,6 +54,11 @@ export const handleSubmit = async (props: RegisterActionProps) => {
 				return {
 					status: null,
 					error: "Network Error",
+				} as RegisterActionResultProps;
+			} else {
+				return {
+					status: null,
+					error: signUpResponse.message,
 				} as RegisterActionResultProps;
 			}
 		} catch (e) {

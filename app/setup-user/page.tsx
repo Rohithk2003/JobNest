@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Information from "../components/Setup-User/Information";
 import Header from "../components/MainPage/Navigation/Header";
 import { useSession } from "next-auth/react";
@@ -7,19 +7,24 @@ import ResumeUpload from "../components/Setup-User/ResumeUpload";
 import SendVerificationEmailComponent from "../components/SendVerificationEmailComponent";
 import { getDashboardRoute } from "@/configs/constants";
 import { useRouter } from "next/navigation";
+import {
+	InfoAddedProvider,
+	useInfoAdded,
+} from "../components/Setup-User/InfoAddingContext";
 export default function SetupUser() {
 	const router = useRouter();
-
 	const { data: session } = useSession();
 	const [steps, setStep] = useState({
 		stepsItems: ["Resume", "Profile", "Email verification"],
 		currentStep: 1,
 	});
+	const { isInfoAdded, setIsInfoAdded } = useInfoAdded();
 	const components: Record<number, ReactNode> = {
-		1: <ResumeUpload />,
+		1: <ResumeUpload session={session} />,
 		2: <Information />,
 		3: <SendVerificationEmailComponent />,
 	};
+
 	return (
 		<>
 			<Header session={session} />
@@ -63,36 +68,52 @@ export default function SetupUser() {
 						{components[steps.currentStep]}
 					</div>
 					<div className="flex justify-between mt-4 items-center">
-						<button
-							onClick={() => {
-								if (steps.currentStep > 1) {
-									setStep((prev) => ({
-										...prev,
-										currentStep: prev.currentStep - 1,
-									}));
-								}
-							}}
-							className={`px-6 ${
-								steps.currentStep > 1 ? "block" : "hidden"
-							} py-2 leading-5 text-white transition-colors duration-200 transform bg-blue-500 rounded-md hover:bg-pink-700 focus:outline-none focus:bg-gray-600`}
-						>
-							Prev
-						</button>
-						<button
-							onClick={() => {
-								if (steps.currentStep < steps.stepsItems.length) {
-									setStep((prev) => ({
-										...prev,
-										currentStep: prev.currentStep + 1,
-									}));
-								}
-							}}
-							className={`px-6 py-2 leading-5 ${
-								steps.currentStep < steps.stepsItems.length ? "block" : "hidden"
-							} text-white transition-colors duration-200 transform bg-blue-500 rounded-md hover:bg-pink-700 focus:outline-none `}
-						>
-							Next
-						</button>
+						{isInfoAdded ? (
+							<button
+								onClick={() => {
+									setIsInfoAdded(false);
+									if (steps.currentStep > 1) {
+										setStep((prev) => ({
+											...prev,
+											currentStep: prev.currentStep - 1,
+										}));
+									}
+								}}
+								className={`px-6 py-2 leading-5 ${
+									steps.currentStep > 1 ? "block" : "hidden"
+								} text-white transition-colors duration-200 transform bg-blue-500 rounded-md hover:bg-pink-700 focus:outline-none `}
+							>
+								Prev
+							</button>
+						) : (
+							<button className="relative x-6 py-2 w-20 h-10 after:absolute after:top-0 after:left-0 after:w-full after:h-full after:bg-black after:z-[900] z-50 after:opacity-30 after:rounded-full justify-center items-center gap-1 flex flex-row  rounded-full hover:cursor-pointer text-center  transition-all ease-in-out  bg-primary-900">
+								Prev
+							</button>
+						)}
+						{isInfoAdded ? (
+							<button
+								onClick={() => {
+									setIsInfoAdded(false);
+									if (steps.currentStep < steps.stepsItems.length) {
+										setStep((prev) => ({
+											...prev,
+											currentStep: prev.currentStep + 1,
+										}));
+									}
+								}}
+								className={`px-6 py-2 leading-5 ${
+									steps.currentStep < steps.stepsItems.length
+										? "block"
+										: "hidden"
+								} text-white transition-colors duration-200 transform bg-blue-500 rounded-md hover:bg-pink-700 focus:outline-none `}
+							>
+								Next
+							</button>
+						) : (
+							<button className="relative x-6 py-2 w-20 h-10 after:absolute after:top-0 after:left-0 after:w-full after:h-full after:bg-black after:z-[900] z-50 after:opacity-30 after:rounded-full justify-center items-center gap-1 flex flex-row  rounded-full hover:cursor-pointer text-center  transition-all ease-in-out  bg-primary-900">
+								Next
+							</button>
+						)}
 						<button
 							onClick={() => {
 								router.push(getDashboardRoute());

@@ -783,6 +783,7 @@ const ProfileComponent = ({}) => {
 													<LoadingButton
 														width={32}
 														text={"Saving.."}
+														className="w-full"
 													/>
 												)}
 											</div>

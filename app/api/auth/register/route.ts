@@ -28,8 +28,16 @@ export async function POST(request: Request) {
 						username: username,
 					},
 				]);
+			console.log(error);
+			if (
+				error &&
+				error.code == "23505" &&
+				error.message.includes("username")
+			) {
+				return NextResponse.json({ message: "Username already exists" });
+			}
 			if (error) {
-				return NextResponse.json({ message: "User already exists" });
+				return NextResponse.json({ message: error });
 			} else {
 				return NextResponse.json({ message: "Success" });
 			}

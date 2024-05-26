@@ -1,23 +1,18 @@
 "use client";
 import {
-	getCheckUsernameRoute,
-	getDashboardRoute,
-	getIconLocation,
 	getLoginRoute,
 	getUsernameCreationRoute,
+	getUserSetupRoute,
 } from "@/configs/constants";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import LoadingButton from "@/app/components/LoadingButton";
-import Popup from "../components/Popup";
 import { handleSubmit } from "@/actions/register";
 import AlertWithType from "../components/Alert";
 import Header from "../components/MainPage/Navigation/Header";
 import { RegisterActionResultProps } from "@/types/custom";
-import { set } from "firebase/database";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import Logo from "../components/Logo";
 export default function Register() {
@@ -79,6 +74,9 @@ export default function Register() {
 				setSignUpClicked(false);
 				setRegisterDone(true);
 				setHeading("Success");
+				setTimeout(() => {
+					router.push(getUserSetupRoute());
+				}, 1000);
 			}
 		}
 	};
@@ -119,7 +117,7 @@ export default function Register() {
 	return (
 		<>
 			<Header session={session} />
-			<section className="bg-gray-50 dark:bg-transparent h-dvh  relative z-[100]">
+			<section className="bg-gray-50 dark:bg-transparent h-max p-10 relative z-[100]">
 				{/* {showPopup && (
 					<Popup
 						title={PopupTitle}
@@ -180,7 +178,7 @@ export default function Register() {
 							}}
 						></div>
 					</div>
-					<div className="flex-1 flex items-center justify-center h-screen">
+					<div className="flex-1 flex mt-10 items-center justify-center h-screen">
 						<div className="w-full max-w-md space-y-8 px-4 bg-transparent text-gray-300 sm:px-0">
 							<div className="">
 								<Logo />
@@ -492,11 +490,12 @@ export default function Register() {
 								{(signUpStarted || signUpClicked) && !registerDone ? (
 									<div className="mt-4">
 										<LoadingButton
-											width={32}
+											width={96}
 											text={"Please wait.."}
+											className="w-full"
 										/>
 									</div>
-								) : !registerDone ? (
+								) : (
 									<button
 										disabled={signUpClicked}
 										className={`w-full px-4 mt-4 py-2 text-white font-medium ${
@@ -507,14 +506,6 @@ export default function Register() {
 									>
 										Create account
 									</button>
-								) : (
-									<a href={getLoginRoute()}>
-										<div
-											className={`flex justify-center items-center w-full px-4 py-2 mb-20 text-white font-medium opacity-1  bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150`}
-										>
-											Login
-										</div>
-									</a>
 								)}
 							</form>
 						</div>
