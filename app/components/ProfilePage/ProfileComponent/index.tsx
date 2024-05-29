@@ -2,18 +2,14 @@
 import Image from "next/image";
 import { MdAccountCircle, MdDeleteOutline, MdEdit } from "react-icons/md";
 import ProfileImageSkeleton from "../../Loader/ProfileImageSkeleton";
-import { ProfileComponentProps, tableTypes, UserProps } from "@/types/custom";
+import { tableTypes, UserProps } from "@/types/custom";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { tables } from "@/configs/constants";
+import { getaBackendRoute, tables } from "@/configs/constants";
 import { BiDownload } from "react-icons/bi";
 import SmallResumeUpload from "../../SmallResumeUpload";
 import { useSession } from "next-auth/react";
-import {
-	getUserByEmail,
-	getUserByUsername,
-	getVerificationToken,
-} from "@/Database/database";
+import { getUserByEmail } from "@/Database/database";
 import { PostgrestError } from "@supabase/supabase-js";
 import Toast from "../../Toast";
 import Loading from "@/app/loading";

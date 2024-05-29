@@ -5,6 +5,8 @@ import AuthProvider from "./context/AuthProvider";
 import "react-loading-skeleton/dist/skeleton.css";
 import PrelineScript from "./components/PrelineScript";
 import { ViewTransitions } from "next-view-transitions";
+import "react-toastify/dist/ReactToastify.css";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

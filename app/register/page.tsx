@@ -103,14 +103,14 @@ export default function Register() {
 		setSignUpStarted(true);
 		setgoogleProviderClicked(true);
 		await signIn("google", {
-			callbackUrl: getUsernameCreationRoute(),
+			callbackUrl: getUserSetupRoute(),
 		});
 	};
 	const handleGithubSignIn = async () => {
 		setSignUpStarted(true);
 		setgithubProviderClicked(true);
 		await signIn("github", {
-			callbackUrl: getUsernameCreationRoute(),
+			callbackUrl: getUserSetupRoute(),
 		});
 	};
 
@@ -202,6 +202,7 @@ export default function Register() {
 									<LoadingButton
 										width={32}
 										text={"Please wait.."}
+										className=""
 									/>
 								) : (
 									<button
@@ -255,6 +256,7 @@ export default function Register() {
 									<LoadingButton
 										width={32}
 										text={"Please wait.."}
+										className=""
 									/>
 								) : (
 									<button
@@ -282,6 +284,7 @@ export default function Register() {
 									<LoadingButton
 										width={32}
 										text={"Please wait.."}
+										className=""
 									/>
 								) : (
 									<button

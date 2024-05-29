@@ -3,15 +3,16 @@ import { useEffect, useState } from "react";
 import Toast from "../../Toast";
 import LoaderCircle from "../../LoaderCircle";
 import BackgroundGlow from "../../VisualComponents/BackgroundGlow";
-import LoadingButton from "../../LoadingButton";
 import AddInterest from "../../AddInterest";
 import { InputProvider } from "../SharedInputContextState";
 import { getUserByUsername } from "@/Database/database";
 import { Session } from "next-auth";
-import { SupabaseAdapter } from "@auth/supabase-adapter";
 import { createClient } from "@/utils/supabase/client";
-import { tables } from "@/configs/constants";
+import { tables, toastOptions } from "@/configs/constants";
 import { useInfoAdded } from "../InfoAddingContext";
+import CustomToastContainer from "../../CustomToastContainer";
+import ToastTest from "../../ToastWIthoutController";
+import { toast } from "react-toastify";
 export default function Information({ session }: { session: Session | null }) {
 	const [startedUpdatingInfo, setStartUpdatingInfo] = useState<boolean>(false);
 	const [firstTimeoutDone, setFirstTimeoutDone] = useState<boolean>(false);
@@ -19,13 +20,7 @@ export default function Information({ session }: { session: Session | null }) {
 	const [genderDropDown, showGenderDropDown] = useState<boolean>(false);
 	const [countryDropdown, showcountryDropdown] = useState<boolean>(false);
 	const { isInfoAdded, setIsInfoAdded } = useInfoAdded();
-	const [toastInfo, setToastInfo] = useState<{
-		description: string;
-		loader: JSX.Element | null;
-	}>({
-		description: "Saving changes..",
-		loader: <LoaderCircle />,
-	});
+	const customToastOptions = { ...toastOptions, autoClose: 3000 };
 	useEffect(() => {
 		if (startedUpdatingInfo && !firstTimeoutDone) {
 			let timeout = setTimeout(() => {
@@ -38,20 +33,49 @@ export default function Information({ session }: { session: Session | null }) {
 	async function onSubmit() {
 		setSavingStarted(true);
 		setStartUpdatingInfo(true);
-		setToastInfo({
-			description: "Saving changes..",
-			loader: <LoaderCircle />,
-		});
+		const id = toast.loading(
+			<ToastTest
+				description="Saving Changes.."
+				type={"error"}
+				toastProps={toastOptions}
+				closeToast={() => {}}
+			/>,
+			toastOptions
+		);
 		if (!session) {
+			toast.update(id, {
+				...customToastOptions,
+
+				render: (
+					<ToastTest
+						description="Please wait a few seconds then  try again"
+						type={"error"}
+						toastProps={customToastOptions}
+						closeToast={() => {}}
+					/>
+				),
+				type: "error",
+				isLoading: false,
+			});
 			return;
 		}
 		const { data: user, error: err } = await getUserByUsername(
 			session.user.username
 		);
 		if (err) {
-			setToastInfo({
-				description: "An error occured while updating the information.",
-				loader: null,
+			toast.update(id, {
+				...customToastOptions,
+
+				render: (
+					<ToastTest
+						description="An error occured while updating the information."
+						type={"error"}
+						toastProps={customToastOptions}
+						closeToast={() => {}}
+					/>
+				),
+				type: "error",
+				isLoading: false,
 			});
 			return;
 		}
@@ -74,15 +98,35 @@ export default function Information({ session }: { session: Session | null }) {
 
 			.eq("id", user.id);
 		if (error) {
-			setToastInfo({
-				description: error.message,
-				loader: null,
+			toast.update(id, {
+				...customToastOptions,
+				render: (
+					<ToastTest
+						description={error.message}
+						type={"error"}
+						toastProps={customToastOptions}
+						closeToast={() => {}}
+					/>
+				),
+				type: "error",
+				isLoading: false,
 			});
 		}
 		setIsInfoAdded(true);
-		setToastInfo({
-			description: "Your data has been updated sucessfully",
-			loader: null,
+
+		toast.update(id, {
+			...customToastOptions,
+
+			render: (
+				<ToastTest
+					description="Your data has been updated sucessfully"
+					type={"error"}
+					toastProps={customToastOptions}
+					closeToast={() => {}}
+				/>
+			),
+			type: "success",
+			isLoading: false,
 		});
 	}
 	const [formData, setFormData] = useState({
@@ -105,14 +149,7 @@ export default function Information({ session }: { session: Session | null }) {
 	return (
 		<InputProvider>
 			<>
-				<Toast
-					description={toastInfo.description}
-					type="normal"
-					controller={startedUpdatingInfo}
-					controllerHandlerBoolean={setStartUpdatingInfo}
-					loader={<LoaderCircle />}
-					time={3000}
-				/>
+				<CustomToastContainer />
 				<section className="max-w-7xl p-6 mx-auto bg-transparent  relative z-[900] rounded-lg dark mt-20">
 					<h1 className="text-xl font-bold mb-10 text-white capitalize dark:text-white">
 						Account settings
@@ -211,6 +248,30 @@ export default function Information({ session }: { session: Session | null }) {
 										}}
 										type="text"
 										placeholder="Doe"
+										className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+									/>
+								</div>
+								<div>
+									<label
+										className="text-white dark:text-gray-200"
+										htmlFor="username"
+									>
+										Username
+									</label>
+									<input
+										id="username"
+										required
+										value={formData.username}
+										onChange={(e) => {
+											setFormData((prev) => {
+												return {
+													...prev,
+													username: e.target.value,
+												};
+											});
+										}}
+										type="text"
+										placeholder="Username.."
 										className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
 									/>
 								</div>

@@ -7,7 +7,7 @@ export default function LoadingButton({
 }: {
 	text: string;
 	className: string;
-	width: number | 32;
+	width: number | 32 | null;
 }) {
 	return (
 		<div

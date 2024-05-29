@@ -70,3 +70,8 @@ export const tables = {
 	verificationTokens: "VerificationToken",
 	resumeUserLink: "resumeUser",
 };
+export const toastOptions = {
+	style: { backgroundColor: `rgb(38 38 38)` },
+	className: "border rounded-xl shadow-lg bg-neutral-800 border-neutral-700",
+	bodyClassName: " rounded-xl shadow-lg bg-neutral-800",
+};

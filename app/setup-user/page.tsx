@@ -8,6 +8,8 @@ import SendVerificationEmailComponent from "../components/SendVerificationEmailC
 import { getDashboardRoute } from "@/configs/constants";
 import { useRouter } from "next/navigation";
 import { useInfoAdded } from "../components/Setup-User/InfoAddingContext";
+import { ToastContainer } from "react-toastify";
+
 export default function SetupUser() {
 	const router = useRouter();
 	const { data: session } = useSession();
@@ -26,6 +28,10 @@ export default function SetupUser() {
 		<>
 			<Header session={session} />
 			<div className="flex justify-center  flex-col pt-40 items-center h-max pb-40 relative">
+				<ToastContainer
+					className="w-full relative bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
+					bodyClassName="w-full relative bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
+				/>
 				<div className="w-[42rem] mx-auto px-4 md:px-8 ">
 					<ul
 						aria-label="Steps"

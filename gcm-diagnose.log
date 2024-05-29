@@ -1,0 +1,225 @@
+﻿Diagnose log at 2024-05-26T10:01:20Z
+
+AppPath: /usr/local/bin/git-credential-manager
+InstallDir: /usr/local/share/gcm-core/
+Version: 2.5.0+d34930736e131ad80e5690e5634ced1808aff3e2
+
+------------
+Diagnostic: Environment
+Skipped: False
+Success: True
+Exception: None
+Log:
+OSType: Linux
+OSVersion: Ubuntu 22.04.4 LTS
+Reading environment variables... OK
+ Variables:
+NVM_DIR=/home/rohithk/.nvm
+NVM_BIN=/home/rohithk/.nvm/versions/node/v22.2.0/bin
+GNOME_SHELL_SESSION_MODE=ubuntu
+JOURNAL_STREAM=8:36219
+SNAP_COMMON=/var/snap/alacritty/common
+XLOCALEDIR=/snap/alacritty/125/usr/share/X11/locale
+TERM=xterm-256color
+FONTCONFIG_FILE=/snap/alacritty/125/etc/fonts/fonts.conf
+SNAP_ARCH=amd64
+WINDOWID=65011717
+QT_ACCESSIBILITY=1
+WINDOWPATH=2
+XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/etc/xdg
+SNAP_UID=1000
+XMODIFIERS=@im=ibus
+GDK_PIXBUF_MODULEDIR=/snap/alacritty/125/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+SNAP_USER_DATA=/home/rohithk/snap/alacritty/125
+HOMEBREW_CELLAR=/home/linuxbrew/.linuxbrew/Cellar
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+LANG=en_IN
+ALACRITTY_LOG=/tmp/Alacritty-80114.log
+ALACRITTY_WINDOW_ID=65011717
+MANPATH=/home/linuxbrew/.linuxbrew/share/man:
+SNAP_VERSION=0.13.2
+DISPLAY=:1
+INFOPATH=/home/linuxbrew/.linuxbrew/share/info:
+GST_PLUGIN_SYSTEM_PATH=/snap/alacritty/125/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+_OLD_FISH_PROMPT_OVERRIDE=/home/rohithk/venv
+QT_IM_MODULE=ibus
+XAUTHORITY=/run/user/1000/gdm/Xauthority
+LD_LIBRARY_PATH=/home/rohithk/venv/lib/python3.10/site-packages/nvidia/cudnn/lib
+VDPAU_DRIVER_PATH=/usr/lib/x86_64-linux-gnu/vdpau/
+XDG_DATA_HOME=/home/rohithk/.local/share
+GIO_MODULE_DIR=/home/rohithk/snap/alacritty/common/.cache/gio-modules
+SNAP_COOKIE=Iw-YhDo-teiUJOVZT7yzx6SumqEb9vXi52sYF1z7e-d0vLHXR47W
+XDG_SESSION_TYPE=x11
+SNAP=/snap/alacritty/125
+VIRTUAL_ENV=/home/rohithk/venv
+GIT_TRACE2_PARENT_SID=68be5184-bccd-4b7e-878c-17c87d20b041
+NVM_INC=/home/rohithk/.nvm/versions/node/v22.2.0/include/node
+GIO_LAUNCHED_DESKTOP_FILE=/var/lib/snapd/desktop/applications/alacritty_alacritty.desktop
+HOMEBREW_REPOSITORY=/home/linuxbrew/.linuxbrew/Homebrew
+XDG_CONFIG_HOME=/home/rohithk/.config
+SNAP_INSTANCE_NAME=alacritty
+SNAP_REEXEC=
+XDG_MENU_PREFIX=gnome-
+GST_PLUGIN_SCANNER=/snap/alacritty/125/usr/lib/x86_64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner
+GDK_PIXBUF_MODULE_FILE=/home/rohithk/snap/alacritty/common/.cache/gdk-pixbuf-loaders.cache
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+__EGL_VENDOR_LIBRARY_DIRS=/snap/alacritty/125/etc/glvnd/egl_vendor.d:/snap/alacritty/125/usr/share/glvnd/egl_vendor.d
+SNAP_INSTANCE_KEY=
+OMF_CONFIG=/home/rohithk/.config/omf
+GTK_MODULES=gail:atk-bridge
+FONTCONFIG_PATH=/snap/alacritty/125/etc/fonts
+_OLD_VIRTUAL_PATH=/home/linuxbrew/.linuxbrew/opt/node@20/bin:/home/rohithk/.local/share/nvm/v22.2.0/bin/node:/home/rohithk/.local/share/nvm/v22.2.0/bin/node/:/home/rohithk/.local/share/nvm/v22.2.0/bin/:/home/rohithk/.cabal/bin:/home/rohithk/.ghcup/bin:/home/rohithk/.nvm/versions/node/v22.2.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+XKB_CONFIG_ROOT=/snap/alacritty/125/usr/share/X11/xkb
+GJS_DEBUG_TOPICS=JS ERROR;JS LOG
+ALACRITTY_SOCKET=/run/user/1000/Alacritty-:1-80114.sock
+LIBVA_DRIVERS_PATH=/snap/alacritty/125/usr/lib/x86_64-linux-gnu/dri
+XDG_SESSION_CLASS=user
+XDG_DATA_DIRS=/home/rohithk/snap/alacritty/125/.local/share:/home/rohithk/snap/alacritty/125:/snap/alacritty/125/usr/share:/usr/share/ubuntu:/usr/share/gnome:/home/rohithk/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+DESKTOP_SESSION=ubuntu
+SHLVL=1
+XDG_CURRENT_DESKTOP=ubuntu:GNOME
+XDG_RUNTIME_DIR=/run/user/1000
+SNAP_CONTEXT=Iw-YhDo-teiUJOVZT7yzx6SumqEb9vXi52sYF1z7e-d0vLHXR47W
+USERNAME=rohithk
+XDG_SESSION_DESKTOP=ubuntu
+GPG_AGENT_INFO=/run/user/1000/gnupg/S.gpg-agent:0:1
+SNAP_LAUNCHER_ARCH_TRIPLET=x86_64-linux-gnu
+OMF_PATH=/home/rohithk/.local/share/omf
+SNAP_NAME=alacritty
+LOGNAME=rohithk
+GTK_IM_MODULE=ibus
+GJS_DEBUG_OUTPUT=stderr
+INVOCATION_ID=dfdb07a5db8c45b2a840d89ae4a9757f
+SNAP_DATA=/var/snap/alacritty/125
+GIO_LAUNCHED_DESKTOP_FILE_PID=80114
+GST_PLUGIN_PATH=/snap/alacritty/125/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+SNAP_LIBRARY_PATH=/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
+NVM_CD_FLAGS=
+SYSTEMD_EXEC_PID=2534
+SNAP_REAL_HOME=/home/rohithk
+SNAP_EUID=1000
+COLORTERM=truecolor
+USER=rohithk
+HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
+LANGUAGE=en_IN:en
+MANAGERPID=2015
+HOME=/home/rohithk
+LIBGL_DRIVERS_PATH=/snap/alacritty/125/usr/lib/x86_64-linux-gnu/dri
+CUDNN_PATH=/home/rohithk/venv/lib/python3.10/site-packages/nvidia/cudnn
+SNAP_USER_COMMON=/home/rohithk/snap/alacritty/common
+SHELL=/usr/bin/fish
+SNAP_REVISION=125
+GDMSESSION=ubuntu
+BAMF_DESKTOP_FILE_HINT=/var/lib/snapd/desktop/applications/alacritty_alacritty.desktop
+PWD=/home/rohithk/projects/JobNest
+PATH=/home/rohithk/.cabal/bin:/home/rohithk/.ghcup/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/home/rohithk/venv/bin:/home/linuxbrew/.linuxbrew/opt/node@20/bin:/home/rohithk/.local/share/nvm/v22.2.0/bin/node:/home/rohithk/.local/share/nvm/v22.2.0/bin/node/:/home/rohithk/.local/share/nvm/v22.2.0/bin/:/home/rohithk/.cabal/bin:/home/rohithk/.ghcup/bin:/home/rohithk/.nvm/versions/node/v22.2.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+XDG_CACHE_HOME=/home/rohithk/snap/alacritty/common/.cache
+SESSION_MANAGER=local/rohithk-ASUS-TUF-Gaming-A15-FA507RF-FA507RF:@/tmp/.ICE-unix/2512,unix/rohithk-ASUS-TUF-Gaming-A15-FA507RF-FA507RF:/tmp/.ICE-unix/2512
+SSH_AGENT_LAUNCHER=gnome-keyring
+LC_ALL=C.UTF-8
+SSH_AUTH_SOCK=/run/user/1000/keyring/ssh
+
+
+------------
+Diagnostic: File system
+Skipped: False
+Success: True
+Exception: None
+Log:
+Temporary directory is '/tmp/'...
+Checking basic file I/O...
+Writing to temporary file '/tmp/5b97428f9fc419f73cf4e802'... OK
+Reading from temporary file '/tmp/5b97428f9fc419f73cf4e802'... OK
+Deleting temporary file '/tmp/5b97428f9fc419f73cf4e802'... OK
+Testing IFileSystem instance...
+UserHomePath: /home/rohithk
+UserDataDirectoryPath: /home/rohithk/.gcm
+GetCurrentDirectory(): /home/rohithk/projects/JobNest
+
+------------
+Diagnostic: Networking
+Skipped: False
+Success: True
+Exception: None
+Log:
+Checking networking and HTTP stack...
+Creating HTTP client... OK
+IsNetworkAvailable: True
+Sending HEAD request to http://example.com...Sending HEAD request to https://example.com... OK
+ OK
+Acquiring free TCP port... OK
+Testing local HTTP loopback connections...
+Creating new HTTP listener for http://localhost:42037/... OK
+Waiting for loopback connection... OK
+Writing response... OK
+Waiting for response data... OK
+Loopback connection data OK
+
+------------
+Diagnostic: Git
+Skipped: False
+Success: True
+Exception: None
+Log:
+Getting Git version... OK
+Git version is '2.34.1'
+Locating current repository...Git repository at '/home/rohithk/projects/JobNest/.git'
+ OK
+Listing all Git configuration... OK
+Git configuration:
+file:/home/rohithk/.gitconfig	user.email=rohithk652@gmail.com
+file:/home/rohithk/.gitconfig	user.name=Rohith Krishnan
+file:/home/rohithk/.gitconfig	credential.credentialstore=gpg
+file:/home/rohithk/.gitconfig	credential.helper=
+file:/home/rohithk/.gitconfig	credential.helper=/usr/local/bin/git-credential-manager
+file:/home/rohithk/.gitconfig	credential.https://dev.azure.com.usehttppath=true
+file:.git/config	core.repositoryformatversion=0
+file:.git/config	core.filemode=true
+file:.git/config	core.bare=false
+file:.git/config	core.logallrefupdates=true
+file:.git/config	remote.origin.url=https://github.com/Rohithk2003/JobNest
+file:.git/config	remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+file:.git/config	branch.master.remote=origin
+file:.git/config	branch.master.merge=refs/heads/master
+
+
+------------
+Diagnostic: Credential storage
+Skipped: False
+Success: True
+Exception: None
+Log:
+ICredentialStore instance is of type: CredentialStore
+Writing test credential... OK
+Reading test credential... OK
+Deleting test credential... OK
+
+------------
+Diagnostic: Microsoft authentication (AAD/MSA)
+Skipped: False
+Success: True
+Exception: None
+Log:
+Broker is not enabled.
+Flow type is: Auto
+Gathering MSAL token cache data... OK
+CacheDirectory: /home/rohithk/.local/.IdentityService
+CacheFileName: msal.cache
+CacheFilePath: /home/rohithk/.local/.IdentityService/msal.cache
+KeyringCollection: 
+KeyringSchemaName: 
+KeyringSecretLabel: 
+KeyringAttribute1: (,)
+KeyringAttribute2: (,)
+Creating cache helper... OK
+Verifying MSAL token cache persistence... OK
+
+------------
+Diagnostic: GitHub API
+Skipped: False
+Success: True
+Exception: None
+Log:
+Using 'https://github.com/' as API target.
+Querying '/meta' endpoint... OK
+
