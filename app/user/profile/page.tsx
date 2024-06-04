@@ -2,7 +2,7 @@
 import { createClient } from "@/utils/supabase/client";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import DashboardNavigation from "../../components/DashboardNavigation/layout";
+import DashboardNavigation from "@/app/components/DashboardNavigation/layout";
 import { BiErrorCircle } from "react-icons/bi";
 import { UserProps } from "@/types/custom";
 import ProfileComponent from "@/app/components/ProfilePage/ProfileComponent";

@@ -1,5 +1,5 @@
 "use client";
-import DashboardNavigation from "../components/DashboardNavigation/layout";
+import DashboardNavigation from "../components/DashboardNavigation";
 import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
 import { useSession } from "next-auth/react";
 import { useState, useEffect, useCallback } from "react";

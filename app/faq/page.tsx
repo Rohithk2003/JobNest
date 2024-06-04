@@ -1,12 +1,19 @@
 import { getServerSession } from "next-auth";
 import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
+import Navigation from "../components/MainPage/Navigation";
 import DashboardNavigation from "../components/DashboardNavigation/layout";
-import Navigation from "../components/MainPage/Navigation/layout";
 export default async function FAQ() {
 	const session = await getServerSession();
 	return (
 		<>
-			{session ? <DashboardNavigation /> : <Navigation session={session} />}
+			{session ? (
+				<DashboardNavigation
+					fromMainPage={false}
+					session={session}
+				/>
+			) : (
+				<Navigation />
+			)}
 			<section className="bg-white dark:bg-transparent relative z-[700]">
 				<div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
 					<h2 className="mb-8 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">

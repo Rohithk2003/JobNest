@@ -1,7 +1,6 @@
 "use client";
 import { ReactNode, useEffect, useState } from "react";
 import Information from "../components/Setup-User/Information";
-import Header from "../components/MainPage/Navigation/Header";
 import { useSession } from "next-auth/react";
 import ResumeUpload from "../components/Setup-User/ResumeUpload";
 import SendVerificationEmailComponent from "../components/SendVerificationEmailComponent";
@@ -9,24 +8,27 @@ import { getDashboardRoute } from "@/configs/constants";
 import { useRouter } from "next/navigation";
 import { useInfoAdded } from "../components/Setup-User/InfoAddingContext";
 import { ToastContainer } from "react-toastify";
+import Navigation from "../components/MainPage/Navigation";
+import VideoUpload from "../components/Setup-User/VideoUpload";
 
 export default function SetupUser() {
 	const router = useRouter();
 	const { data: session } = useSession();
 	const [steps, setStep] = useState({
-		stepsItems: ["Resume", "Profile", "Email verification"],
-		currentStep: 1,
+		stepsItems: ["Resume", "Profile", "Email verification", "Upload Video"],
+		currentStep: 4,
 	});
 	const { isInfoAdded, setIsInfoAdded } = useInfoAdded();
 	const components: Record<number, ReactNode> = {
 		1: <ResumeUpload session={session} />,
 		2: <Information session={session} />,
 		3: <SendVerificationEmailComponent />,
+		4: <VideoUpload session={session} />,
 	};
 
 	return (
 		<>
-			<Header session={session} />
+			<Navigation />{" "}
 			<div className="flex justify-center  flex-col pt-40 items-center h-max pb-40 relative">
 				<ToastContainer
 					className="w-full relative bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"

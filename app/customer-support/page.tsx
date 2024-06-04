@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
-import DashboardNavigation from "../components/DashboardNavigation/layout";
-import Navigation from "../components/MainPage/Navigation/layout";
+import DashboardNavigation from "../components/DashboardNavigation";
+import Navigation from "../components/MainPage/Navigation";
 import { getContactRoute } from "@/configs/constants";
 export default async function Help() {
 	const session = await getServerSession();
@@ -13,7 +13,7 @@ export default async function Help() {
 					session={session}
 				/>
 			) : (
-				<Navigation session={session} />
+				<Navigation />
 			)}
 			<BackgroundGlow />
 			<section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">

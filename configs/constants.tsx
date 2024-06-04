@@ -69,6 +69,7 @@ export const tables = {
 	supabaseUsers: "users",
 	verificationTokens: "VerificationToken",
 	resumeUserLink: "resumeUser",
+	videoUserLink: "video_user_link",
 };
 export const toastOptions = {
 	style: { backgroundColor: `rgb(38 38 38)` },

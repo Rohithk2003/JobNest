@@ -11,7 +11,7 @@ import { getorCreateVerificationToken } from "@/lib/token";
 import { ErrorAlert, MailSentAlert } from "../components/Alert";
 import LoadingButton from "../components/LoadingButton";
 import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
-import Header from "../components/MainPage/Navigation/Header";
+import Navigation from "../components/MainPage/Navigation";
 
 export default function SendPasswordResetEmailComponent() {
 	const [email, setEmail] = useState("");
@@ -59,7 +59,7 @@ export default function SendPasswordResetEmailComponent() {
 
 	return (
 		<>
-			<Header session={session} />
+			<Navigation />{" "}
 			<main className="relative z-[900] min-h-screen w-full h-full flex flex-col items-center justify-center px-4">
 				<div className="max-w-sm w-full text-white space-y-8">
 					<div className="text-center">
@@ -97,6 +97,7 @@ export default function SendPasswordResetEmailComponent() {
 					{mailSent ? (
 						<LoadingButton
 							width={96}
+							className=""
 							text={`Resend email in ${timer} seconds`}
 						/>
 					) : (

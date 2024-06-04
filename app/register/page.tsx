@@ -11,10 +11,10 @@ import { signIn, useSession } from "next-auth/react";
 import LoadingButton from "@/app/components/LoadingButton";
 import { handleSubmit } from "@/actions/register";
 import AlertWithType from "../components/Alert";
-import Header from "../components/MainPage/Navigation/Header";
 import { RegisterActionResultProps } from "@/types/custom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import Logo from "../components/Logo";
+import Navigation from "../components/MainPage/Navigation";
 export default function Register() {
 	type PopupButtonFunctionType = () => any;
 
@@ -116,7 +116,7 @@ export default function Register() {
 
 	return (
 		<>
-			<Header session={session} />
+			<Navigation />{" "}
 			<section className="bg-gray-50 dark:bg-transparent h-max p-10 relative z-[100]">
 				{/* {showPopup && (
 					<Popup

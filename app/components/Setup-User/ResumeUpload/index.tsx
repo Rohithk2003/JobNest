@@ -1,16 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import LoaderCircle from "../../LoaderCircle";
 import { SetStateAction, Dispatch } from "react";
 import { createClient } from "@/utils/supabase/client";
-import Toast from "../../Toast";
 import { getaBackendRoute, tables } from "@/configs/constants";
 import { getUserByUsername } from "@/Database/database";
 import BackgroundGlow from "../../VisualComponents/BackgroundGlow";
 import { useInfoAdded } from "../InfoAddingContext";
 import { Session } from "next-auth";
-import { Bounce, Id, ToastContainer, toast } from "react-toastify";
-import ToastWithoutController from "../../ToastWIthoutController";
+import { Id, toast } from "react-toastify";
 import ToastTest from "../../ToastWIthoutController";
 import CustomToastContainer from "../../CustomToastContainer";
 
@@ -113,6 +111,25 @@ export default function ResumeUpload({ session }: { session: Session | null }) {
 			const { data: user, error: er } = await getUserByUsername(
 				session.user.username
 			);
+			if (er) {
+				setButtonClicked(false);
+
+				toast.update(id, {
+					...toastOptions,
+					render: (
+						<ToastTest
+							description="An error occured while fetching the user. Please try again."
+							type={"error"}
+							toastProps={toastOptions}
+							closeToast={() => {}}
+						/>
+					),
+					type: "error",
+					isLoading: false,
+				});
+
+				return Promise.reject("An error occured while fetching the user.");
+			}
 			if (!user) {
 				setButtonClicked(false);
 
@@ -149,7 +166,8 @@ export default function ResumeUpload({ session }: { session: Session | null }) {
 						file_uuid: unique_file_id,
 						file_name: file.name,
 					});
-				if (error && error.message.includes("duplicate key value violates")) {
+				if (error && error.message.includes("duplicate")) {
+					console.log("dddddddd");
 					const { data: existingData, error: existingError } = await supabase
 						.schema("next_auth")
 						.from(tables.resumeUserLink)
@@ -157,9 +175,9 @@ export default function ResumeUpload({ session }: { session: Session | null }) {
 						.eq("user_id", user.id)
 						.limit(1)
 						.maybeSingle();
+					console.log(existingData);
 					if (existingError) {
 						setButtonClicked(false);
-
 						toast.update(id, {
 							render: (
 								<ToastTest
@@ -335,7 +353,6 @@ export default function ResumeUpload({ session }: { session: Session | null }) {
 								e.preventDefault();
 								setButtonClicked(true);
 								uploadFile();
-								// notify();
 							}}
 							className="inline-flex items-center justify-center whitespace-nowrap text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 						>

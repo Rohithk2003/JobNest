@@ -1,4 +1,3 @@
-import DashboardNavigation from "../components/DashboardNavigation/layout";
 import { getaBackendRoute, getJobsRoute } from "@/configs/constants";
 import SkeletonDiv from "../components/Loader/JobListCardSkeleton";
 import dynamic from "next/dynamic";
@@ -8,6 +7,7 @@ import { JobApiFetchProps } from "@/types/custom";
 import { createClient } from "@/utils/supabase/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/authoptions";
+import DashboardNavigation from "../components/DashboardNavigation/layout";
 
 async function fetchJobsData({
 	searchParams,

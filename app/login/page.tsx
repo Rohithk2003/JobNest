@@ -16,10 +16,8 @@ import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
 import { handleGoogleSignIn, handleSubmit } from "@/actions/login";
 import { useSearchParams } from "next/navigation";
 import AlertWithType from "../components/Alert";
-import Header from "../components/MainPage/Navigation/Header";
 import { RegisterActionResultProps } from "@/types/custom";
-import { set } from "firebase/database";
-import Logo from "../components/Logo";
+import Navigation from "../components/MainPage/Navigation";
 
 export default function Login() {
 	const searchParams = useSearchParams();
@@ -85,7 +83,7 @@ export default function Login() {
 
 	return (
 		<>
-			<Header session={session} />
+			<Navigation />{" "}
 			<section className=" dark:bg-transparent h-[110vh] relative z-[400] p-5">
 				<main className="w-full h-screen flex flex-col items-center justify-center px-4">
 					<div className="max-w-sm w-full text-gray-300 space-y-8">
@@ -158,6 +156,7 @@ export default function Login() {
 								<div className="mt-5 w-32">
 									<LoadingButton
 										width={32}
+										className=""
 										text={"Please wait.."}
 									/>
 								</div>
@@ -198,6 +197,7 @@ export default function Login() {
 							{googleProviderClicked ? (
 								<LoadingButton
 									width={96}
+									className=""
 									text={"Please wait.."}
 								/>
 							) : (
@@ -259,6 +259,7 @@ export default function Login() {
 								<LoadingButton
 									width={32}
 									text={"Please wait.."}
+									className=""
 								/>
 							) : (
 								<button
@@ -296,6 +297,7 @@ export default function Login() {
 								<LoadingButton
 									width={32}
 									text={"Please wait.."}
+									className=""
 								/>
 							) : (
 								<button
