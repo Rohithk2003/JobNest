@@ -113,6 +113,7 @@ export interface tableTypes {
 	supabaseUser: Database["next_auth"]["Tables"]["users"]["Row"];
 	verificationTokens: Database["next_auth"]["Tables"]["VerificationToken"]["Row"];
 	resumeUser: Database["next_auth"]["Tables"]["resumeUser"]["Row"];
+	videoLink: Database["next_auth"]["Tables"]["video_user_link"]["Row"];
 }
 export interface SupabaseError {
 	message: string;

@@ -5,21 +5,16 @@ import {
 	getRegisterRoute,
 } from "@/configs/constants";
 import Image from "next/image";
-import { Poppins } from "next/font/google";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authoptions";
 import { useSession } from "next-auth/react";
-
-const poppins = Poppins({
-	weight: ["500"],
-	subsets: ["latin"],
-});
+import { GeistSans } from "geist/font/sans";
 
 export default function Navigation() {
 	const { data: session } = useSession();
 	return (
 		<header
-			className={`bg-transparent pt fixed z-[1000] w-full ${poppins.className}`}
+			className={`bg-transparent pt fixed z-[1000] w-full ${GeistSans.className}`}
 		>
 			<div className="mx-auto flex h-20 p-1 max-w-full-xl items-center gap-8  sm:px-6 ">
 				<div className="flex flex-1 items-center justify-end md:justify-start">

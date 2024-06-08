@@ -85,8 +85,8 @@ export default function Login() {
 		<>
 			<Navigation />{" "}
 			<section className=" dark:bg-transparent h-[110vh] relative z-[400] p-5">
-				<main className="w-full h-screen flex flex-col items-center justify-center px-4">
-					<div className="max-w-sm w-full text-gray-300 space-y-8">
+				<main className="w-full h-screen flex flex-col items-center justify-center p-5">
+					<div className="max-w-lg p-10 w-full text-gray-300 space-y-8  shadow-2xl  rounded-2xl  shadow-black/10 backdrop-blur-md border border-white/30">
 						<div className="text-center">
 							<div className="mt-5 space-y-2">
 								<h3 className="text-gray-300 text-2xl font-bold sm:text-3xl">
@@ -196,8 +196,8 @@ export default function Login() {
 						<div className="space-y-4 text-sm font-medium">
 							{googleProviderClicked ? (
 								<LoadingButton
-									width={96}
-									className=""
+									width={null}
+									className="w-full"
 									text={"Please wait.."}
 								/>
 							) : (

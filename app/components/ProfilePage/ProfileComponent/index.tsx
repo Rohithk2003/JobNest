@@ -21,9 +21,6 @@ import { getorCreateVerificationToken } from "@/lib/token";
 const ProfileComponent = ({}) => {
 	const [countryDropdown, showcountryDropdown] = useState(false);
 	const [genderDropdown, showgenderDropdown] = useState(false);
-	const [pdfFileName, setPdfFileName] = useState("");
-	const [downloadUrl, setDownloadUrl] = useState("");
-	const [noPdfUploaded, setNoPdfUploaded] = useState(false);
 	const [toastHandler, setToastHandler] = useState(false);
 	const supabase = createClient();
 	const [sessionLoaded, setSessionLoaded] = useState(false);
@@ -126,82 +123,7 @@ const ProfileComponent = ({}) => {
 			setFile(e.target.files[0]);
 		}
 	};
-	useEffect(() => {
-		const fetchResumeLink = async () => {
-			if (session && session.user) {
-				if (!session.user.email) return false;
-				const { data, error: er } = await getUserByEmail(session.user.email);
-				if (data) {
-					const user = data as tableTypes["supabaseUser"];
-					if (er) {
-						console.error(er);
-						return;
-					}
-					const {
-						data: resumelink,
-						error: e,
-					}: {
-						data: unknown | null;
-						error: any;
-					} = await supabase
-						.schema("next_auth")
-						.from(tables.resumeUserLink)
-						.select("*")
-						.eq("user_id", user.id)
-						.limit(1)
-						.maybeSingle();
-					console.log("dd");
-					if (e) {
-						console.error(e);
-						return;
-					}
-					if (!resumelink) {
-						setNoPdfUploaded(true);
-						return;
-					}
-					const resumeUser = resumelink as tableTypes["resumeUser"];
 
-					if (
-						resumeUser &&
-						resumeUser.resume_link &&
-						resumeUser.file_name &&
-						resumeUser.link_expires_after
-					) {
-						setPdfFileName(resumeUser?.file_name);
-						if (
-							new Date(resumeUser.link_expires_after) >
-							new Date(new Date().getTime())
-						) {
-							const { data: link } = await supabase.storage
-								.from("jobnest")
-								.createSignedUrl(
-									`resumes/${resumeUser.file_uuid}`,
-									1000 * 60 * 60 * 24
-								);
-							if (link) {
-								setDownloadUrl(link.signedUrl);
-								await supabase
-									.schema("next_auth")
-									.from(tables.resumeUserLink)
-									.update({
-										resume_link: link.signedUrl,
-										link_expires_after: new Date(
-											new Date().getTime() + 1000 * 60 * 60 * 24
-										),
-									})
-									.eq("id", resumeUser.id);
-							}
-						} else {
-							setDownloadUrl(resumeUser.resume_link);
-						}
-					}
-				}
-			} else {
-				return;
-			}
-		};
-		fetchResumeLink();
-	});
 	const profilePhotoUploader = async () => {
 		if (!file) {
 			alert("Please, select file you want to upload");
@@ -271,7 +193,7 @@ const ProfileComponent = ({}) => {
 			/>
 
 			{sessionLoaded ? (
-				<main className="w-full min-h-screen py-1 ">
+				<main className="w-full min-h-screen py-1 overflow-y-hidden">
 					<form
 						onSubmit={(e) => {
 							handleSubmit(e);
@@ -282,10 +204,9 @@ const ProfileComponent = ({}) => {
 						<div className="p-2 md:p-4 ">
 							<div className="w-full px-6 pb-8 mt-8 sm:rounded-lg">
 								<h2 className="text-2xl font-bold sm:text-xl">Profile</h2>
-
-								<div className="grid w-full mx-auto mt-8">
-									<div className="flex flex-row justify-between items-center space-y-5 sm:flex-row sm:space-y-0">
-										<div className="flex flex-row">
+								<div className="grid md:grid-cols-3 grid-cols-1 md:grid-rows-1 grid-rows-2 w-full mt-8 gap-0">
+									<div className="flex flex-col justify-start items-start ">
+										<div className="flex flex-col">
 											{session?.user ? (
 												<div className="relative ">
 													{session?.user?.image ? (
@@ -303,63 +224,45 @@ const ProfileComponent = ({}) => {
 															height={160}
 														/>
 													)}
-													<div className="w-full h-full z-50 avatar-overlay bg-black opacity-50 hidden absolute top-0 left-0 rounded-full">
-														<div className="flex items-center justify-center w-full h-full">
-															<MdEdit
-																onClick={() => {
-																	setShowEdtImage(!showEdtImage);
-																}}
-																className="text-gray-600 hover:cursor-pointer hover:text-white text-2xl"
-															/>
-															{session?.user.provider != "google" &&
-																session?.user?.image && (
-																	<MdDeleteOutline className=" bg-white text-white text-2xl" />
-																)}
-														</div>
-													</div>
 												</div>
 											) : (
 												<ProfileImageSkeleton />
 											)}
-											{showEdtImage && (
-												<div className="flex flex-col space-y-5 sm:ml-8">
-													<div>
-														<input
-															type="file"
-															className="file-input w-full max-w-xs"
-															onChange={handleChange}
-															accept="image/*"
-														/>
-														{file && (
-															<button
-																onSubmit={(e) => {
-																	e.preventDefault();
-																	profilePhotoUploader();
-																}}
-																type="submit"
-																className="py-3.5 px-7 text-base font-medium text-indigo-100 focus:outline-none bg-[#202142] rounded-lg border border-indigo-200 hover:bg-inwhite focus:z-10 focus:ring-4 focus:ring-indigo-200 "
-															>
-																Upload
-															</button>
-														)}
-													</div>
-													{session?.user.provider != "google" && (
+											<div className="flex flex-col ml-3 gap-2 justify-center items-center mt-10">
+												<div>
+													<input
+														type="file"
+														className="file-input w-32 h-10 "
+														onChange={handleChange}
+														accept="image/*"
+													/>
+													{file && (
 														<button
-															type="button"
-															className="py-3.5 px-7 text-base font-medium text-inwhite focus:outline-none text-black bg-white rounded-lg border border-indigo-200 hover:bg-indigo-100 hover:text-[#202142] focus:z-10 focus:ring-4 focus:ring-indigo-200 "
+															onSubmit={(e) => {
+																e.preventDefault();
+																profilePhotoUploader();
+															}}
+															type="submit"
+															className="p-2 w-32 h-10  text-base font-medium text-indigo-100 focus:outline-none bg-[#202142] rounded-lg border border-indigo-200 hover:bg-inwhite focus:z-10 focus:ring-4 focus:ring-indigo-200 "
 														>
-															Delete picture
+															Upload
 														</button>
 													)}
 												</div>
-											)}
+												<button
+													type="button"
+													className="p-2 w-32 h-10  text-base font-medium text-inwhite focus:outline-none text-black bg-white rounded-lg border border-indigo-200 hover:bg-indigo-100 hover:text-[#202142] focus:z-10 focus:ring-4 focus:ring-indigo-200 "
+												>
+													Delete picture
+												</button>
+											</div>
 										</div>
 									</div>
 
-									<div className="grid lg:grid-rows-1 grid-rows-2 lg:grid-cols-2 grid-cols-1 gap-10">
-										<div className="items-center mt-8 sm:mt-14 text-[#202142]">
-											<div className="flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6">
-												<div className="w-full">
+									<div className="grid col-span-2 grid-cols-1 gap-4">
+										<div className="  text-[#202142]">
+											<div className=" flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6">
+												<div className="w-full relative z-[1000]">
 													<label
 														htmlFor="first_name"
 														className="block mb-2 text-sm font-medium text-inwhite dark:text-white"
@@ -382,7 +285,7 @@ const ProfileComponent = ({}) => {
 														required
 													/>
 												</div>
-												<div className="w-full">
+												<div className="w-full  relative z-[1000]">
 													<label
 														htmlFor="last_name"
 														className="block mb-2 text-sm font-medium text-inwhite dark:text-white"
@@ -406,7 +309,7 @@ const ProfileComponent = ({}) => {
 													/>
 												</div>
 											</div>
-											<div className="mb-2 sm:mb-6">
+											<div className="mb-2 sm:mb-6  relative z-[1000]">
 												<label
 													htmlFor="username"
 													className="block mb-2 text-sm font-medium text-inwhite dark:text-white"
@@ -431,15 +334,15 @@ const ProfileComponent = ({}) => {
 												<div>Gender</div>
 												<div
 													onClick={() => {
-														showgenderDropdown(!countryDropdown);
+														showgenderDropdown(!genderDropdown);
 													}}
-													className="inline-flex hover:cursor-pointer mt-2 p-1.5  pl-0 justify-between w-full items-center overflow-hidden rounded-md border bg-white border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-900"
+													className="inline-flex hover:cursor-pointer mt-2 p-1.5  pl-0 justify-between w-full items-center overflow-hidden rounded-md border bg-transparent  border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500"
 												>
-													<div className=" px-4 py-2 pl-2 text-sm/none  border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500">
+													<div className="bg-transparent  px-4 py-2 pl-2 text-sm/none  border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500">
 														{formData.gender}
 													</div>
 
-													<div className="h-full p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-200">
+													<div className="h-full p-2 text-gray-600 bg-transparent  hover:text-gray-700 dark:text-gray-300  dark:hover:text-gray-200">
 														<span className="sr-only">Menu</span>
 														<svg
 															xmlns="http://www.w3.org/2000/svg"
@@ -473,7 +376,7 @@ const ProfileComponent = ({}) => {
 																}));
 																showgenderDropdown(false);
 															}}
-															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700  dark:hover:bg-gray-800 dark:hover:text-gray-300"
 															role="menuitem"
 														>
 															Male
@@ -487,7 +390,7 @@ const ProfileComponent = ({}) => {
 																}));
 																showgenderDropdown(false);
 															}}
-															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700  dark:hover:bg-gray-800 dark:hover:text-gray-300"
 															role="menuitem"
 														>
 															Female
@@ -501,7 +404,7 @@ const ProfileComponent = ({}) => {
 																}));
 																showgenderDropdown(false);
 															}}
-															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700  dark:hover:bg-gray-800 dark:hover:text-gray-300"
 															role="menuitem"
 														>
 															Other
@@ -513,7 +416,7 @@ const ProfileComponent = ({}) => {
 												<div className="mb-2 sm:mb-6 flex-1">
 													<label
 														htmlFor="email"
-														className="block mb-2 text-sm font-medium text-inwhite dark:text-white"
+														className="block mb-2 text-sm font-medium text-white dark:text-white"
 													>
 														Email
 													</label>
@@ -574,7 +477,7 @@ const ProfileComponent = ({}) => {
 													required
 												/>
 											</div>
-											<div className="mb-6">
+											<div className="z-[1002] relative">
 												<label
 													htmlFor="message"
 													className="block mb-2 text-sm font-medium text-inwhite dark:text-white"
@@ -597,40 +500,16 @@ const ProfileComponent = ({}) => {
 												></textarea>
 												<p className="mt-3 text-sm leading-6 text-gray-600"></p>
 											</div>
-											{!noPdfUploaded ? (
-												<div className="mb-4 mt-2 min-w-1/2 text-white">
-													Your Resume
-													<a
-														target="_blank"
-														href={downloadUrl}
-														rel="noopener noreferrer"
-													>
-														<div className="w-full relative flex z-[1001] items-center flex-row justify-between  p-4 rounded-lg bg-primary-500 hover:bg-primary-700 hover:cursor-pointer">
-															<p className="overflow-hidden whitespace-nowrap">
-																{pdfFileName}
-															</p>
-															<BiDownload />
-														</div>
-													</a>
-												</div>
-											) : (
-												<>
-													<p className="pl-1 text-white ">
-														Please upload resume{" "}
-													</p>
-													<SmallResumeUpload />
-												</>
-											)}
 										</div>
-										<div className="mt-12">
-											<div className="relative w-full z-[901] mb-2 sm:mb-6 text-white ">
+										<div className="">
+											<div className="relative w-full z-[901] mb-2 text-white ">
 												<div>Country</div>
 												<div
 													onClick={() => {
 														console.log(countryDropdown);
 														showcountryDropdown(!countryDropdown);
 													}}
-													className="inline-flex hover:cursor-pointer mt-2 p-1.5 pl-0 justify-between w-full items-center overflow-hidden rounded-md border bg-white border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-900"
+													className="inline-flex hover:cursor-pointer mt-2 p-1.5 pl-0 justify-between w-full items-center overflow-hidden rounded-md border bg-transparent  border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500 "
 												>
 													<div className=" px-4 py-2  pl-2 text-sm/none  border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500">
 														{formData.country}
@@ -654,7 +533,7 @@ const ProfileComponent = ({}) => {
 												</div>
 
 												<div
-													className={`absolute end-0 z-[900] mt-2 w-full right-0 rounded-md border ring-indigo-500 bg-gray-900  border-indigo-300 shadow-lg  ${
+													className={`absolute end-0 z-[900] mt-2 w-full right-0 rounded-md border ring-indigo-500 bg-main-900  border-indigo-300 shadow-lg  ${
 														countryDropdown
 															? "opacity-1 translate-y-0"
 															: "opacity-0 translate-y-[-200%]"
@@ -670,7 +549,7 @@ const ProfileComponent = ({}) => {
 																}));
 																showcountryDropdown(!countryDropdown);
 															}}
-															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700  dark:hover:bg-gray-800 dark:hover:text-gray-300"
 															role="menuitem"
 														>
 															India
@@ -684,7 +563,7 @@ const ProfileComponent = ({}) => {
 																}));
 																showcountryDropdown(!countryDropdown);
 															}}
-															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700  dark:hover:bg-gray-800 dark:hover:text-gray-300"
 															role="menuitem"
 														>
 															USA
@@ -698,7 +577,7 @@ const ProfileComponent = ({}) => {
 																}));
 																showcountryDropdown(!countryDropdown);
 															}}
-															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+															className="block rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-50 hover:text-gray-700  dark:hover:bg-gray-800 dark:hover:text-gray-300"
 															role="menuitem"
 														>
 															Mexico
@@ -818,16 +697,16 @@ const ProfileComponent = ({}) => {
 													// <div className="mt-6 flex items-center justify-start ">
 													<button
 														type="submit"
-														className="bg-primary-600 flex relative justify-center items-center hover:bg-primary-700 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-32 px-5 py-2.5"
+														className="bg-primary-600 text-white flex relative justify-center items-center hover:bg-primary-700 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-44 px-5 py-2.5"
 													>
-														Save
+														Save changes
 													</button>
 												) : (
 													// </div>
 													<LoadingButton
 														width={null}
 														text={"Saving.."}
-														className="w-[130px]"
+														className="w-44"
 													/>
 												)}
 											</div>
@@ -839,7 +718,7 @@ const ProfileComponent = ({}) => {
 					</form>
 				</main>
 			) : (
-				<div className="w-screen h-screen -mt-16 flex justify-center items-center gap-2">
+				<div className="w-full h-screen -mt-16 flex justify-center items-center gap-2">
 					<Loading />
 				</div>
 			)}

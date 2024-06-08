@@ -1,4 +1,5 @@
 "use client";
+import { GeistSans } from "geist/font/sans";
 import Head from "next/head";
 
 export default function Home() {
@@ -10,7 +11,7 @@ export default function Home() {
 	];
 
 	return (
-		<>
+		<div className={GeistSans.className}>
 			<Head>
 				<link
 					rel="icon"
@@ -18,6 +19,6 @@ export default function Home() {
 					sizes="any"
 				/>
 			</Head>
-		</>
+		</div>
 	);
 }

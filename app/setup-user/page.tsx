@@ -16,7 +16,7 @@ export default function SetupUser() {
 	const { data: session } = useSession();
 	const [steps, setStep] = useState({
 		stepsItems: ["Resume", "Profile", "Email verification", "Upload Video"],
-		currentStep: 4,
+		currentStep: 1,
 	});
 	const { isInfoAdded, setIsInfoAdded } = useInfoAdded();
 	const components: Record<number, ReactNode> = {

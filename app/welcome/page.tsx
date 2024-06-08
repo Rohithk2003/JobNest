@@ -5,7 +5,7 @@ import Herosection from "../components/MainPage/Hero";
 import FeatureSection from "../components/MainPage/Features";
 import PricingSection from "../components/MainPage/Pricing";
 import StatsSection from "../components/MainPage/Stats";
-import FooterSection from "../components/JobDataHandler/Footer";
+import FooterSection from "../components/MainPage/Footer";
 import GridLines from "../components/VisualComponents/GridLines";
 import Navigation from "../components/MainPage/Navigation";
 import { useSession } from "next-auth/react";

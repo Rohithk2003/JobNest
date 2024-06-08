@@ -4,11 +4,10 @@ import dynamic from "next/dynamic";
 import Pagination from "../components/Pagination";
 import { Suspense } from "react";
 import { JobApiFetchProps } from "@/types/custom";
-import { createClient } from "@/utils/supabase/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/authoptions";
 import DashboardNavigation from "../components/DashboardNavigation/layout";
-
+import { GeistSans } from "geist/font/sans";
 async function fetchJobsData({
 	searchParams,
 }: {
@@ -48,13 +47,13 @@ export default async function Dashboard({
 	const session = await getServerSession(authOptions);
 	const { data, error } = await fetchJobsData({ searchParams });
 	return (
-		<>
+		<div className={GeistSans.className}>
 			<DashboardNavigation
 				fromMainPage={true}
 				session={session}
 			/>
 			<div className="antialiased bg-transparent min-h-dvh">
-				{!data && <SkeletonDiv />}
+				{!data && !error && <SkeletonDiv />}
 				<Suspense fallback={<SkeletonDiv />}>
 					<JobListDiv
 						data={data}
@@ -68,6 +67,6 @@ export default async function Dashboard({
 					</div>
 				)}
 			</div>
-		</>
+		</div>
 	);
 }

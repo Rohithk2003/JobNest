@@ -6,6 +6,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import PrelineScript from "./components/PrelineScript";
 import { ViewTransitions } from "next-view-transitions";
 import "react-toastify/dist/ReactToastify.css";
+import { GeistSans } from "geist/font/sans";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,10 @@ export default async function RootLayout({
 }>) {
 	return (
 		<ViewTransitions>
-			<html lang="en">
+			<html
+				lang="en"
+				className={GeistSans.className}
+			>
 				<body className={inter.className}>
 					<AuthProvider>
 						{children}

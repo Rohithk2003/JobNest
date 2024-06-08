@@ -4,7 +4,7 @@ export default function Herosection() {
 	return (
 		<div
 			id="about"
-			className="bg-transparent h-[90vh] flex justify-center items-center"
+			className="bg-main-900 h-[90vh] flex justify-center items-center"
 		>
 			<section className="relative">
 				<div className="relative z-[10] max-w-screen-xl mx-auto px-4 py-28 md:px-8">

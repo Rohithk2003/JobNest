@@ -1,20 +1,21 @@
 import { Job, JobApiFetchProps } from "@/types/custom";
 import Card from "../JobListCard";
+import { ServerDown } from "@/components/component/server-down";
 
 export default function JobListDiv({
 	data,
 	error,
 }: {
-	data: JobApiFetchProps|null;
+	data: JobApiFetchProps | null;
 	error: any;
 }) {
 	return (
-		<main className="p-16 h-auto flex flex-col gap-6 justify-center items-center">
-			{error && (
-				<div className="text-3xl mt-44 animate-bounce">
-					Failed to load!.Server is down.Please try again later.
-				</div>
-			)}
+		<main
+			className={`${error ? "p-0" : "p-16"} ${
+				error && "overflow-hidden"
+			} h-auto flex flex-col gap-6 justify-center items-center`}
+		>
+			{error && <ServerDown />}
 			{data &&
 				data.data &&
 				data.data.jobs.map((job: Job, index: number) => (

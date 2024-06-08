@@ -11,7 +11,8 @@ const config: Config = {
 		require("daisyui"),
 		require("tailwindcss-animated"),
 		require("preline/plugin"),
-	],
+        require("tailwindcss-animate")
+    ],
 
 	theme: {
 		extend: {
@@ -20,6 +21,9 @@ const config: Config = {
 				left: "left",
 			},
 			colors: {
+				main: {
+					"900": "#111827",
+				},
 				primary: {
 					"50": "#eff6ff",
 					"100": "#dbeafe",
@@ -35,7 +39,8 @@ const config: Config = {
 				},
 			},
 			backgroundImage: {
-				'custom-gradient-reversed': 'linear-gradient(to top, #537895 0%, #09203f 100%)',
+				"custom-gradient-reversed":
+					"linear-gradient(to top, #537895 0%, #09203f 100%)",
 
 				"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
 				"gradient-conic":
