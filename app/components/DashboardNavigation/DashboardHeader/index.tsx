@@ -78,7 +78,7 @@ export default function Header({
 				var element = e.target as HTMLElement;
 				if (element.tagName != "IMG") setShowDropDown(false);
 			}}
-			className="relative bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-transparent backdrop-blur-lg dark:border-gray-700  left-0 right-0 top-0 z-[901]"
+			className="relative bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-transparent backdrop-blur-lg dark:border-gray-700  left-0 right-0 top-0 z-[2000]"
 		>
 			<div className="flex flex-wrap justify-between items-center relative">
 				{fromMainPage && (

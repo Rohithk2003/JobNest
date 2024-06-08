@@ -1,15 +1,11 @@
 "use client";
 import Image from "next/image";
-import { MdAccountCircle, MdDeleteOutline, MdEdit } from "react-icons/md";
+import { MdAccountCircle } from "react-icons/md";
 import ProfileImageSkeleton from "../../Loader/ProfileImageSkeleton";
-import { tableTypes, UserProps } from "@/types/custom";
+import { UserProps } from "@/types/custom";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { getaBackendRoute, tables } from "@/configs/constants";
-import { BiDownload } from "react-icons/bi";
-import SmallResumeUpload from "../../SmallResumeUpload";
 import { useSession } from "next-auth/react";
-import { getUserByEmail } from "@/Database/database";
 import { PostgrestError } from "@supabase/supabase-js";
 import Toast from "../../Toast";
 import Loading from "@/app/loading";
@@ -17,6 +13,7 @@ import LoadingButton from "../../LoadingButton";
 import { sendVerificationMail } from "@/lib/mail";
 import LoaderCircle from "../../LoaderCircle";
 import { getorCreateVerificationToken } from "@/lib/token";
+import { tables } from "@/configs/constants";
 
 const ProfileComponent = ({}) => {
 	const [countryDropdown, showcountryDropdown] = useState(false);
@@ -49,10 +46,10 @@ const ProfileComponent = ({}) => {
 	});
 	const [profileData, setProfileData] = useState<UserProps | null>();
 	const [mailsent, setMailSent] = useState(false);
-	const [showEdtImage, setShowEdtImage] = useState(false);
 	const [file, setFile]: [File | null, Dispatch<SetStateAction<File | null>>] =
 		useState<File | null>(null);
 	const [error, seterror] = useState<PostgrestError | null>();
+	const [uploadButtonClicked, setUploadButtonClicked] = useState(false);
 	const [saving, setSaving] = useState(false);
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -126,7 +123,11 @@ const ProfileComponent = ({}) => {
 
 	const profilePhotoUploader = async () => {
 		if (!file) {
-			alert("Please, select file you want to upload");
+			setToastHandler(true);
+			setDescription("Please select a file to upload.");
+			settype("error");
+			setUploadButtonClicked(false);
+
 			return;
 		}
 		const { data, error } = await supabase.storage
@@ -138,12 +139,12 @@ const ProfileComponent = ({}) => {
 			setDescription(
 				"An error occured while uploading the file. Please try again."
 			);
+			setUploadButtonClicked(false);
+
 			settype("error");
 			return;
 		}
-		setToastHandler(true);
-		setDescription("File uploaded successfully.");
-		settype("success");
+
 		await supabase
 			.schema("next_auth")
 			.from(tables.supabaseUsers)
@@ -155,14 +156,32 @@ const ProfileComponent = ({}) => {
 		const { data: Data } = await supabase.storage
 			.from("jobnest")
 			.createSignedUrl(pathUrl, 5000);
+		console.log(Data);
 		update({
 			user: {
 				...session?.user,
-				avatar: Data?.signedUrl,
+				image: Data?.signedUrl,
 			},
-		}).then((data) => {
-			alert("File updated successfully!");
-		});
+		})
+			.then((data) => {
+				setToastHandler(true);
+				setDescription("File uploaded successfully.");
+				settype("success");
+				setUploadButtonClicked(false);
+			})
+			.catch((error) => {
+				if (error.message.includes("already")) {
+					setToastHandler(true);
+					setDescription("Please rename the file and try again.");
+					settype("error");
+					setUploadButtonClicked(false);
+					return;
+				}
+				setToastHandler(true);
+				setDescription("An error occured while updating the profile picture.");
+				settype("error");
+				setUploadButtonClicked(false);
+			});
 	};
 	async function sendVerifyEmail() {
 		if (!session || !session.user || !session.user.email) {
@@ -184,7 +203,7 @@ const ProfileComponent = ({}) => {
 	return (
 		<>
 			<Toast
-				description={description}
+				description={description || error?.message || ""}
 				time={3000}
 				type={type}
 				controller={toastHandler}
@@ -194,71 +213,88 @@ const ProfileComponent = ({}) => {
 
 			{sessionLoaded ? (
 				<main className="w-full min-h-screen py-1 overflow-y-hidden">
-					<form
-						onSubmit={(e) => {
-							handleSubmit(e);
-							setSaving(true);
-						}}
-						name="form"
-					>
-						<div className="p-2 md:p-4 ">
-							<div className="w-full px-6 pb-8 mt-8 sm:rounded-lg">
-								<h2 className="text-2xl font-bold sm:text-xl">Profile</h2>
-								<div className="grid md:grid-cols-3 grid-cols-1 md:grid-rows-1 grid-rows-2 w-full mt-8 gap-0">
-									<div className="flex flex-col justify-start items-start ">
-										<div className="flex flex-col">
-											{session?.user ? (
-												<div className="relative ">
-													{session?.user?.image ? (
-														<Image
-															className="avatar object-cover z-30 w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
-															alt="Bordered avatar"
-															src={session?.user?.image || ""}
-															width={160}
-															height={160}
-														/>
-													) : (
-														<MdAccountCircle
-															className="avatar object-cover z-30 w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
-															width={160}
-															height={160}
-														/>
-													)}
-												</div>
-											) : (
-												<ProfileImageSkeleton />
-											)}
-											<div className="flex flex-col ml-3 gap-2 justify-center items-center mt-10">
-												<div>
-													<input
-														type="file"
-														className="file-input w-32 h-10 "
-														onChange={handleChange}
-														accept="image/*"
+					<div className="p-2 md:p-4 ">
+						<div className="w-full px-6 pb-8 mt-8 sm:rounded-lg">
+							<h2 className="text-2xl font-bold sm:text-xl">Profile</h2>
+							<div className="grid md:grid-cols-3 grid-cols-1 md:grid-rows-1 grid-rows-2 w-full mt-8 gap-0">
+								<div className="flex flex-col justify-start items-start ">
+									<div className="flex flex-col">
+										{session?.user ? (
+											<div className="relative ">
+												{session?.user?.image ? (
+													<Image
+														className="avatar object-cover z-30 w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
+														alt="Bordered avatar"
+														src={session?.user?.image || ""}
+														width={160}
+														height={160}
 													/>
-													{file && (
-														<button
-															onSubmit={(e) => {
-																e.preventDefault();
-																profilePhotoUploader();
-															}}
-															type="submit"
-															className="p-2 w-32 h-10  text-base font-medium text-indigo-100 focus:outline-none bg-[#202142] rounded-lg border border-indigo-200 hover:bg-inwhite focus:z-10 focus:ring-4 focus:ring-indigo-200 "
-														>
-															Upload
-														</button>
-													)}
-												</div>
-												<button
-													type="button"
-													className="p-2 w-32 h-10  text-base font-medium text-inwhite focus:outline-none text-black bg-white rounded-lg border border-indigo-200 hover:bg-indigo-100 hover:text-[#202142] focus:z-10 focus:ring-4 focus:ring-indigo-200 "
-												>
-													Delete picture
-												</button>
+												) : (
+													<MdAccountCircle
+														className="avatar object-cover z-30 w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
+														width={160}
+														height={160}
+													/>
+												)}
 											</div>
+										) : (
+											<ProfileImageSkeleton />
+										)}
+										<div className="flex flex-col ml-3 justify-center items-start gap-4 mt-10 flex-wrap">
+											<div className="flex flex-row gap-5 flex-wrap">
+												<label
+													htmlFor="files"
+													className="p-2 min-w-32 w-max h-10  text-base font-medium text-center focus:outline-none text-black bg-white rounded-lg border border-indigo-200 hover:bg-indigo-100 hover:text-[#202142] focus:z-10 focus:ring-4 focus:ring-indigo-200 "
+												>
+													{file ? file.name : "Change profile image"}
+												</label>
+												<input
+													type="file"
+													id="files"
+													className="hidden file-input w-32 h-10 "
+													onChange={handleChange}
+													accept="image/*"
+												/>
+												{file && (
+													<div>
+														{!uploadButtonClicked ? (
+															<button
+																onClick={(e) => {
+																	profilePhotoUploader();
+																	setUploadButtonClicked(true);
+																}}
+																type="submit"
+																className="p-2 w-32 h-10  text-base  text-white font-medium text-indigo-100 focus:outline-none bg-primary-500 rounded-lg border border-indigo-200 hover:bg-inwhite focus:z-10 focus:ring-4 focus:ring-indigo-200 "
+															>
+																Upload
+															</button>
+														) : (
+															<LoadingButton
+																width={null}
+																text={"Uploading.."}
+																className="w-32"
+															/>
+														)}
+													</div>
+												)}
+											</div>
+											<button
+												type="button"
+												className="p-2 w-32 h-10  text-base font-medium  focus:outline-none text-black bg-white rounded-lg border border-indigo-200 hover:bg-indigo-100 hover:text-[#202142] focus:z-10 focus:ring-4 focus:ring-indigo-200 "
+											>
+												Delete picture
+											</button>
 										</div>
 									</div>
-
+								</div>
+								<form
+									onSubmit={(e) => {
+										handleSubmit(e);
+										setSaving(true);
+									}}
+									name="form"
+									className="grid col-span-2 grid-cols-1 gap-4"
+								>
 									<div className="grid col-span-2 grid-cols-1 gap-4">
 										<div className="  text-[#202142]">
 											<div className=" flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6">
@@ -712,10 +748,10 @@ const ProfileComponent = ({}) => {
 											</div>
 										</div>
 									</div>
-								</div>
+								</form>
 							</div>
 						</div>
-					</form>
+					</div>
 				</main>
 			) : (
 				<div className="w-full h-screen -mt-16 flex justify-center items-center gap-2">
