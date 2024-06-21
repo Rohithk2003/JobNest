@@ -1,15 +1,15 @@
 "use client";
 import { ReactNode, useEffect, useState } from "react";
-import Information from "../components/Setup-User/Information";
+import Information from "@/components/Setup-User/Information";
 import { useSession } from "next-auth/react";
-import ResumeUpload from "../components/Setup-User/ResumeUpload";
-import SendVerificationEmailComponent from "../components/SendVerificationEmailComponent";
+import ResumeUpload from "@/components/Setup-User/ResumeUpload";
+import SendVerificationEmailComponent from "@/components/SendVerificationEmailComponent";
 import { getDashboardRoute } from "@/configs/constants";
 import { useRouter } from "next/navigation";
-import { useInfoAdded } from "../components/Setup-User/InfoAddingContext";
+import { useInfoAdded } from "@/components/Setup-User/InfoAddingContext";
 import { ToastContainer } from "react-toastify";
-import Navigation from "../components/MainPage/Navigation";
-import VideoUpload from "../components/Setup-User/VideoUpload";
+import Navigation from "@/components/MainPage/Navigation";
+import VideoUpload from "@/components/Setup-User/VideoUpload";
 
 export default function SetupUser() {
 	const router = useRouter();

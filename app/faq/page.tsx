@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
-import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
-import Navigation from "../components/MainPage/Navigation";
-import DashboardNavigation from "../components/DashboardNavigation/layout";
+import BackgroundGlow from "@/components/VisualComponents/BackgroundGlow";
+import Navigation from "@/components/MainPage/Navigation";
+import DashboardNavigation from "@/components/DashboardNavigation/layout";
 export default async function FAQ() {
 	const session = await getServerSession();
 	return (

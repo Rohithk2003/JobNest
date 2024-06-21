@@ -1,5 +1,5 @@
 "use client";
-import LoaderCircle from "./components/LoaderCircle";
+import LoaderCircle from "@/components/LoaderCircle";
 export default function Loading() {
 	return (
 		<div className="w-full h-[100vh] grid place-content-center relative z-[400]">

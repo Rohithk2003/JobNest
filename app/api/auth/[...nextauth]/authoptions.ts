@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
 					);
 					if (user && passwordsMatch) {
 						const { password, ...userWithoutSensitiveInfo } = user;
-						return userWithoutSensitiveInfo as User;
+						return userWithoutSensitiveInfo as unknown as User;
 					} else {
 						throw "Invalid password";
 					}

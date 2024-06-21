@@ -8,13 +8,13 @@ import {
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import LoadingButton from "@/app/components/LoadingButton";
+import LoadingButton from "@/components/LoadingButton";
 import { handleSubmit } from "@/actions/register";
-import AlertWithType from "../components/Alert";
+import AlertWithType from "@/components/Alert";
 import { RegisterActionResultProps } from "@/types/custom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
-import Logo from "../components/Logo";
-import Navigation from "../components/MainPage/Navigation";
+import Logo from "@/components/Logo";
+import Navigation from "@/components/MainPage/Navigation";
 export default function Register() {
 	type PopupButtonFunctionType = () => any;
 

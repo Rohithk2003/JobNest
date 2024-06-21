@@ -1,6 +1,5 @@
 "use client";
-import DashboardNavigation from "../components/DashboardNavigation";
-import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
+import BackgroundGlow from "@/components/VisualComponents/BackgroundGlow";
 import { useSession } from "next-auth/react";
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
@@ -8,9 +7,10 @@ import { getUserByEmail } from "@/Database/database";
 import newVerification from "@/actions/verification";
 import { getDashboardRoute } from "@/configs/constants";
 import HandleChangePassword from "@/actions/changepassword";
-import AlertWithType, { ErrorAlert } from "../components/Alert";
-import LoaderCircle from "../components/LoaderCircle";
+import AlertWithType, { ErrorAlert } from "@/components/Alert";
+import LoaderCircle from "@/components/LoaderCircle";
 import changePasswordTokenVerification from "@/actions/changePasswordTokenVerification";
+import DashboardNavigation from "@/components/DashboardNavigation/layout";
 export default function ChangePassword() {
 	const { data: session, status } = useSession();
 	const [currentPassword, setCurrentPassword] = useState(false);

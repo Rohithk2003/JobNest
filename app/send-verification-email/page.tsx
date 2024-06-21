@@ -1,12 +1,12 @@
 import { getServerSession } from "next-auth";
-import Header from "../components/MainPage/Navigation/Header";
-import SendVerificationEmailComponent from "../components/SendVerificationEmailComponent";
+import SendVerificationEmailComponent from "@/components/SendVerificationEmailComponent";
+import Navigation from "@/components/MainPage/Navigation";
 
 export default async function SendVerificationEmail() {
 	const session = await getServerSession();
 	return (
 		<div className="h-screen">
-			<Header session={session} />
+			<Navigation  />
 			<SendVerificationEmailComponent />
 		</div>
 	);

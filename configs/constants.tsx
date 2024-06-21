@@ -19,7 +19,7 @@ export function getUsernameCreationRoute(): string {
 }
 
 export function getProfileRoute(): string {
-	return "/user/profile";
+	return "/settings";
 }
 
 export function getSignOutRoute(): string {

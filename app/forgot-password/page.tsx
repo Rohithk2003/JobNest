@@ -8,10 +8,10 @@ import {
 import { useSession } from "next-auth/react";
 import { getUserByEmail } from "@/Database/database";
 import { getorCreateVerificationToken } from "@/lib/token";
-import { ErrorAlert, MailSentAlert } from "../components/Alert";
-import LoadingButton from "../components/LoadingButton";
-import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
-import Navigation from "../components/MainPage/Navigation";
+import { ErrorAlert, MailSentAlert } from "@/components/Alert";
+import LoadingButton from "@/components/LoadingButton";
+import BackgroundGlow from "@/components/VisualComponents/BackgroundGlow";
+import Navigation from "@/components/MainPage/Navigation";
 
 export default function SendPasswordResetEmailComponent() {
 	const [email, setEmail] = useState("");

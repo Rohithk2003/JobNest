@@ -1,12 +1,12 @@
 import { getaBackendRoute, getJobsRoute } from "@/configs/constants";
-import SkeletonDiv from "../components/Loader/JobListCardSkeleton";
+import SkeletonDiv from "@/components/Loader/JobListCardSkeleton";
 import dynamic from "next/dynamic";
-import Pagination from "../components/Pagination";
+import Pagination from "@/components/Pagination";
 import { Suspense } from "react";
 import { JobApiFetchProps } from "@/types/custom";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/authoptions";
-import DashboardNavigation from "../components/DashboardNavigation/layout";
+import DashboardNavigation from "@/components/DashboardNavigation/layout";
 import { GeistSans } from "geist/font/sans";
 async function fetchJobsData({
 	searchParams,
@@ -39,7 +39,7 @@ export default async function Dashboard({
 	};
 }) {
 	const JobListDiv = dynamic(
-		() => import("../components/JobDataHandler/JobListDiv"),
+		() => import("@/components/JobDataHandler/JobListDiv"),
 		{
 			ssr: false,
 		}

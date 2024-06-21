@@ -9,15 +9,15 @@ import {
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import Popup from "../../components/Popup";
+import Popup from "@/components/Popup";
 import { useRouter } from "next/navigation";
 import { TailSpin } from "react-loader-spinner";
 import { useSession } from "next-auth/react";
 import { createClient } from "@/utils/supabase/client";
-import LoadingButton from "@/app/components/LoadingButton";
+import LoadingButton from "@/components/LoadingButton";
 import { set } from "firebase/database";
-import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
-import Logo from "@/app/components/Logo";
+import BackgroundGlow from "@/components/VisualComponents/BackgroundGlow";
+import Logo from "@/components/Logo";
 
 export default function Register() {
 	type PopupButtonFunctionType = () => any;
@@ -153,7 +153,7 @@ export default function Register() {
 								</div>
 
 								{signUpClicked ? (
-									<LoadingButton text="Please wait" />
+									<LoadingButton text="Please wait"  className={""} width={32}/>
 								) : (
 									<button
 										onSubmit={handleSubmit}

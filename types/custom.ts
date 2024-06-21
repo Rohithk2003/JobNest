@@ -1,4 +1,4 @@
-import { Database } from "@/supabase";
+import { Database } from "@/types/supabase";
 import { Session } from "next-auth";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction } from "react";

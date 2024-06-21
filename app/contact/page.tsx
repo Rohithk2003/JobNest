@@ -1,11 +1,9 @@
 "use client";
-import { ReactEventHandler, useState } from "react";
-import Image from "next/image";
+import {  useState } from "react";
 import { useInView } from "react-intersection-observer";
-import BackgroundGlow from "../components/VisualComponents/BackgroundGlow";
 import { useSession } from "next-auth/react";
-import GridLines from "../components/VisualComponents/GridLines";
-import Navigation from "../components/MainPage/Navigation";
+import GridLines from "@/components/VisualComponents/GridLines";
+import Navigation from "@/components/MainPage/Navigation";
 
 export default function Contact() {
 	const [emailid, setemailid] = useState("");

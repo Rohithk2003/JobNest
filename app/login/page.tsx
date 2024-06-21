@@ -11,13 +11,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import LoadingButton from "@/app/components/LoadingButton";
-import BackgroundGlow from "@/app/components/VisualComponents/BackgroundGlow";
+import LoadingButton from "@/components/LoadingButton";
+import BackgroundGlow from "@/components/VisualComponents/BackgroundGlow";
 import { handleGoogleSignIn, handleSubmit } from "@/actions/login";
 import { useSearchParams } from "next/navigation";
-import AlertWithType from "../components/Alert";
+import AlertWithType from "@/components/Alert";
 import { RegisterActionResultProps } from "@/types/custom";
-import Navigation from "../components/MainPage/Navigation";
+import Navigation from "@/components/MainPage/Navigation";
 
 export default function Login() {
 	const searchParams = useSearchParams();
@@ -196,7 +196,7 @@ export default function Login() {
 						<div className="space-y-4 text-sm font-medium">
 							{googleProviderClicked ? (
 								<LoadingButton
-									width={null}
+									width={32}
 									className="w-full"
 									text={"Please wait.."}
 								/>

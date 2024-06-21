@@ -1,5 +1,5 @@
 "use client";
-import { InfoAddedProvider } from "../components/Setup-User/InfoAddingContext";
+import { InfoAddedProvider } from "@/components/Setup-User/InfoAddingContext";
 
 export default function DashboardLayout({
 	children,

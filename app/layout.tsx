@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "./context/AuthProvider";
 import "react-loading-skeleton/dist/skeleton.css";
-import PrelineScript from "./components/PrelineScript";
+import PrelineScript from "@/components/PrelineScript";
 import { ViewTransitions } from "next-view-transitions";
 import "react-toastify/dist/ReactToastify.css";
 import { GeistSans } from "geist/font/sans";
