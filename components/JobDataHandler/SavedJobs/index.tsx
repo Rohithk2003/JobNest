@@ -2,14 +2,13 @@ import { Job, JobApiFetchProps } from "@/types/custom";
 import Card from "../JobListCard";
 import { ServerDown } from "@/components/component/server-down";
 
-export default function JobListDiv({
+export default function SavedJobsListDiv({
 	data,
 	error,
 }: {
 	data: JobApiFetchProps | null;
 	error: any;
 }) {
-	console.log(data);
 	return (
 		<main
 			className={`${error ? "p-0" : "p-16"} ${
@@ -20,13 +19,6 @@ export default function JobListDiv({
 			{data &&
 				data.data &&
 				data.data.jobs.map((job: Job, index: number) => (
-					<div key={index}>
-						<Card {...job} />
-					</div>
-				))}
-			{data &&
-				!data.data &&
-				data.map((job: Job, index: number) => (
 					<div key={index}>
 						<Card {...job} />
 					</div>
