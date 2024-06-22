@@ -70,6 +70,7 @@ export const tables = {
 	verificationTokens: "VerificationToken",
 	resumeUserLink: "resumeUser",
 	videoUserLink: "video_user_link",
+	saved_jobs:"saved_jobs"
 };
 export const toastOptions = {
 	style: { backgroundColor: `rgb(38 38 38)` },

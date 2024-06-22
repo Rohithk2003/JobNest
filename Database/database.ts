@@ -100,3 +100,26 @@ export const createVerificationToken = async (
 		message: "Success",
 	};
 };
+
+export const addBookmarkHandler = async (
+	job_id:number,username:string
+) => {
+	const {data,error} = await getUserByUsername(username);
+	if (error){
+		return{
+			message:error.message
+		}
+
+	}
+	const {data:bookmarkedData,error:er} = await supabase.schema("next_auth").from(tables.saved_jobs).insert([{
+		user_id:data.id,job_id:job_id
+	}])
+	if (er){
+		return{
+			message:er.message
+		}
+	}
+	return{
+		message:"success"
+	}
+}
