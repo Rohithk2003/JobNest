@@ -6,7 +6,7 @@ export default async function SendVerificationEmail() {
 	const session = await getServerSession();
 	return (
 		<div className="h-screen">
-			<Navigation  />
+			<Navigation />
 			<SendVerificationEmailComponent />
 		</div>
 	);
